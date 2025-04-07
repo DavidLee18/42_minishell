@@ -7,7 +7,7 @@ BFLAGS := -Lft_printf -lftprintf
 BUILD_DIR := build
 SRC_DIR := src
 
-SRCS :=
+SRCS := src/etc.c src/lex.c src/lex2.c
 # BONUS_SRCS := src/main_bonus.c src/fd_cleaner.c \
 #			src/path.c src/files_pipes_bonus.c \
 #			src/getln_until_bonus.c

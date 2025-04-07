@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/07 04:49:27 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/08 05:16:22 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,13 @@
 # include <term.h>
 # include <termios.h>
 # include "../ft_printf/src/ft_printf.h"
+
+typedef enum e_quote
+{
+	NONE,
+	SINGLE,
+	DOUBLE
+}	t_quote;
 
 typedef enum e_cmd_type
 {
@@ -56,6 +63,16 @@ typedef struct s_phrase
 }	t_phrase;
 
 char		**lex(t_list **dyn, const char *str);
+char		**lex_alloc(t_list **dyn, char const *s);
+_Bool		lex_preproc(char const *s, t_split_next *idxs, t_quote *p,
+				_Bool *syll);
+void		lex_pre_paren(char c, t_split_next *idxs, t_quote *p);
+_Bool		lex_split(t_list **dyn, char **split, char const *s);
+_Bool		lex_split_range(t_list **dyn, char **split, char const *s,
+				t_split_next *sp);
+size_t		lex_len(const char *start, const char *prev, t_quote *p,
+				_Bool *syll);
 t_phrase	*parse(t_list **dyn, const char **tokens);
+_Bool		is_space(char c);
 
 #endif
