@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 15:45:12 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/08 05:16:35 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/09 03:36:44 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ char	**lex(t_list **dyn, const char *s)
 }
 
 _Bool	lex_split_range(t_list **dyn, char **split, char const *s,
-		t_split_next *sp)
+		t_split_piece *sp)
 {
 	char	*str;
 
@@ -98,7 +98,18 @@ _Bool	lex_split_range(t_list **dyn, char **split, char const *s,
 		return (0);
 	if (!*str)
 		return (1);
-	split[(sp + 1)->length] = str;
-	(sp + 1)->length++;
+	split[(sp + 2)->length] = str;
+	(sp + 2)->length++;
+	if (sp[1].start >= 0 && sp[1].length >= 0)
+	{
+		str = gc_substr(dyn, s, sp[1].start, sp[1].length);
+		if (!str)
+			return (0);
+		if (!*str)
+			return (1);
+		split[(sp + 2)->length] = str;
+		(sp + 2)->length++;
+		sp[1].length = -1;
+	}
 	return (1);
 }
