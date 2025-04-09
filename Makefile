@@ -1,13 +1,13 @@
 CC := cc
-CFLAGS := -Wall -Werror -Wextra -O2 -foptimize-sibling-calls
+CFLAGS := -Wall -Werror -Wextra -g
 NAME := minishell
-BFLAGS := -Lft_printf -lftprintf
+BFLAGS := -Lft_printf -lftprintf -lreadline
 # BONUS_NAME := pipex_bonus
 
 BUILD_DIR := build
 SRC_DIR := src
 
-SRCS := src/etc.c src/lex.c src/lex2.c
+SRCS := src/etc.c src/lex.c src/lex2.c src/main.c
 # BONUS_SRCS := src/main_bonus.c src/fd_cleaner.c \
 #			src/path.c src/files_pipes_bonus.c \
 #			src/getln_until_bonus.c

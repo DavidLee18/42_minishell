@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 15:45:12 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/09 03:36:44 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/09 10:20:20 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ _Bool	lex_preproc(char const *s, t_split_next *idxs, t_quote *p, _Bool *syll)
 		return (0);
 	if ((s[idxs->start] == '\'' && *p != DOUBLE)
 		|| (s[idxs->start] == '\"' && *p != SINGLE))
-		lex_pre_paren(s[idxs->start], idxs, p);
+		lex_pre_quote(s[idxs->start], idxs, p);
 	else if ((s[idxs->start] == '<' && s[idxs->start + 1] == '<')
 		|| (s[idxs->start] == '>' && s[idxs->start + 1] == '>'))
 	{
@@ -39,20 +39,14 @@ _Bool	lex_preproc(char const *s, t_split_next *idxs, t_quote *p, _Bool *syll)
 	return (1);
 }
 
-void	lex_pre_paren(char c, t_split_next *idxs, t_quote *p)
+void	lex_pre_quote(char c, t_split_next *idxs, t_quote *p)
 {
 	if (c == '\'' && *p != DOUBLE)
-	{
 		*p = SINGLE - *p;
-		if (*p == NONE)
-			idxs->length++;
-	}
 	else if (c == '\"' && *p != SINGLE)
-	{
 		*p = DOUBLE - *p;
-		if (*p == NONE)
-			idxs->length++;
-	}
+	if (*p == NONE)
+		idxs->length++;
 }
 
 char	**lex_alloc(t_list **dyn, char const *s)

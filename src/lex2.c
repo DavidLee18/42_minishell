@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 23:52:01 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/09 03:49:37 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/09 10:58:28 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,21 @@ ssize_t	lex_split_pos(const char *s, size_t i, t_split_piece *sp, t_quote *q)
 {
 	if ((s[i] == '\'' && *q != DOUBLE) || (s[i] == '\"' && *q != SINGLE))
 	{
+		if (s[i] == '\'')
+			*q = SINGLE - *q;
+		else
+			*q = DOUBLE - *q;
 		sp->start = sp[1].start;
-		sp->length = i - sp[1].start + ((s[i] == '\'' && *q == SINGLE)
-				|| (s[i] == '\"' && *q == DOUBLE));
+		sp->length = i - sp[1].start + (*q == NONE);
 		return (sp->start + sp->length);
 	}
-	else if (ft_strncmp(s + i, ">>", 2) == 0 || ft_strncmp(s + i, "<<", 2))
+	else
+		return (lex_split_pos2(s, i, sp));
+}
+
+ssize_t	lex_split_pos2(const char *s, size_t i, t_split_piece *sp)
+{
+	if (ft_strncmp(s + i, ">>", 2) == 0 || ft_strncmp(s + i, "<<", 2))
 	{
 		sp->start = sp[1].start;
 		sp->length = i - sp[1].start;
@@ -63,4 +72,11 @@ ssize_t	lex_split_pos(const char *s, size_t i, t_split_piece *sp, t_quote *q)
 		sp[1].length = 1;
 		return (i + 1);
 	}
+	else if (is_space(s[i]))
+	{
+		sp->start = sp[1].start;
+		sp->length = i - sp[1].start;
+		return (i + 1);
+	}
+	return (-1);
 }
