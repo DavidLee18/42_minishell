@@ -6,13 +6,13 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 23:52:01 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/09 17:47:15 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/09 20:33:05 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-_Bool	lex_split(t_list **dyn, char **split, char const *s)
+size_t	lex_split(t_list **dyn, char **split, char const *s)
 {
 	size_t			i;
 	t_split_piece	sp[3];
@@ -51,14 +51,14 @@ size_t	lex_split_pos(const char *s, size_t i, t_split_piece *sp, t_quote *q)
 		sp->length = i - sp[2].start + (*q == NONE);
 		return (sp->start + sp->length);
 	}
+	else if (*q != NONE)
+		return (0);
 	else
-		return (lex_split_pos2(s, i, sp, q));
+		return (lex_split_pos2(s, i, sp));
 }
 
-size_t	lex_split_pos2(const char *s, size_t i, t_split_piece *sp, t_quote *q)
+size_t	lex_split_pos2(const char *s, size_t i, t_split_piece *sp)
 {
-	if (*q != NONE)
-		return (0);
 	if (ft_strncmp(s + i, ">>", 2) == 0 || ft_strncmp(s + i, "<<", 2) == 0)
 	{
 		sp->start = sp[2].start;
@@ -84,12 +84,12 @@ size_t	lex_split_pos2(const char *s, size_t i, t_split_piece *sp, t_quote *q)
 	return (0);
 }
 
-_Bool	lex_split_final(t_list **dyn, char **split, char const *s,
+size_t	lex_split_final(t_list **dyn, char **split, char const *s,
 			t_split_piece *sp)
 {
 	sp->start = sp[2].start;
 	sp->length = ft_strlen(s) - sp[2].start;
 	if (!lex_split_range(dyn, split, s, sp))
 		return (0);
-	return (1);
+	return (sp[2].length);
 }

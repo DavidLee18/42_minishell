@@ -2,23 +2,16 @@ CC := cc
 CFLAGS := -Wall -Werror -Wextra -g
 NAME := minishell
 BFLAGS := -Lft_printf -lftprintf -lreadline
-# BONUS_NAME := pipex_bonus
 
 BUILD_DIR := build
 SRC_DIR := src
 
-SRCS := src/etc.c src/lex.c src/lex2.c src/main.c
-# BONUS_SRCS := src/main_bonus.c src/fd_cleaner.c \
-#			src/path.c src/files_pipes_bonus.c \
-#			src/getln_until_bonus.c
+SRCS := src/etc.c src/lex.c src/lex2.c src/main.c src/parse.c
 
 OBJS := $(patsubst src/%.c, build/%.o, $(SRCS))
-# BONUS_OBJS := $(patsubst src/%.c,build/%.o,$(BONUS_SRCS))
 
 
 all: $(NAME)
-
-# bonus: $(BONUS_NAME)
 
 $(NAME): $(OBJS)
 	make -C ft_printf
@@ -36,7 +29,6 @@ clean:
 
 fclean:	clean
 	rm -f $(NAME)
-#	rm -f $(BONUS_NAME)
 	make fclean -C ft_printf
 
 # $(BONUS_NAME): $(BONUS_OBJS)

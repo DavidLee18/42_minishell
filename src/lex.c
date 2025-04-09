@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 15:45:12 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/09 16:53:03 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/09 20:32:19 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ _Bool	lex_preproc(char const *s, t_split_next *idxs, t_quote *p, _Bool *syll)
 	if ((s[idxs->start] == '\'' && *p != DOUBLE)
 		|| (s[idxs->start] == '\"' && *p != SINGLE))
 		lex_pre_quote(s[idxs->start], idxs, p);
+	else if (*p != NONE)
+		return (idxs->start++, 1);
 	else if ((s[idxs->start] == '<' && s[idxs->start + 1] == '<')
 		|| (s[idxs->start] == '>' && s[idxs->start + 1] == '>'))
 	{
@@ -73,12 +75,15 @@ char	**lex_alloc(t_list **dyn, char const *s)
 char	**lex(t_list **dyn, const char *s)
 {
 	char	**split;
+	size_t	last;
 
 	split = lex_alloc(dyn, s);
 	if (!split)
 		return (NULL);
-	if (!lex_split(dyn, split, s))
+	last = lex_split(dyn, split, s);
+	if (last == 0)
 		return (NULL);
+	split[last] = NULL;
 	return (split);
 }
 
