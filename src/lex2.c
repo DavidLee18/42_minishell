@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 23:52:01 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/09 20:33:05 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/09 21:33:34 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,16 +16,14 @@ size_t	lex_split(t_list **dyn, char **split, char const *s)
 {
 	size_t			i;
 	t_split_piece	sp[3];
-	t_quote			q;
 	ssize_t			next;
 
 	i = 0;
-	q = NONE;
 	sp[1] = (t_split_piece){.start = -1, .length = -1};
 	sp[2] = (t_split_piece){.start = 0, .length = 0};
 	while (s[i])
 	{
-		next = lex_split_pos(s, i, sp, &q);
+		next = lex_split_pos(s, i, sp);
 		if (next > 0)
 		{
 			if (!lex_split_range(dyn, split, s, sp))
@@ -39,20 +37,28 @@ size_t	lex_split(t_list **dyn, char **split, char const *s)
 	return (lex_split_final(dyn, split, s, sp));
 }
 
-size_t	lex_split_pos(const char *s, size_t i, t_split_piece *sp, t_quote *q)
+size_t	lex_split_pos(const char *s, size_t i, t_split_piece *sp)
 {
-	if ((s[i] == '\'' && *q != DOUBLE) || (s[i] == '\"' && *q != SINGLE))
+	if (s[i] == '\'')
 	{
-		if (s[i] == '\'')
-			*q = SINGLE - *q;
-		else
-			*q = DOUBLE - *q;
 		sp->start = sp[2].start;
-		sp->length = i - sp[2].start + (*q == NONE);
-		return (sp->start + sp->length);
+		sp->length = i - sp[2].start;
+		sp[1].start = i;
+		while (s[++i] != '\'')
+			;
+		sp[1].length = i + 1 - sp[1].start;
+		return (i + 1);
 	}
-	else if (*q != NONE)
-		return (0);
+	else if (s[i] == '\"')
+	{
+		sp->start = sp[2].start;
+		sp->length = i - sp[2].start;
+		sp[1].start = i;
+		while (s[++i] != '\"')
+			;
+		sp[1].length = i + 1 - sp[1].start;
+		return (i + 1);
+	}
 	else
 		return (lex_split_pos2(s, i, sp));
 }
