@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/09 10:22:34 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/09 17:43:34 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,9 +76,12 @@ void		lex_pre_quote(char c, t_split_next *idxs, t_quote *p);
 _Bool		lex_split(t_list **dyn, char **split, char const *s);
 _Bool		lex_split_range(t_list **dyn, char **split, char const *s,
 				t_split_piece *sp);
-ssize_t		lex_split_pos(const char *s, size_t i, t_split_piece *sp,
+size_t		lex_split_pos(const char *s, size_t i, t_split_piece *sp,
 				t_quote *p);
-ssize_t		lex_split_pos2(const char *s, size_t i, t_split_piece *sp);
+size_t		lex_split_pos2(const char *s, size_t i, t_split_piece *sp,
+				t_quote *q);
+_Bool		lex_split_final(t_list **dyn, char **split, char const *s,
+				t_split_piece *sp);
 t_phrase	*parse(t_list **dyn, const char **tokens);
 _Bool		is_space(char c);
 
