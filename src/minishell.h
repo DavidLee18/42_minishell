@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/09 23:26:11 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/11 01:36:37 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,11 +47,17 @@ typedef enum e_cmd_type
 	REDIR_APND
 }	t_cmd_type;
 
+typedef struct s_here_info
+{
+	char	*delim;
+	_Bool	raw;
+}	t_here_info;
+
 typedef union u_debris
 {
-	int		fd;
-	char	*delim;
-	char	**argv;
+	int			fd;
+	t_here_info	hinfo;
+	char		**argv;
 }	t_debris;
 
 typedef struct s_phrase
@@ -80,7 +86,6 @@ size_t		lex_split_pos(const char *s, size_t i, t_split_piece *sp);
 size_t		lex_split_pos2(const char *s, size_t i, t_split_piece *sp);
 size_t		lex_split_final(t_list **dyn, char **split, char const *s,
 				t_split_piece *sp);
-_Bool		is_space(char c);
 
 t_phrase	*parse(t_list **dyn, const char **tokens);
 _Bool		parse_redir_in(t_list **dyn, t_phrase **p, const char **tokens,
@@ -93,5 +98,14 @@ _Bool		parse_redir_apnd(t_list **dyn, t_phrase **p, const char **tokens,
 				size_t *i);
 _Bool		parse_cmd_builtin(t_list **dyn, t_phrase **p, const char **tokens,
 				size_t *i);
+char		**parse_split_args(t_list **dyn, const char **tokens, size_t *i);
+
+_Bool		phrase_spawn(t_list **dyn, t_phrase **p);
+_Bool		is_space(char c);
+char		*unquote(const char *str); //TODO
+char		*unquote_raw(const char *str); //TODO
+char		*get_absol_path(const char *str); //TODO
+_Bool		is_cmd(const char *str);
+_Bool		is_builtin(const char *str);
 
 #endif
