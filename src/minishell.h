@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/09 20:57:06 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/09 23:26:11 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,5 +83,15 @@ size_t		lex_split_final(t_list **dyn, char **split, char const *s,
 _Bool		is_space(char c);
 
 t_phrase	*parse(t_list **dyn, const char **tokens);
+_Bool		parse_redir_in(t_list **dyn, t_phrase **p, const char **tokens,
+				size_t *i);
+_Bool		parse_redir_out(t_list **dyn, t_phrase **p, const char **tokens,
+				size_t *i);
+_Bool		parse_here_doc(t_list **dyn, t_phrase **p, const char **tokens,
+				size_t *i);
+_Bool		parse_redir_apnd(t_list **dyn, t_phrase **p, const char **tokens,
+				size_t *i);
+_Bool		parse_cmd_builtin(t_list **dyn, t_phrase **p, const char **tokens,
+				size_t *i);
 
 #endif
