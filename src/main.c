@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 13:01:59 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/11 22:25:56 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/12 05:39:11 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,15 +20,20 @@ int	main(void)
 	t_phrase	*ps;
 
 	dyn = NULL;
-	str = readline("minishell> ");
-	if (!str)
+	if (handle_signals() == -1)
 		return (1);
-	tokens = lex(&dyn, str);
-	if (!tokens)
-		return (gc_free_all(dyn), 1);
-	ps = parse(&dyn, (const char **)tokens);
-	if (!ps)
-		return (gc_free_all(dyn), 1);
-	print_phrase(ps);
+	while (1)
+	{
+		str = prompt(&dyn);
+		if (!str)
+			return (gc_free_all(dyn), 1);
+		tokens = lex(&dyn, str);
+		if (!tokens)
+			return (gc_free_all(dyn), 1);
+		ps = parse(&dyn, (const char **)tokens);
+		if (!ps)
+			return (gc_free_all(dyn), 1);
+		print_phrase(ps);
+	}
 	return (gc_free_all(dyn), 0);
 }
