@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/11 19:26:01 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/11 22:20:31 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,5 +112,6 @@ _Bool		is_builtin(const char *str);
 char		*replace_env(t_list **dyn, const char *str);
 void		print_phrase(t_phrase *p);
 void		print_args(const char **args);
+char		*ft_get_env(const char *name);
 
 #endif //MINISHELL_H

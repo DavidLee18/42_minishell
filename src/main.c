@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 13:01:59 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/11 19:35:38 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/11 22:25:56 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,10 @@ int	main(void)
 		return (1);
 	tokens = lex(&dyn, str);
 	if (!tokens)
-		return (1);
+		return (gc_free_all(dyn), 1);
 	ps = parse(&dyn, (const char **)tokens);
 	if (!ps)
-		return (1);
+		return (gc_free_all(dyn), 1);
 	print_phrase(ps);
-	return (0);
+	return (gc_free_all(dyn), 0);
 }

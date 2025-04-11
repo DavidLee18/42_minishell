@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 14:58:25 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/11 18:43:28 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/11 22:45:46 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,10 @@ char	*replace_env(t_list **dyn, const char *str)
 		temp = gc_strjoin(dyn, temp, gc_substr(dyn, s, 0, i - s));
 		if (temp == NULL)
 			return (NULL);
-		s = i;
-		while ((*i >= 'A' && *i <= 'Z') || *i == '_')
+		s = ++i;
+		while ((*i >= 'A' && *i <= 'Z') || *i == '_' || *i == '?')
 			i++;
-		var = getenv(gc_substr(dyn, s + 1, 0, i - s - 1));
+		var = ft_get_env(gc_substr(dyn, s, 0, i - s));
 		if (var == NULL)
 			return (NULL);
 		temp = gc_strjoin(dyn, temp, var);
@@ -49,7 +49,7 @@ char	**parse_split_args(t_list **dyn, const char **tokens, size_t *i,
 	j = *i;
 	while (tokens[*i] && is_cmd(tokens[*i]))
 		(*i)++;
-	res = (char **)gc_calloc(dyn, *i - j + 1, sizeof(char *));
+	res = (char **)gc_calloc(dyn, *i - j + 2, sizeof(char *));
 	if (res == NULL)
 		return (NULL);
 	res[0] = gc_strdup(dyn, cmd);
@@ -61,7 +61,13 @@ char	**parse_split_args(t_list **dyn, const char **tokens, size_t *i,
 		res[*i - j + 1] = unquote(dyn, tokens[*i]);
 		(*i)++;
 	}
-	if (ft_strcmp((char *)tokens[*i], "|") == 0)
+	res[*i - j + 1] = NULL;
+	if (tokens[*i] && ft_strcmp((char *)tokens[*i], "|") == 0)
 		(*i)++;
 	return (res);
+}
+
+char	*ft_get_env(const char *name)
+{
+	return (getenv(name));
 }
