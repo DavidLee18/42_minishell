@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 23:55:38 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/11 18:38:22 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/12 00:32:01 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,13 @@ _Bool	parse_cmd_builtin(t_list **dyn, t_phrase **p, const char **tokens,
 	if (is_builtin(cmd))
 		(*p)->type = BUILTIN;
 	else
+	{
 		(*p)->type = NORMAL;
+		if (ft_strchr(cmd, '/') == NULL)
+			cmd = get_exec_path(dyn, cmd);
+		if (!cmd)
+			return (0);
+	}
 	(*p)->deb.argv = parse_split_args(dyn, tokens, i, cmd);
 	if ((*p)->deb.argv == NULL)
 		return (0);
