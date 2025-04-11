@@ -6,11 +6,12 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 23:55:38 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/11 01:02:48 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/11 12:15:43 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include <stdlib.h>
 
 _Bool	parse_cmd_builtin(t_list **dyn, t_phrase **p, const char **tokens,
 			size_t *i)
@@ -19,7 +20,7 @@ _Bool	parse_cmd_builtin(t_list **dyn, t_phrase **p, const char **tokens,
 
 	if (!phrase_spawn(dyn, p) || tokens[*i] == NULL)
 		return (0);
-	cmd = unquote(tokens[(*i)++]);
+	cmd = unquote(dyn, tokens[(*i)++]);
 	if (!cmd)
 		return (0);
 	if (is_builtin(cmd))
@@ -30,4 +31,46 @@ _Bool	parse_cmd_builtin(t_list **dyn, t_phrase **p, const char **tokens,
 	if ((*p)->deb.argv == NULL)
 		return (0);
 	return (1);
+}
+
+char	*unquote_raw(t_list **dyn, const char *str)
+{
+	if (*str == '\'' || *str == '\"')
+		return (gc_substr(dyn, str, 1, ft_strlen(str) - 2));
+	return ((char *)str);
+}
+
+char	**get_path(t_list **dyn)
+{
+	char	**path;
+	char	*raw_path;
+
+	raw_path = getenv("PATH");
+	if (raw_path == NULL)
+		return (NULL);
+	path = gc_split(dyn, raw_path, ':');
+	if (path == NULL || path[0] == NULL)
+		return (NULL);
+	return (path);
+}
+
+char	*get_exec_path(t_list **dyn, const char *cmd)
+{
+	size_t	i;
+	char	*temp_path;
+	char	**path;
+
+	i = 0;
+	path = get_path(dyn);
+	while (path && path[i])
+	{
+		temp_path = gc_strjoin(dyn, path[i], "/");
+		if (temp_path == NULL)
+			return (NULL);
+		temp_path = gc_strjoin(dyn, temp_path, cmd);
+		if (temp_path != NULL && access(temp_path, X_OK) == 0)
+			return (temp_path);
+		i++;
+	}
+	return (NULL);
 }

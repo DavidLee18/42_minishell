@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 17:56:42 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/11 01:35:46 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/11 12:10:29 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,11 +47,11 @@ _Bool	parse_redir_in(t_list **dyn, t_phrase **p, const char **tokens,
 	if (!phrase_spawn(dyn, p) || tokens[++(*i)] == NULL)
 		return (0);
 	(*p)->type = REDIR_IN;
-	infile = unquote(tokens[(*i)++]);
+	infile = unquote(dyn, tokens[(*i)++]);
 	if (infile == NULL)
 		return (0);
 	if (ft_strchr(infile, '/') == NULL)
-		infile = get_absol_path(infile);
+		infile = get_exec_path(dyn, infile);
 	if (infile == NULL)
 		return (0);
 	if (access(infile, F_OK) == -1 || access(infile, R_OK) == -1)
@@ -70,11 +70,11 @@ _Bool	parse_redir_out(t_list **dyn, t_phrase **p, const char **tokens,
 	if (!phrase_spawn(dyn, p) || tokens[++(*i)] == NULL)
 		return (0);
 	(*p)->type = REDIR_OUT;
-	outfile = unquote(tokens[(*i)++]);
+	outfile = unquote(dyn, tokens[(*i)++]);
 	if (outfile == NULL)
 		return (0);
 	if (ft_strchr(outfile, '/') == NULL)
-		outfile = get_absol_path(outfile);
+		outfile = get_exec_path(dyn, outfile);
 	if (outfile == NULL)
 		return (0);
 	if (access(outfile, F_OK) == 0 && access(outfile, W_OK) == -1)
@@ -94,11 +94,11 @@ _Bool	parse_redir_apnd(t_list **dyn, t_phrase **p, const char **tokens,
 	if (!phrase_spawn(dyn, p) || tokens[++(*i)] == NULL)
 		return (0);
 	(*p)->type = REDIR_APND;
-	apndfile = unquote(tokens[(*i)++]);
+	apndfile = unquote(dyn, tokens[(*i)++]);
 	if (apndfile == NULL)
 		return (0);
 	if (ft_strchr(apndfile, '/') == NULL)
-		apndfile = get_absol_path(apndfile);
+		apndfile = get_exec_path(dyn, apndfile);
 	if (apndfile == NULL)
 		return (0);
 	if (access(apndfile, F_OK) == 0 && access(apndfile, W_OK) == -1)
@@ -122,7 +122,7 @@ _Bool	parse_here_doc(t_list **dyn, t_phrase **p, const char **tokens,
 		(*p)->deb.hinfo.raw = 1;
 	else
 		(*p)->deb.hinfo.raw = 0;
-	eof = unquote_raw(tokens[(*i)++]);
+	eof = unquote_raw(dyn, tokens[(*i)++]);
 	if (eof == NULL)
 		return (0);
 	(*p)->deb.hinfo.delim = eof;
