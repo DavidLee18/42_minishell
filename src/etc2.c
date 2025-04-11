@@ -1,34 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   etc2.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/09 13:01:59 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/11 19:35:38 by jaehylee         ###   ########.fr       */
+/*   Created: 2025/04/11 19:30:22 by jaehylee          #+#    #+#             */
+/*   Updated: 2025/04/11 19:35:31 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	main(void)
+void	print_args(const char **args)
 {
-	char		*str;
-	char		**tokens;
-	t_list		*dyn;
-	t_phrase	*ps;
+	size_t	i;
 
-	dyn = NULL;
-	str = readline("minishell> ");
-	if (!str)
-		return (1);
-	tokens = lex(&dyn, str);
-	if (!tokens)
-		return (1);
-	ps = parse(&dyn, (const char **)tokens);
-	if (!ps)
-		return (1);
-	print_phrase(ps);
-	return (0);
+	i = 0;
+	while (args[i])
+	{
+		ft_fprintf(STDOUT_FILENO, "%s ", args[i]);
+		i++;
+	}
+	ft_fprintf(STDOUT_FILENO, "\n");
 }

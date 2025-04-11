@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/11 18:38:12 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/11 19:26:01 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,5 +110,7 @@ char		*get_exec_path(t_list **dyn, const char *cmd);
 _Bool		is_cmd(const char *str);
 _Bool		is_builtin(const char *str);
 char		*replace_env(t_list **dyn, const char *str);
+void		print_phrase(t_phrase *p);
+void		print_args(const char **args);
 
 #endif //MINISHELL_H
