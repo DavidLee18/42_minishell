@@ -6,12 +6,11 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 23:55:38 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/11 12:15:43 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/11 18:38:22 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include <stdlib.h>
 
 _Bool	parse_cmd_builtin(t_list **dyn, t_phrase **p, const char **tokens,
 			size_t *i)
@@ -27,7 +26,7 @@ _Bool	parse_cmd_builtin(t_list **dyn, t_phrase **p, const char **tokens,
 		(*p)->type = BUILTIN;
 	else
 		(*p)->type = NORMAL;
-	(*p)->deb.argv = parse_split_args(dyn, tokens, i);
+	(*p)->deb.argv = parse_split_args(dyn, tokens, i, cmd);
 	if ((*p)->deb.argv == NULL)
 		return (0);
 	return (1);
@@ -73,4 +72,23 @@ char	*get_exec_path(t_list **dyn, const char *cmd)
 		i++;
 	}
 	return (NULL);
+}
+
+char	*unquote(t_list **dyn, const char *str)
+{
+	char	*raw;
+	char	*res;
+
+	if (*str == '\'')
+		return (gc_substr(dyn, str, 1, ft_strlen(str) - 2));
+	if (*str == '\"')
+		raw = gc_substr(dyn, str, 1, ft_strlen(str) - 2);
+	else
+		raw = (char *)str;
+	if (ft_strchr(raw, '$') == NULL)
+		return (raw);
+	res = replace_env(dyn, raw);
+	if (!res)
+		return (gc_strdup(dyn, ""));
+	return (res);
 }

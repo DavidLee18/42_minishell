@@ -7,7 +7,7 @@ BUILD_DIR := build
 SRC_DIR := src
 
 SRCS := src/etc.c src/lex.c src/lex2.c src/main.c src/parse.c \
-	src/parse2.c
+	src/parse2.c src/parse3.c
 
 OBJS := $(patsubst src/%.c, build/%.o, $(SRCS))
 

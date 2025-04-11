@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 13:01:59 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/09 13:28:28 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/11 18:50:25 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,20 @@
 
 int	main(void)
 {
-	char	*str;
-	char	**ss;
-	t_list	*dyn;
-	size_t	i;
+	char		*str;
+	char		**tokens;
+	t_list		*dyn;
+	t_phrase	*ps;
 
 	dyn = NULL;
-	str = readline("minishell>");
+	str = readline("minishell> ");
 	if (!str)
 		return (1);
-	ss = lex(&dyn, str);
-	if (!ss)
+	tokens = lex(&dyn, str);
+	if (!tokens)
 		return (1);
-	i = 0;
-	while (ss[i] != NULL)
-	{
-		ft_fprintf(STDOUT_FILENO, "%s\n", ss[i]);
-		i++;
-	}
+	ps = parse(&dyn, (const char **)tokens);
+	if (!ps)
+		return (1);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/11 12:19:49 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/11 18:38:12 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,15 +98,17 @@ _Bool		parse_redir_apnd(t_list **dyn, t_phrase **p, const char **tokens,
 				size_t *i);
 _Bool		parse_cmd_builtin(t_list **dyn, t_phrase **p, const char **tokens,
 				size_t *i);
-char		**parse_split_args(t_list **dyn, const char **tokens, size_t *i);
+char		**parse_split_args(t_list **dyn, const char **tokens, size_t *i,
+				const char *cmd);
 
 _Bool		phrase_spawn(t_list **dyn, t_phrase **p);
 _Bool		is_space(char c);
-char		*unquote(t_list **dyn, const char *str); //TODO
+char		*unquote(t_list **dyn, const char *str);
 char		*unquote_raw(t_list **dyn, const char *str);
 char		**get_path(t_list **dyn);
 char		*get_exec_path(t_list **dyn, const char *cmd);
 _Bool		is_cmd(const char *str);
 _Bool		is_builtin(const char *str);
+char		*replace_env(t_list **dyn, const char *str);
 
 #endif //MINISHELL_H
