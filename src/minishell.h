@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/12 07:25:58 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/12 17:08:15 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ _Bool		is_builtin(const char *str);
 char		*replace_env(t_list **dyn, const char *str);
 void		print_phrase(t_phrase *p);
 void		print_args(const char **args);
-char		*ft_get_env(const char *name);
+char		*ft_get_env(t_list **dyn, const char *name);
 
 char		*prompt(t_list **dyn);
 _Bool		handle_signals(void);

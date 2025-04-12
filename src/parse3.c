@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 14:58:25 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/11 22:45:46 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/12 17:09:38 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ char	*replace_env(t_list **dyn, const char *str)
 		s = ++i;
 		while ((*i >= 'A' && *i <= 'Z') || *i == '_' || *i == '?')
 			i++;
-		var = ft_get_env(gc_substr(dyn, s, 0, i - s));
+		var = ft_get_env(dyn, gc_substr(dyn, s, 0, i - s));
 		if (var == NULL)
 			return (NULL);
 		temp = gc_strjoin(dyn, temp, var);
@@ -67,7 +67,9 @@ char	**parse_split_args(t_list **dyn, const char **tokens, size_t *i,
 	return (res);
 }
 
-char	*ft_get_env(const char *name)
+char	*ft_get_env(t_list **dyn, const char *name)
 {
+	if (ft_strcmp((char *)name, "?") == 0)
+		return (gc_itoa(dyn, g_signal));
 	return (getenv(name));
 }
