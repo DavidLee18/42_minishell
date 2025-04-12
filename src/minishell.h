@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/12 05:13:25 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/12 07:25:58 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@
 # include <term.h>
 # include <termios.h>
 # include "../ft_printf/src/ft_printf.h"
+
+extern int	g_signal;
 
 typedef enum e_quote
 {
@@ -115,6 +117,7 @@ void		print_args(const char **args);
 char		*ft_get_env(const char *name);
 
 char		*prompt(t_list **dyn);
-int			handle_signals(void);
+_Bool		handle_signals(void);
+void		set_signal(int s);
 
 #endif //MINISHELL_H
