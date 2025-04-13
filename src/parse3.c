@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 14:58:25 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/13 20:33:45 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/14 03:47:50 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ char	**parse_split_args(t_list **dyn, const char **tokens, ssize_t *i,
 char	*ft_get_env(t_list **dyn, const char *name)
 {
 	if (ft_strcmp((char *)name, "?") == 0)
-		return (gc_itoa(dyn, g_signal));
+		return (gc_itoa(dyn, g_exit_status));
 	return (getenv(name));
 }
 
