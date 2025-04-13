@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/13 10:27:51 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/13 17:53:39 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,18 +90,14 @@ size_t		lex_split_final(t_list **dyn, char **split, char const *s,
 				t_split_piece *sp);
 
 t_phrase	*parse(t_list **dyn, const char **tokens);
-_Bool		parse_redir_in(t_list **dyn, t_phrase **p, const char **tokens,
-				size_t *i);
-_Bool		parse_redir_out(t_list **dyn, t_phrase **p, const char **tokens,
-				size_t *i);
-_Bool		parse_here_doc(t_list **dyn, t_phrase **p, const char **tokens,
-				size_t *i);
-_Bool		parse_redir_apnd(t_list **dyn, t_phrase **p, const char **tokens,
-				size_t *i);
-_Bool		parse_cmd_builtin(t_list **dyn, t_phrase **p, const char **tokens,
-				size_t *i);
-char		**parse_split_args(t_list **dyn, const char **tokens, size_t *i,
+ssize_t		parse_redir_in(t_list **dyn, t_phrase **p, const char **tokens);
+ssize_t		parse_redir_out(t_list **dyn, t_phrase **p, const char **tokens);
+ssize_t		parse_here_doc(t_list **dyn, t_phrase **p, const char **tokens);
+ssize_t		parse_redir_apnd(t_list **dyn, t_phrase **p, const char **tokens);
+ssize_t		parse_cmd_builtin(t_list **dyn, t_phrase **p, const char **tokens);
+char		**parse_split_args(t_list **dyn, const char **tokens, ssize_t *i,
 				const char *cmd);
+ssize_t		parse_each(t_list **dyn, t_phrase **p, const char **tokens);
 
 _Bool		phrase_spawn(t_list **dyn, t_phrase **p);
 _Bool		is_space(char c);

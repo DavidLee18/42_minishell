@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 14:58:25 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/12 17:09:38 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/13 17:59:07 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,30 +40,32 @@ char	*replace_env(t_list **dyn, const char *str)
 	return (gc_strjoin(dyn, temp, s));
 }
 
-char	**parse_split_args(t_list **dyn, const char **tokens, size_t *i,
+char	**parse_split_args(t_list **dyn, const char **tokens, ssize_t *i,
 			const char *cmd)
 {
-	size_t	j;
+	size_t	k;
 	char	**res;
 
-	j = *i;
-	while (tokens[*i] && is_cmd(tokens[*i]))
-		(*i)++;
-	res = (char **)gc_calloc(dyn, *i - j + 2, sizeof(char *));
+	k = *i + 1;
+	(*i)++;
+	while (tokens[k] && is_cmd(tokens[k]))
+		k++;
+	res = (char **)gc_calloc(dyn, k - *i + 2, sizeof(char *));
 	if (res == NULL)
 		return (NULL);
 	res[0] = gc_strdup(dyn, cmd);
-	if (j == *i)
+	if ((size_t)(*i) == k)
 		return (res);
-	*i = j;
-	while (tokens[*i] && is_cmd(tokens[*i]))
+	k = *i;
+	while (tokens[k] && is_cmd(tokens[k]))
 	{
-		res[*i - j + 1] = unquote(dyn, tokens[*i]);
-		(*i)++;
+		res[k - *i + 1] = unquote(dyn, tokens[k]);
+		k++;
 	}
-	res[*i - j + 1] = NULL;
-	if (tokens[*i] && ft_strcmp((char *)tokens[*i], "|") == 0)
-		(*i)++;
+	res[k - *i + 1] = NULL;
+	if (tokens[k] && ft_strcmp((char *)tokens[k], "|") == 0)
+		k++;
+	*i = k;
 	return (res);
 }
 
@@ -72,4 +74,19 @@ char	*ft_get_env(t_list **dyn, const char *name)
 	if (ft_strcmp((char *)name, "?") == 0)
 		return (gc_itoa(dyn, g_signal));
 	return (getenv(name));
+}
+
+ssize_t	parse_each(t_list **dyn, t_phrase **p, const char **tokens)
+{
+	if (ft_strcmp((char *)*tokens, "|") == 0)
+		return (1);
+	if (ft_strcmp((char *)*tokens, "<") == 0)
+		return (parse_redir_in(dyn, p, tokens));
+	if (ft_strcmp((char *)*tokens, ">") == 0)
+		return (parse_redir_out(dyn, p, tokens));
+	if (ft_strcmp((char *)*tokens, ">>") == 0)
+		return (parse_redir_apnd(dyn, p, tokens));
+	if (ft_strcmp((char *)*tokens, "<<") == 0)
+		return (parse_here_doc(dyn, p, tokens));
+	return (parse_cmd_builtin(dyn, p, tokens));
 }

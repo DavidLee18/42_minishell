@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 17:56:42 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/11 20:22:07 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/13 17:53:09 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,106 +15,92 @@
 t_phrase	*parse(t_list **dyn, const char **tokens)
 {
 	size_t		i;
+	ssize_t		j;
 	t_phrase	*p;
 
 	i = 0;
+	j = 0;
 	p = NULL;
 	while (tokens[i] != NULL)
 	{
-		if (tokens[i] != NULL && ft_strcmp((char *)tokens[i], "<") == 0
-			&& !parse_redir_in(dyn, &p, tokens, &i))
+		j = parse_each(dyn, &p, tokens + i);
+		if (j < 0)
 			return (NULL);
-		if (tokens[i] != NULL && ft_strcmp((char *)tokens[i], ">") == 0
-			&& !parse_redir_out(dyn, &p, tokens, &i))
-			return (NULL);
-		if (tokens[i] != NULL && ft_strcmp((char *)tokens[i], "<<") == 0
-			&& !parse_here_doc(dyn, &p, tokens, &i))
-			return (NULL);
-		if (tokens[i] != NULL && ft_strcmp((char *)tokens[i], ">>") == 0
-			&& !parse_redir_apnd(dyn, &p, tokens, &i))
-			return (NULL);
-		if (tokens[i] != NULL && ft_strcmp((char *)tokens[i], "|") == 0)
-			i++;
-		else if (tokens[i] != NULL && !parse_cmd_builtin(dyn, &p, tokens, &i))
-			return (NULL);
+		i += j;
 	}
 	return (p);
 }
 
-_Bool	parse_redir_in(t_list **dyn, t_phrase **p, const char **tokens,
-			size_t *i)
+ssize_t	parse_redir_in(t_list **dyn, t_phrase **p, const char **tokens)
 {
 	char	*infile;
 
-	if (!phrase_spawn(dyn, p) || tokens[++(*i)] == NULL)
-		return (0);
+	if (!phrase_spawn(dyn, p) || tokens[1] == NULL)
+		return (-1);
 	(*p)->type = REDIR_IN;
-	infile = unquote(dyn, tokens[(*i)++]);
+	infile = unquote(dyn, tokens[1]);
 	if (infile == NULL)
-		return (0);
+		return (-1);
 	if (access(infile, F_OK) == -1 || access(infile, R_OK) == -1)
-		return (0);
+		return (-1);
 	(*p)->deb.fd = open(infile, O_RDONLY);
 	if ((*p)->deb.fd == -1)
-		return (0);
-	return (1);
+		return (-1);
+	return (2);
 }
 
-_Bool	parse_redir_out(t_list **dyn, t_phrase **p, const char **tokens,
-			size_t *i)
+ssize_t	parse_redir_out(t_list **dyn, t_phrase **p, const char **tokens)
 {
 	char	*outfile;
 
-	if (!phrase_spawn(dyn, p) || tokens[++(*i)] == NULL)
-		return (0);
+	if (!phrase_spawn(dyn, p) || tokens[1] == NULL)
+		return (-1);
 	(*p)->type = REDIR_OUT;
-	outfile = unquote(dyn, tokens[(*i)++]);
+	outfile = unquote(dyn, tokens[1]);
 	if (outfile == NULL)
-		return (0);
+		return (-1);
 	if (access(outfile, F_OK) == 0 && access(outfile, W_OK) == -1)
-		return (0);
+		return (-1);
 	(*p)->deb.fd = open(outfile, O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR
 			| S_IRGRP | S_IROTH);
 	if ((*p)->deb.fd == -1)
-		return (0);
-	return (1);
+		return (-1);
+	return (2);
 }
 
-_Bool	parse_redir_apnd(t_list **dyn, t_phrase **p, const char **tokens,
-			size_t *i)
+ssize_t	parse_redir_apnd(t_list **dyn, t_phrase **p, const char **tokens)
 {
 	char	*apndfile;
 
-	if (!phrase_spawn(dyn, p) || tokens[++(*i)] == NULL)
-		return (0);
+	if (!phrase_spawn(dyn, p) || tokens[1] == NULL)
+		return (-1);
 	(*p)->type = REDIR_APND;
-	apndfile = unquote(dyn, tokens[(*i)++]);
+	apndfile = unquote(dyn, tokens[1]);
 	if (apndfile == NULL)
-		return (0);
+		return (-1);
 	if (access(apndfile, F_OK) == 0 && access(apndfile, W_OK) == -1)
-		return (0);
+		return (-1);
 	(*p)->deb.fd = open(apndfile, O_WRONLY | O_APPEND | O_CREAT, S_IRUSR
 			| S_IWUSR | S_IRGRP | S_IROTH);
 	if ((*p)->deb.fd == -1)
-		return (0);
-	return (1);
+		return (-1);
+	return (2);
 }
 
-_Bool	parse_here_doc(t_list **dyn, t_phrase **p, const char **tokens,
-			size_t *i)
+ssize_t	parse_here_doc(t_list **dyn, t_phrase **p, const char **tokens)
 {
 	char	*eof;
 
-	if (!phrase_spawn(dyn, p) || tokens[++(*i)] == NULL)
-		return (0);
+	if (!phrase_spawn(dyn, p) || tokens[1] == NULL)
+		return (-1);
 	(*p)->type = HERE_DOC;
-	if (tokens[*i][0] == '\"' || tokens[*i][0] == '\'')
+	if (tokens[1][0] == '\"' || tokens[1][0] == '\'')
 		(*p)->deb.hinfo.raw = 1;
 	else
 		(*p)->deb.hinfo.raw = 0;
-	eof = unquote_raw(dyn, tokens[(*i)++]);
+	eof = unquote_raw(dyn, tokens[1]);
 	if (eof == NULL)
-		return (0);
+		return (-1);
 	(*p)->deb.hinfo.delim = eof;
-	return (1);
+	return (2);
 }
