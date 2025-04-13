@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 14:58:25 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/13 19:30:20 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/13 20:33:45 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ ssize_t	parse_pipe(t_list **dyn, t_phrase **p)
 		return (-1);
 	(*p)->type = PIPE;
 	if (pipe(rw) == -1)
-		return (-1);
+		return (perror(gc_strjoin(dyn, MINISHELL, ": pipe")), -1);
 	(*p)->deb.pipe_ends = (t_pipe_rw){.read_end = rw[0], .write_end = rw[1]};
 	return (1);
 }

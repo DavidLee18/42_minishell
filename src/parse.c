@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 17:56:42 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/13 17:53:09 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/13 20:30:33 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,10 +42,12 @@ ssize_t	parse_redir_in(t_list **dyn, t_phrase **p, const char **tokens)
 	if (infile == NULL)
 		return (-1);
 	if (access(infile, F_OK) == -1 || access(infile, R_OK) == -1)
-		return (-1);
+		return (perror(gc_strjoin(dyn, gc_strjoin(dyn, MINISHELL, ": "),
+					infile)), -1);
 	(*p)->deb.fd = open(infile, O_RDONLY);
 	if ((*p)->deb.fd == -1)
-		return (-1);
+		return (perror(gc_strjoin(dyn, gc_strjoin(dyn, MINISHELL, ": "),
+					infile)), -1);
 	return (2);
 }
 
@@ -60,11 +62,13 @@ ssize_t	parse_redir_out(t_list **dyn, t_phrase **p, const char **tokens)
 	if (outfile == NULL)
 		return (-1);
 	if (access(outfile, F_OK) == 0 && access(outfile, W_OK) == -1)
-		return (-1);
+		return (perror(gc_strjoin(dyn, gc_strjoin(dyn, MINISHELL, ": "),
+					outfile)), -1);
 	(*p)->deb.fd = open(outfile, O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR
 			| S_IRGRP | S_IROTH);
 	if ((*p)->deb.fd == -1)
-		return (-1);
+		return (perror(gc_strjoin(dyn, gc_strjoin(dyn, MINISHELL, ": "),
+					outfile)), -1);
 	return (2);
 }
 
@@ -79,11 +83,13 @@ ssize_t	parse_redir_apnd(t_list **dyn, t_phrase **p, const char **tokens)
 	if (apndfile == NULL)
 		return (-1);
 	if (access(apndfile, F_OK) == 0 && access(apndfile, W_OK) == -1)
-		return (-1);
+		return (perror(gc_strjoin(dyn, gc_strjoin(dyn, MINISHELL, ": "),
+					apndfile)), -1);
 	(*p)->deb.fd = open(apndfile, O_WRONLY | O_APPEND | O_CREAT, S_IRUSR
 			| S_IWUSR | S_IRGRP | S_IROTH);
 	if ((*p)->deb.fd == -1)
-		return (-1);
+		return (perror(gc_strjoin(dyn, gc_strjoin(dyn, MINISHELL, ": "),
+					apndfile)), -1);
 	return (2);
 }
 

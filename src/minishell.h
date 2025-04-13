@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/13 19:44:04 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/13 20:26:03 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,9 @@
 # include <term.h>
 # include <termios.h>
 # include "../ft_printf/src/ft_printf.h"
+# ifndef MINISHELL
+#  define MINISHELL "minishell"
+# endif
 
 extern unsigned char	g_signal;
 
