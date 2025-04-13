@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/13 17:53:39 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/13 19:28:19 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,8 @@ typedef enum e_cmd_type
 	REDIR_IN,
 	REDIR_OUT,
 	HERE_DOC,
-	REDIR_APND
+	REDIR_APND,
+	PIPE
 }	t_cmd_type;
 
 typedef struct s_here_info
@@ -55,11 +56,18 @@ typedef struct s_here_info
 	_Bool	raw;
 }	t_here_info;
 
+typedef struct s_pipe_rw
+{
+	int	write_end;
+	int	read_end;
+}	t_pipe_rw;
+
 typedef union u_debris
 {
 	int			fd;
 	t_here_info	hinfo;
 	char		**argv;
+	t_pipe_rw	pipe_ends;
 }	t_debris;
 
 typedef struct s_phrase
@@ -98,6 +106,7 @@ ssize_t		parse_cmd_builtin(t_list **dyn, t_phrase **p, const char **tokens);
 char		**parse_split_args(t_list **dyn, const char **tokens, ssize_t *i,
 				const char *cmd);
 ssize_t		parse_each(t_list **dyn, t_phrase **p, const char **tokens);
+ssize_t		parse_pipe(t_list **dyn, t_phrase **p);
 
 _Bool		phrase_spawn(t_list **dyn, t_phrase **p);
 _Bool		is_space(char c);

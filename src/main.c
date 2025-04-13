@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 13:01:59 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/13 11:33:37 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/13 19:36:44 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,5 +31,7 @@ int	main(void)
 			ft_fprintf(STDERR_FILENO, "failed to parse: `%s`\n", str);
 		else
 			print_phrase(ps);
+		free(str);
+		str = NULL;
 	}
 }

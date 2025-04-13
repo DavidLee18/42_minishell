@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 14:58:25 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/13 17:59:07 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/13 19:30:20 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,6 @@ char	**parse_split_args(t_list **dyn, const char **tokens, ssize_t *i,
 		k++;
 	}
 	res[k - *i + 1] = NULL;
-	if (tokens[k] && ft_strcmp((char *)tokens[k], "|") == 0)
-		k++;
 	*i = k;
 	return (res);
 }
@@ -79,7 +77,7 @@ char	*ft_get_env(t_list **dyn, const char *name)
 ssize_t	parse_each(t_list **dyn, t_phrase **p, const char **tokens)
 {
 	if (ft_strcmp((char *)*tokens, "|") == 0)
-		return (1);
+		return (parse_pipe(dyn, p));
 	if (ft_strcmp((char *)*tokens, "<") == 0)
 		return (parse_redir_in(dyn, p, tokens));
 	if (ft_strcmp((char *)*tokens, ">") == 0)
@@ -89,4 +87,17 @@ ssize_t	parse_each(t_list **dyn, t_phrase **p, const char **tokens)
 	if (ft_strcmp((char *)*tokens, "<<") == 0)
 		return (parse_here_doc(dyn, p, tokens));
 	return (parse_cmd_builtin(dyn, p, tokens));
+}
+
+ssize_t	parse_pipe(t_list **dyn, t_phrase **p)
+{
+	int	rw[2];
+
+	if (!phrase_spawn(dyn, p))
+		return (-1);
+	(*p)->type = PIPE;
+	if (pipe(rw) == -1)
+		return (-1);
+	(*p)->deb.pipe_ends = (t_pipe_rw){.read_end = rw[0], .write_end = rw[1]};
+	return (1);
 }
