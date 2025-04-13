@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 20:03:34 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/13 19:27:29 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/13 19:45:02 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,8 +75,7 @@ void	print_phrase(t_phrase *p)
 		ft_fprintf(STDOUT_FILENO, "\n");
 	}
 	else if (p->type == PIPE)
-		ft_fprintf(STDOUT_FILENO, "PIPE: read_end: %d, write_end: %d\n",
-			p->deb.pipe_ends.read_end, p->deb.pipe_ends.write_end);
+		print_pipe(p);
 	else if (p->type == BUILTIN)
 		ft_fprintf(STDOUT_FILENO, "BUILTIN: ");
 	else
