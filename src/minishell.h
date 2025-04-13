@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/12 21:55:00 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/13 10:27:51 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@
 # include <termios.h>
 # include "../ft_printf/src/ft_printf.h"
 
-extern int	g_signal;
+extern unsigned char	g_signal;
 
 typedef enum e_quote
 {

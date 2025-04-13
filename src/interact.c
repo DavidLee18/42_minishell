@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 04:48:27 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/12 21:56:45 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/13 11:36:25 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,15 @@ char	*prompt(t_list **dyn)
 	prom = gc_strjoin(dyn, gc_strjoin(dyn, "minishell:", pwd), "> ");
 	free(pwd);
 	if (!prom)
-		return (NULL);
-	return (readline(prom));
+		return (ft_fprintf(STDOUT_FILENO, "alloc Error"), gc_free_all(*dyn),
+			exit(1), NULL);
+	prom = readline(prom);
+	if (!prom)
+		return (ft_fprintf(STDOUT_FILENO, "exit\n"), gc_free_all(*dyn), exit(0),
+			NULL);
+	gc_add_to_list(dyn, prom);
+	add_history(prom);
+	return (prom);
 }
 
 _Bool	handle_signals(void)
