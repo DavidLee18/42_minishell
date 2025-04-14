@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 02:50:37 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/14 04:26:41 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/14 11:14:12 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,9 @@ int	here_doc(t_list **dyn, t_here_info *i, size_t n)
 
 size_t	count_here_docs(t_phrase *p)
 {
-	if (!p && p->type == HERE_DOC)
+	if (p && p->type == HERE_DOC)
 		return (1 + count_here_docs(p->succ));
-	if (!p)
+	if (!p || p->type == PIPE)
 		return (0);
 	return (count_here_docs(p->succ));
 }

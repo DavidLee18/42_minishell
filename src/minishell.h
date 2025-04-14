@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/14 04:12:16 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/14 11:05:58 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,6 +143,6 @@ void		close_wait(t_phrase *p);
 char		*getln_until(t_list **dyn, char *limit, size_t n);
 void		here_doc_prompt(size_t n);
 
-void		exec_builtin(char *name, char **argv);
+int			exec_builtin(char *name, char **argv);
 
 #endif //MINISHELL_H

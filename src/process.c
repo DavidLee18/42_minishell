@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 22:23:13 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/14 04:17:40 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/14 11:13:35 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ void	process(t_list **dyn, t_phrase *p, char **envp)
 void	exec_cmd(t_list **dyn, t_phrase *p, char **arg_env[2], t_pipe_rw *io)
 {
 	pid_t	id;
+	int		exit_code;
 
 	id = fork();
 	if (id == -1)
@@ -56,9 +57,9 @@ void	exec_cmd(t_list **dyn, t_phrase *p, char **arg_env[2], t_pipe_rw *io)
 			(gc_free_all(*dyn), exit(EXIT_FAILURE));
 		if (is_builtin(arg_env[0][0]))
 		{
-			exec_builtin(arg_env[0][0], arg_env[0]);
+			exit_code = exec_builtin(arg_env[0][0], arg_env[0]);
 			gc_free_all(*dyn);
-			exit(EXIT_SUCCESS);
+			exit(exit_code);
 		}
 		execve(arg_env[0][0], arg_env[0], arg_env[1]);
 		gc_free_all(*dyn);
@@ -78,11 +79,22 @@ void	process_exec_p(t_list **dyn, t_phrase *p, char **arg_env[2],
 
 char	**get_cmd(t_phrase *p)
 {
-	while (p && p->type != NORMAL && p->type != BUILTIN)
-		p = p->succ;
-	if (!p || (p->type != NORMAL && p->type != BUILTIN))
-		return (NULL);
-	return (p->deb.argv);
+	char	**argv;
+
+	argv = NULL;
+	while (1)
+	{
+		while (p && p->type != NORMAL && p->type != BUILTIN)
+			p = p->succ;
+		if (!p)
+			return (argv);
+		else if (p->type != NORMAL && p->type != BUILTIN)
+			p = p->succ;
+		else if (argv == NULL)
+			argv = p->deb.argv;
+		else
+			return (NULL);
+	}
 }
 
 t_pipe_rw	get_io(t_phrase **p)
