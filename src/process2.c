@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 02:50:37 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/15 00:38:17 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/15 02:50:38 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,11 +72,7 @@ void	close_wait(t_phrase *p)
 	if (WIFEXITED(stat))
 		g_exit_status = WEXITSTATUS(stat);
 	else if (WIFSIGNALED(stat))
-	{
 		g_exit_status = WTERMSIG(stat) + 128;
-		if (WTERMSIG(stat) == SIGQUIT)
-			ft_fprintf(STDERR_FILENO, "Quit (core dumped)\n");
-	}
 }
 
 char	*getln_until(t_list **dyn, char *limit, size_t n)
