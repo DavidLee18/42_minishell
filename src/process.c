@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 22:23:13 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/14 12:19:04 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/14 21:10:59 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,10 @@ char	**get_cmd(t_phrase *p)
 		else if (p->type != NORMAL && p->type != BUILTIN)
 			p = p->succ;
 		else if (argv == NULL)
+		{
 			argv = p->deb.argv;
+			p = p->succ;
+		}
 		else
 			return (NULL);
 	}

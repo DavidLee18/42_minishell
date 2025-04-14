@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 02:50:37 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/14 17:10:14 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/14 21:58:33 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,8 @@ size_t	count_here_docs(t_phrase *p)
 
 void	close_pipes(t_phrase *p, t_pipe_rw *except, _Bool all)
 {
+	if (!p)
+		return ;
 	if (p->pred)
 		close_pipes(p->pred, except, all);
 	else if (p->type == REDIR_IN || p->type == REDIR_OUT
@@ -61,8 +63,12 @@ void	close_pipes(t_phrase *p, t_pipe_rw *except, _Bool all)
 		if (!except || all)
 			(close(p->deb.pipe_ends.read_end),
 				close(p->deb.pipe_ends.write_end));
-		else if (p->deb.fd > 2 && p->deb.fd != except->read_end
-			&& p->deb.fd != except->write_end)
+		else if ((p->deb.pipe_ends.read_end > 2
+				&& p->deb.pipe_ends.read_end != except->read_end
+				&& p->deb.pipe_ends.read_end != except->write_end)
+			&& (p->deb.pipe_ends.write_end > 2 && p->deb.pipe_ends.write_end
+				!= except->read_end && p->deb.pipe_ends.write_end
+				!= except->write_end))
 			(close(p->deb.pipe_ends.read_end),
 				close(p->deb.pipe_ends.write_end));
 	}
