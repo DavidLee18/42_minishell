@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/14 12:14:00 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/15 00:14:07 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,6 +142,7 @@ t_pipe_rw	get_io(t_phrase **p);
 void		close_wait(t_phrase *p);
 char		*getln_until(t_list **dyn, char *limit, size_t n);
 void		here_doc_prompt(size_t n);
+void		close_pipes_pipes(t_phrase *p, t_pipe_rw *io, _Bool all);
 
 int			exec_builtin(char *name, char **argv);
 int			exec_echo(char **argv);

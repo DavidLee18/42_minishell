@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 22:23:13 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/14 21:10:59 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/15 00:37:00 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,12 +49,13 @@ void	exec_cmd(t_list **dyn, t_phrase *p, char **arg_env[2], t_pipe_rw *io)
 		perror(gc_strjoin(dyn, MINISHELL, ": fork"));
 	else if (id == 0)
 	{
-		close_pipes(p, io, 0);
 		if (io->read_end == -1 || (io->read_end != STDIN_FILENO
 				&& dup2(io->read_end, STDIN_FILENO) == -1)
 			|| io->write_end == -1 || (io->write_end != STDOUT_FILENO
 				&& dup2(io->write_end, STDOUT_FILENO) == -1))
-			(gc_free_all(*dyn), exit(EXIT_FAILURE));
+			(gc_free_all(*dyn), close_pipes(phrase_head(p), io, 1),
+				exit(EXIT_FAILURE));
+		close_pipes(phrase_head(p), io, 1);
 		if (is_builtin(arg_env[0][0]))
 		{
 			exit_code = exec_builtin(arg_env[0][0], arg_env[0]);
