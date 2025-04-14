@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 22:23:13 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/14 11:13:35 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/14 12:19:04 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,9 +84,9 @@ char	**get_cmd(t_phrase *p)
 	argv = NULL;
 	while (1)
 	{
-		while (p && p->type != NORMAL && p->type != BUILTIN)
+		while (p && p->type != NORMAL && p->type != BUILTIN && p->type != PIPE)
 			p = p->succ;
-		if (!p)
+		if (!p || p->type == PIPE)
 			return (argv);
 		else if (p->type != NORMAL && p->type != BUILTIN)
 			p = p->succ;

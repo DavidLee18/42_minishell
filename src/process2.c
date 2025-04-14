@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 02:50:37 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/14 11:14:12 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/14 17:10:14 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	here_doc(t_list **dyn, t_here_info *i, size_t n)
 	temp = getln_until(dyn, i->delim, n);
 	if (temp == NULL)
 		return (close(p[0]), close(p[1]), -1);
-	if (ft_strchr(temp, '$') == NULL)
+	if (ft_strchr(temp, '$') == NULL || i->raw)
 		ft_fprintf(p[1], temp);
 	else
 	{
