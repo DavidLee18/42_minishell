@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 22:23:13 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/15 00:37:00 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/15 01:18:22 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,11 @@ void	process(t_list **dyn, t_phrase *p, char **envp)
 	io = get_io(&p);
 	argv = get_cmd(p);
 	if (argv == NULL)
-		(ft_fprintf(STDERR_FILENO, "%s: syntax error: invalid number of"
-				" commands\n", MINISHELL), gc_free_all(*dyn),
-			exit(EXIT_FAILURE));
+	{
+		ft_fprintf(STDERR_FILENO, "%s: syntax error: invalid number of"
+			" commands\n", MINISHELL);
+		return ;
+	}
 	while (p && p->type != PIPE)
 	{
 		if (p->type == REDIR_IN)

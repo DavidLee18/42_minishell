@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 19:30:22 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/14 04:14:27 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/15 01:11:12 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	print_pipe(t_phrase *p)
 
 t_phrase	*phrase_head(t_phrase *p)
 {
-	if (!p->pred)
+	if (!p || !p->pred)
 		return (p);
 	return (phrase_head(p->pred));
 }
