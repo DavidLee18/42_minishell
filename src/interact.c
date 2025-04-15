@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 04:48:27 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/14 03:47:50 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/15 04:09:22 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ char	*prompt(t_list **dyn)
 	prom = readline(prom);
 	if (!prom)
 		return (ft_fprintf(STDOUT_FILENO, "exit\n"), gc_free_all(*dyn),
-			exit(EXIT_SUCCESS), NULL);
+			free(prom), exit(EXIT_SUCCESS), NULL);
 	add_history(prom);
 	return (prom);
 }
@@ -37,13 +37,19 @@ char	*prompt(t_list **dyn)
 _Bool	handle_signals(void)
 {
 	struct sigaction	act;
+	struct termios		term;
+	int					ttyf;
 
 	ft_bzero(&act, sizeof(act));
+	ft_bzero(&term, sizeof(term));
 	act.sa_handler = &set_signal;
 	if (sigaction(SIGINT, &act, NULL) == -1)
 		return (0);
 	if (sigaction(SIGQUIT, &act, NULL) == -1)
 		return (0);
+	ttyf = open("/dev/tty", O_RDWR);
+	if (ttyf == -1 || tcgetattr(ttyf, &term) == -1)
+		return (perror(MINISHELL), 0);
 	return (1);
 }
 
@@ -51,17 +57,28 @@ void	set_signal(int s)
 {
 	if (s == SIGINT)
 	{
+		if (g_exit_status >= 0)
+		{
+			rl_replace_line("", 0);
+			ft_fprintf(STDOUT_FILENO, "\n");
+			rl_on_new_line();
+			rl_redisplay();
+		}
+		else
+			(kill(-g_exit_status, SIGINT), ft_fprintf(STDOUT_FILENO, "\n"));
 		g_exit_status = 130;
-		rl_replace_line("", 0);
-		ft_fprintf(STDOUT_FILENO, "\n");
-		rl_on_new_line();
-		rl_redisplay();
 	}
 	else if (s == SIGQUIT)
 	{
-		rl_replace_line("", 0);
-		rl_on_new_line();
-		rl_redisplay();
+		if (g_exit_status >= 0)
+		{
+			rl_replace_line("", 0);
+			rl_on_new_line();
+			rl_redisplay();
+		}
+		else
+			(kill(-g_exit_status, SIGQUIT), ft_fprintf(STDOUT_FILENO,
+					"Quit (core dumped)\n"));
 	}
 }
 

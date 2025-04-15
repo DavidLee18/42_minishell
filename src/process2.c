@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 02:50:37 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/14 17:10:14 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/15 02:50:38 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,17 +20,15 @@ int	here_doc(t_list **dyn, t_here_info *i, size_t n)
 	if (pipe(p) == -1)
 		return (perror(gc_strjoin(dyn, MINISHELL, ": pipe")), -1);
 	temp = getln_until(dyn, i->delim, n);
-	if (temp == NULL)
+	if (temp == NULL || n > 1)
 		return (close(p[0]), close(p[1]), -1);
-	if (ft_strchr(temp, '$') == NULL || i->raw)
-		ft_fprintf(p[1], temp);
-	else
+	if (ft_strchr(temp, '$') != NULL && !i->raw)
 	{
 		temp = replace_env(dyn, temp);
 		if (!temp)
 			return (close(p[1]), p[0]);
-		ft_fprintf(p[1], temp);
 	}
+	ft_fprintf(p[1], temp);
 	return (close(p[1]), p[0]);
 }
 
@@ -43,29 +41,25 @@ size_t	count_here_docs(t_phrase *p)
 	return (count_here_docs(p->succ));
 }
 
-void	close_pipes(t_phrase *p, t_pipe_rw *except, _Bool all)
+void	close_pipes(t_phrase *p, t_pipe_rw *io, _Bool all)
 {
-	if (p->pred)
-		close_pipes(p->pred, except, all);
+	if (!p)
+		return ;
 	else if (p->type == REDIR_IN || p->type == REDIR_OUT
 		|| p->type == REDIR_APND)
 	{
-		if (!except || all)
+		if (!io || all)
 			close(p->deb.fd);
-		else if (p->deb.fd > 2 && p->deb.fd != except->read_end
-			&& p->deb.fd != except->write_end)
+		else if (p->deb.fd > 2 && p->deb.fd != io->read_end
+			&& p->deb.fd != io->write_end)
 			close(p->deb.fd);
 	}
 	else if (p->type == PIPE)
-	{
-		if (!except || all)
-			(close(p->deb.pipe_ends.read_end),
-				close(p->deb.pipe_ends.write_end));
-		else if (p->deb.fd > 2 && p->deb.fd != except->read_end
-			&& p->deb.fd != except->write_end)
-			(close(p->deb.pipe_ends.read_end),
-				close(p->deb.pipe_ends.write_end));
-	}
+		close_pipes_pipes(p, io, all);
+	if (all && io)
+		(close(io->write_end), close(io->read_end));
+	if (p->succ)
+		close_pipes(p->succ, io, all);
 }
 
 void	close_wait(t_phrase *p)
@@ -78,11 +72,7 @@ void	close_wait(t_phrase *p)
 	if (WIFEXITED(stat))
 		g_exit_status = WEXITSTATUS(stat);
 	else if (WIFSIGNALED(stat))
-	{
 		g_exit_status = WTERMSIG(stat) + 128;
-		if (WTERMSIG(stat) == SIGQUIT)
-			ft_fprintf(STDERR_FILENO, "Quit (core dumped)\n");
-	}
 }
 
 char	*getln_until(t_list **dyn, char *limit, size_t n)
@@ -93,9 +83,9 @@ char	*getln_until(t_list **dyn, char *limit, size_t n)
 	str = "";
 	here_doc_prompt(n);
 	temp = gc_getline(dyn, STDIN_FILENO);
-	while (temp != NULL && ft_strcmp(gc_strtrim(dyn, temp, "\n"), limit) != 0)
+	while (temp != NULL && ft_strcmp(temp, limit) != 0)
 	{
-		str = gc_strjoin(dyn, str, temp);
+		str = gc_strjoin(dyn, str, gc_strjoin(dyn, temp, "\n"));
 		here_doc_prompt(n);
 		temp = gc_getline(dyn, STDIN_FILENO);
 	}
