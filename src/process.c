@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 22:23:13 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/16 02:25:30 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/16 07:23:03 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,12 +39,12 @@ void	process(t_list **dyn, t_phrase *p, char **envp, t_vec *pids)
 		process(dyn, p, envp, pids);
 }
 
-pid_t	exec_cmd(t_list **dyn, t_phrase *p, char **arg_env[2], t_pipe_rw *io)
+int	exec_cmd(t_list **dyn, t_phrase *p, char **arg_env[2], t_pipe_rw *io)
 {
-	pid_t	id;
+	int	id;
 
 	g_exit_status = -1;
-	ignore_signals();
+	(ignore_signals(), builtin_fd_swap(dyn, p, io));
 	id = fork();
 	if (id == -1)
 		perror(gc_strjoin(dyn, MINISHELL, ": fork"));
@@ -56,7 +56,7 @@ pid_t	exec_cmd(t_list **dyn, t_phrase *p, char **arg_env[2], t_pipe_rw *io)
 				&& dup2(io->write_end, STDOUT_FILENO) == -1))
 			(gc_free_all(*dyn), close_pipes(phrase_head(p), io, 1),
 				exit(EXIT_FAILURE));
-		(unhandle_signals(), close_pipes(phrase_head(p), io, 1));
+		(handle_signals_ch(), close_pipes(phrase_head(p), io, 1));
 		if (is_builtin(arg_env[0][0]))
 		{
 			g_exit_status = exec_builtin(arg_env[0][0], arg_env[0]);

@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/16 02:22:24 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/16 07:30:12 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,17 +125,18 @@ void		print_phrase(t_phrase *p);
 void		print_args(const char **args);
 char		*ft_get_env(t_list **dyn, const char *name);
 void		print_pipe(t_phrase *p);
+size_t		cmd_len(t_phrase *p);
 
 char		*prompt(t_list **dyn);
 _Bool		handle_signals(void);
-void		set_signal(int s);
-_Bool		unhandle_signals(void);
+void		on_idle(int s);
+_Bool		handle_signals_ch(void);
 _Bool		ignore_signals(void);
 void		process(t_list **dyn, t_phrase *p, char **envp, t_vec *pids);
 int			here_doc(t_list **dyn, t_here_info *i, size_t n);
 t_phrase	*phrase_head(t_phrase *p);
 char		**get_cmd(t_phrase *p);
-pid_t		exec_cmd(t_list **dyn, t_phrase *p, char **arg_env[2], t_pipe_rw *io);
+int			exec_cmd(t_list **dyn, t_phrase *p, char **arg_env[2], t_pipe_rw *io);
 void		process_exec_p(t_list **dyn, t_phrase *p, char **arg_env[2],
 				t_pipe_rw *io);
 size_t		count_here_docs(t_phrase *p);
@@ -145,6 +146,8 @@ void		close_wait(t_list **dyn, t_phrase *p, t_vec *pids);
 char		*getln_until(t_list **dyn, char *limit, size_t n);
 void		here_doc_prompt(size_t n);
 void		close_pipes_pipes(t_phrase *p, t_pipe_rw *io, _Bool all);
+void		builtin_fd_swap(t_list **dyn, t_phrase *p, t_pipe_rw *io);
+void		exec_builtin_message(t_list **dyn, int fd, pid_t pid);
 
 int			exec_builtin(char *name, char **argv);
 int			exec_echo(char **argv);

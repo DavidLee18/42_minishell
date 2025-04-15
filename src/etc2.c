@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 19:30:22 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/15 01:11:12 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/16 07:14:15 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,4 +49,9 @@ void	here_doc_prompt(size_t n)
 		i++;
 	}
 	ft_fprintf(STDOUT_FILENO, " ");
+}
+
+size_t	phrase_len(t_phrase *p)
+{
+	return (phrase_left_len(p) + phrase_right_len(p));
 }

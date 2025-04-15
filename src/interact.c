@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 04:48:27 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/16 02:29:34 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/16 07:12:36 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ _Bool	handle_signals(void)
 	sigaddset(&masks, SIGINT);
 	sigaddset(&masks, SIGQUIT);
 	act.sa_mask = masks;
-	act.sa_handler = &set_signal;
+	act.sa_handler = &on_idle;
 	if (sigaction(SIGINT, &act, NULL) == -1)
 		return (0);
 	if (sigaction(SIGQUIT, &act, NULL) == -1)
@@ -52,7 +52,7 @@ _Bool	handle_signals(void)
 	return (1);
 }
 
-void	set_signal(int s)
+void	on_idle(int s)
 {
 	if (s == SIGINT)
 	{
@@ -89,7 +89,7 @@ t_phrase	*parse_lex(t_list **dyn, const char *str)
 	return (parse(dyn, (const char **)tokens));
 }
 
-_Bool	unhandle_signals(void)
+_Bool	handle_signals_ch(void)
 {
 	struct sigaction	act;
 

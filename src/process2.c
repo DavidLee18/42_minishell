@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 02:50:37 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/16 02:30:48 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/16 07:30:22 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	here_doc(t_list **dyn, t_here_info *i, size_t n)
 
 	if (pipe(p) == -1)
 		return (perror(gc_strjoin(dyn, MINISHELL, ": pipe")), -1);
-	g_exit_status = 256;
+	g_exit_status = 257;
 	temp = getln_until(dyn, i->delim, n);
 	if (temp == NULL || n > 1)
 	{
@@ -78,6 +78,8 @@ void	close_wait(t_list **dyn, t_phrase *p, t_vec *pids)
 	stat = 0;
 	close_pipes(p, NULL, 1);
 	id = pop_back(dyn, pids);
+	if (id && g_exit_status < -1)
+		return (exec_builtin_message(dyn, -g_exit_status, *id));
 	while (id)
 	{
 		waitpid(*id, &stat, 0);
