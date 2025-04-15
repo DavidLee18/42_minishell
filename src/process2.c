@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 02:50:37 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/15 02:50:38 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/16 00:25:54 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,16 +19,24 @@ int	here_doc(t_list **dyn, t_here_info *i, size_t n)
 
 	if (pipe(p) == -1)
 		return (perror(gc_strjoin(dyn, MINISHELL, ": pipe")), -1);
+	g_exit_status = 256;
 	temp = getln_until(dyn, i->delim, n);
 	if (temp == NULL || n > 1)
+	{
+		g_exit_status = 1;
 		return (close(p[0]), close(p[1]), -1);
+	}
 	if (ft_strchr(temp, '$') != NULL && !i->raw)
 	{
 		temp = replace_env(dyn, temp);
 		if (!temp)
+		{
+			g_exit_status = 1;
 			return (close(p[1]), p[0]);
+		}
 	}
 	ft_fprintf(p[1], temp);
+	g_exit_status = 0;
 	return (close(p[1]), p[0]);
 }
 
@@ -62,17 +70,23 @@ void	close_pipes(t_phrase *p, t_pipe_rw *io, _Bool all)
 		close_pipes(p->succ, io, all);
 }
 
-void	close_wait(t_phrase *p)
+void	close_wait(t_list **dyn, t_phrase *p, t_vec *pids)
 {
 	int	stat;
+	int	*id;
 
 	stat = 0;
 	close_pipes(p, NULL, 1);
-	waitpid(-1, &stat, 0);
-	if (WIFEXITED(stat))
-		g_exit_status = WEXITSTATUS(stat);
-	else if (WIFSIGNALED(stat))
-		g_exit_status = WTERMSIG(stat) + 128;
+	id = pop_back(dyn, pids);
+	while (id)
+	{
+		waitpid(*id, &stat, 0);
+		if (WIFEXITED(stat))
+			g_exit_status = WEXITSTATUS(stat);
+		else if (WIFSIGNALED(stat))
+			g_exit_status = WTERMSIG(stat) + 128;
+		id = pop_back(dyn, pids);
+	}
 }
 
 char	*getln_until(t_list **dyn, char *limit, size_t n)

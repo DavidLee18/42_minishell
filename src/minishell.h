@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/15 02:35:30 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/16 00:24:43 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,18 +128,19 @@ char		*prompt(t_list **dyn);
 _Bool		handle_signals(void);
 void		set_signal(int s);
 t_phrase	*parse_lex(t_list **dyn, const char *str);
+_Bool		unhandle_signals(void);
 
-void		process(t_list **dyn, t_phrase *p, char **envp);
+void		process(t_list **dyn, t_phrase *p, char **envp, t_vec *pids);
 int			here_doc(t_list **dyn, t_here_info *i, size_t n);
 t_phrase	*phrase_head(t_phrase *p);
 char		**get_cmd(t_phrase *p);
-void		exec_cmd(t_list **dyn, t_phrase *p, char **arg_env[2], t_pipe_rw *io);
+pid_t		exec_cmd(t_list **dyn, t_phrase *p, char **arg_env[2], t_pipe_rw *io);
 void		process_exec_p(t_list **dyn, t_phrase *p, char **arg_env[2],
 				t_pipe_rw *io);
 size_t		count_here_docs(t_phrase *p);
 void		close_pipes(t_phrase *p, t_pipe_rw *io, _Bool all);
 t_pipe_rw	get_io(t_phrase **p);
-void		close_wait(t_phrase *p);
+void		close_wait(t_list **dyn, t_phrase *p, t_vec *pids);
 char		*getln_until(t_list **dyn, char *limit, size_t n);
 void		here_doc_prompt(size_t n);
 void		close_pipes_pipes(t_phrase *p, t_pipe_rw *io, _Bool all);

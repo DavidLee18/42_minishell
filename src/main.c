@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 13:01:59 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/15 02:35:19 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/16 02:03:02 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,12 @@ int	main(int argc, char **argv, char **envp)
 	char		*str;
 	t_list		*dyn;
 	t_phrase	*ps;
+	t_vec		pids;
 
 	dyn = NULL;
+	pids = (t_vec){.cap = 0, .len = 0, .ptr = NULL};
 	if (!handle_signals())
-		return (gc_free_all(dyn), 1);
+		return (gc_free_all(dyn), EXIT_FAILURE);
 	while (1)
 	{
 		str = prompt(&dyn);
@@ -35,8 +37,8 @@ int	main(int argc, char **argv, char **envp)
 		{
 			free(str);
 			str = NULL;
-			process(&dyn, phrase_head(ps), envp);
-			close_wait(phrase_head(ps));
+			process(&dyn, phrase_head(ps), envp, &pids);
+			close_wait(&dyn, phrase_head(ps), &pids);
 		}
 	}
 }

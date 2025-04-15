@@ -6,13 +6,13 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 22:23:13 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/15 03:05:23 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/16 02:02:00 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	process(t_list **dyn, t_phrase *p, char **envp)
+void	process(t_list **dyn, t_phrase *p, char **envp, t_vec *pids)
 {
 	t_pipe_rw	io;
 	char		**argv;
@@ -20,11 +20,8 @@ void	process(t_list **dyn, t_phrase *p, char **envp)
 	io = get_io(&p);
 	argv = get_cmd(p);
 	if (argv == NULL)
-	{
-		ft_fprintf(STDERR_FILENO, "%s: syntax error: invalid number of"
-			" commands\n", MINISHELL);
-		return ;
-	}
+		return ((void)ft_fprintf(STDERR_FILENO,
+				"%s: syntax error: invalid number of commands\n", MINISHELL));
 	while (p && p->type != PIPE)
 	{
 		if (p->type == REDIR_IN)
@@ -35,16 +32,18 @@ void	process(t_list **dyn, t_phrase *p, char **envp)
 			io.read_end = here_doc(dyn, &p->deb.hinfo, count_here_docs(p));
 		p = p->succ;
 	}
-	if (!p)
-		exec_cmd(dyn, p, (char **[]){argv, envp}, &io);
-	else
-		process_exec_p(dyn, p, (char **[]){argv, envp}, &io);
+	if (p && p->type == PIPE)
+		io.write_end = p->deb.pipe_ends.write_end;
+	push_front(dyn, pids, exec_cmd(dyn, p, (char **[]){argv, envp}, &io));
+	if (p && (p->type == PIPE || p->succ))
+		process(dyn, p, envp, pids);
 }
 
-void	exec_cmd(t_list **dyn, t_phrase *p, char **arg_env[2], t_pipe_rw *io)
+pid_t	exec_cmd(t_list **dyn, t_phrase *p, char **arg_env[2], t_pipe_rw *io)
 {
 	pid_t	id;
 
+	g_exit_status = -1;
 	id = fork();
 	if (id == -1)
 		perror(gc_strjoin(dyn, MINISHELL, ": fork"));
@@ -56,28 +55,16 @@ void	exec_cmd(t_list **dyn, t_phrase *p, char **arg_env[2], t_pipe_rw *io)
 				&& dup2(io->write_end, STDOUT_FILENO) == -1))
 			(gc_free_all(*dyn), close_pipes(phrase_head(p), io, 1),
 				exit(EXIT_FAILURE));
-		close_pipes(phrase_head(p), io, 0);
+		(unhandle_signals(), close_pipes(phrase_head(p), io, 1));
 		if (is_builtin(arg_env[0][0]))
 		{
 			g_exit_status = exec_builtin(arg_env[0][0], arg_env[0]);
-			gc_free_all(*dyn);
-			exit(g_exit_status);
+			(gc_free_all(*dyn), exit(g_exit_status));
 		}
 		execve(arg_env[0][0], arg_env[0], arg_env[1]);
-		gc_free_all(*dyn);
-		exit(EXIT_FAILURE);
+		(gc_free_all(*dyn), exit(EXIT_FAILURE));
 	}
-	g_exit_status = -id;
-}
-
-void	process_exec_p(t_list **dyn, t_phrase *p, char **arg_env[2],
-			t_pipe_rw *io)
-{
-	if (p->type != PIPE)
-		return ;
-	io->write_end = p->deb.pipe_ends.write_end;
-	exec_cmd(dyn, p, arg_env, io);
-	process(dyn, p, arg_env[1]);
+	return (id);
 }
 
 char	**get_cmd(t_phrase *p)
