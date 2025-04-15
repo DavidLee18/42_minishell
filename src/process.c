@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 22:23:13 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/16 02:02:00 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/16 02:25:30 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ pid_t	exec_cmd(t_list **dyn, t_phrase *p, char **arg_env[2], t_pipe_rw *io)
 	pid_t	id;
 
 	g_exit_status = -1;
+	ignore_signals();
 	id = fork();
 	if (id == -1)
 		perror(gc_strjoin(dyn, MINISHELL, ": fork"));

@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 02:50:37 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/16 00:25:54 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/16 02:30:48 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,9 +84,15 @@ void	close_wait(t_list **dyn, t_phrase *p, t_vec *pids)
 		if (WIFEXITED(stat))
 			g_exit_status = WEXITSTATUS(stat);
 		else if (WIFSIGNALED(stat))
+		{
 			g_exit_status = WTERMSIG(stat) + 128;
+			if (WTERMSIG(stat) == SIGQUIT)
+				ft_fprintf(STDOUT_FILENO, "Quit (core dumped)");
+			ft_fprintf(STDOUT_FILENO, "\n");
+		}
 		id = pop_back(dyn, pids);
 	}
+	handle_signals();
 }
 
 char	*getln_until(t_list **dyn, char *limit, size_t n)

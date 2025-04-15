@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 04:48:27 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/15 23:42:04 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/16 02:29:34 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ void	set_signal(int s)
 			rl_redisplay();
 		}
 		else
-			ft_fprintf(STDOUT_FILENO, "Quit (core dumped)\n");
+			ft_fprintf(STDOUT_FILENO, "\n");
 	}
 }
 

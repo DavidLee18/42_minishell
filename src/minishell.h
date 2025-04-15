@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/16 00:24:43 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/16 02:22:24 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,26 +110,27 @@ char		**parse_split_args(t_list **dyn, const char **tokens, ssize_t *i,
 				const char *cmd);
 ssize_t		parse_each(t_list **dyn, t_phrase **p, const char **tokens);
 ssize_t		parse_pipe(t_list **dyn, t_phrase **p);
-
-_Bool		phrase_spawn(t_list **dyn, t_phrase **p);
-_Bool		is_space(char c);
 char		*unquote(t_list **dyn, const char *str);
 char		*unquote_raw(t_list **dyn, const char *str);
-char		**get_path(t_list **dyn);
-char		*get_exec_path(t_list **dyn, const char *cmd);
 _Bool		is_cmd(const char *str);
 _Bool		is_builtin(const char *str);
 char		*replace_env(t_list **dyn, const char *str);
+t_phrase	*parse_lex(t_list **dyn, const char *str);
+
+_Bool		phrase_spawn(t_list **dyn, t_phrase **p);
+_Bool		is_space(char c);
+char		**get_path(t_list **dyn);
+char		*get_exec_path(t_list **dyn, const char *cmd);
 void		print_phrase(t_phrase *p);
 void		print_args(const char **args);
 char		*ft_get_env(t_list **dyn, const char *name);
 void		print_pipe(t_phrase *p);
+
 char		*prompt(t_list **dyn);
 _Bool		handle_signals(void);
 void		set_signal(int s);
-t_phrase	*parse_lex(t_list **dyn, const char *str);
 _Bool		unhandle_signals(void);
-
+_Bool		ignore_signals(void);
 void		process(t_list **dyn, t_phrase *p, char **envp, t_vec *pids);
 int			here_doc(t_list **dyn, t_here_info *i, size_t n);
 t_phrase	*phrase_head(t_phrase *p);
