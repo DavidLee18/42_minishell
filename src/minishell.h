@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/16 07:30:12 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/16 13:31:21 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,11 +148,16 @@ void		here_doc_prompt(size_t n);
 void		close_pipes_pipes(t_phrase *p, t_pipe_rw *io, _Bool all);
 void		builtin_fd_swap(t_list **dyn, t_phrase *p, t_pipe_rw *io);
 void		exec_builtin_message(t_list **dyn, int fd, pid_t pid);
+_Bool		builtin_needs_swap(const char *str);
 
 int			exec_builtin(char *name, char **argv);
 int			exec_echo(char **argv);
 int			cd(char **argv);
 int			pwd(char **argv);
 int			exec_exit(char **argv);
+void		decree_cd(t_list **dyn, char **argv);
+void		decree_export(t_list **dyn, char **argv);
+void		decree_unset(t_list **dyn, char **argv);
+void		decree_exit(t_list **dyn, char **argv);
 
 #endif //MINISHELL_H

@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 19:30:22 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/16 07:14:15 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/16 11:41:17 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,25 @@ void	here_doc_prompt(size_t n)
 	ft_fprintf(STDOUT_FILENO, " ");
 }
 
-size_t	phrase_len(t_phrase *p)
+size_t	cmd_len(t_phrase *p)
 {
-	return (phrase_left_len(p) + phrase_right_len(p));
+	char		**argv;
+	size_t		len;
+
+	if (!p)
+		return (0);
+	argv = get_cmd(p);
+	if (!argv)
+		return (0);
+	len = 0;
+	while (p && argv)
+	{
+		len++;
+		while (p && p->type != PIPE)
+			p = p->succ;
+		if (p && p->type == PIPE)
+			p = p->succ;
+		argv = get_cmd(p);
+	}
+	return (len);
 }
