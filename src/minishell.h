@@ -137,8 +137,6 @@ int			here_doc(t_list **dyn, t_here_info *i, size_t n);
 t_phrase	*phrase_head(t_phrase *p);
 char		**get_cmd(t_phrase *p);
 int			exec_cmd(t_list **dyn, t_phrase *p, char **arg_env[2], t_pipe_rw *io);
-void		process_exec_p(t_list **dyn, t_phrase *p, char **arg_env[2],
-				t_pipe_rw *io);
 size_t		count_here_docs(t_phrase *p);
 void		close_pipes(t_phrase *p, t_pipe_rw *io, _Bool all);
 t_pipe_rw	get_io(t_phrase **p);

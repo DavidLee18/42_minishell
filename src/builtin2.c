@@ -50,5 +50,14 @@ void	decree_exit(t_list **dyn, char **argv)
 		(gc_free_all(*dyn), exit(ft_atoi(argv[1])));
 }
 
-void	decree_export(t_list **dyn, char **argv);
-void	decree_unset(t_list **dyn, char **argv);
+void	decree_export(t_list **dyn, char **argv)
+{
+	(void)dyn;
+	(void)argv;
+}
+
+void	decree_unset(t_list **dyn, char **argv)
+{
+	(void)dyn;
+	(void)argv;
+}

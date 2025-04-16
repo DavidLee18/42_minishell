@@ -1,2 +1,3 @@
 build/
 minishell
+cmake-build-debug/
