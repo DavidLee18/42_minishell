@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/16 13:31:21 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/21 10:24:17 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@
 #  define MINISHELL "minishell"
 # endif
 
-extern int	g_exit_status;
+extern volatile sig_atomic_t	g_exit_status;
 
 typedef enum e_quote
 {
