@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/21 12:12:05 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/22 03:22:14 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,9 @@
 # include "../ft_printf/src/ft_printf.h"
 # ifndef MINISHELL
 #  define MINISHELL "minishell"
+# endif
+# ifndef S_HERE_DOC
+#  define S_HERE_DOC 257
 # endif
 
 extern volatile sig_atomic_t	g_exit_status;
@@ -127,18 +130,19 @@ char		*ft_get_env(t_list **dyn, const char *name);
 void		print_pipe(t_phrase *p);
 size_t		cmd_len(t_phrase *p);
 
-char		*prompt(t_list **dyn);
 _Bool		handle_signals(void);
 void		on_idle(int s);
 _Bool		handle_signals_ch(void);
 _Bool		ignore_signals(void);
+_Bool		heredoc_signals(void);
+void		on_here_doc(int s);
+
+char		*prompt(t_list **dyn);
 void		process(t_list **dyn, t_phrase *p, char **envp, t_vec *pids);
 int			here_doc(t_list **dyn, t_here_info *i, size_t n);
 t_phrase	*phrase_head(t_phrase *p);
 char		**get_cmd(t_phrase *p);
 int			exec_cmd(t_list **dyn, t_phrase *p, char **arg_env[2],
-				t_pipe_rw *io);
-void		process_exec_p(t_list **dyn, t_phrase *p, char **arg_env[2],
 				t_pipe_rw *io);
 size_t		count_here_docs(t_phrase *p);
 void		close_pipes(t_phrase *p, t_pipe_rw *io, _Bool all);

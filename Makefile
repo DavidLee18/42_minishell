@@ -1,7 +1,9 @@
 CC := cc
-CFLAGS := -Wall -Werror -Wextra -g
+CFLAGS := -Wall -Werror -Wextra -O2 -foptimize-sibling-calls
+DEBUG_CFLAGS := -Wall -Werror -Wextra -fsanitize=address -O1 -fno-omit-frame-pointer -g
 NAME := minishell
 BFLAGS := -Lft_printf -lftprintf -lreadline
+DEBUG_BFLAGS := -Lft_printf -lftprintf -lreadline -fsanitize=address -O1 -fno-omit-frame-pointer -g
 
 BUILD_DIR := build
 SRC_DIR := src
@@ -18,11 +20,11 @@ all: $(NAME)
 
 $(NAME): $(OBJS)
 	make -C ft_printf
-	$(CC) $(OBJS) $(BFLAGS) -o $(NAME)
+	$(CC) $(OBJS) $(DEBUG_BFLAGS) -o $(NAME)
 
 build/%.o: src/%.c
 	mkdir -p $(BUILD_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(DEBUG_CFLAGS) -c $< -o $@
 
 $(SRCS): $(SRC_DIR)/minishell.h
 
@@ -46,4 +48,4 @@ fclean:	clean
 
 re:	fclean all
 
-.PNONY: all clean fclean re
+.PNONY: all clean fclean re debug

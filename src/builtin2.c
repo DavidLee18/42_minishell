@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 13:08:49 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/16 13:32:05 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/21 19:11:33 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,5 +50,14 @@ void	decree_exit(t_list **dyn, char **argv)
 		(gc_free_all(*dyn), exit(ft_atoi(argv[1])));
 }
 
-void	decree_export(t_list **dyn, char **argv);
-void	decree_unset(t_list **dyn, char **argv);
+void	decree_export(t_list **dyn, char **argv)
+{
+	(void)dyn;
+	(void)argv;
+}
+
+void	decree_unset(t_list **dyn, char **argv)
+{
+	(void)dyn;
+	(void)argv;
+}

@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 14:58:25 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/14 03:47:50 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/21 22:04:50 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,10 @@ char	*replace_env(t_list **dyn, const char *str)
 	while (i != NULL)
 	{
 		temp = gc_strjoin(dyn, temp, gc_substr(dyn, s, 0, i - s));
-		if (temp == NULL)
-			return (NULL);
 		s = ++i;
-		while ((*i >= 'A' && *i <= 'Z') || *i == '_' || *i == '?')
+		if (ft_isalpha(*i) || *i == '_' || *i == '?')
+			i++;
+		while (ft_isalnum(*i) || *i == '_' || *i == '?')
 			i++;
 		var = ft_get_env(dyn, gc_substr(dyn, s, 0, i - s));
 		if (var == NULL)
