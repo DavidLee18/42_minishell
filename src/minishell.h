@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/21 10:24:17 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/21 12:12:05 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,7 +136,8 @@ void		process(t_list **dyn, t_phrase *p, char **envp, t_vec *pids);
 int			here_doc(t_list **dyn, t_here_info *i, size_t n);
 t_phrase	*phrase_head(t_phrase *p);
 char		**get_cmd(t_phrase *p);
-int			exec_cmd(t_list **dyn, t_phrase *p, char **arg_env[2], t_pipe_rw *io);
+int			exec_cmd(t_list **dyn, t_phrase *p, char **arg_env[2],
+				t_pipe_rw *io);
 void		process_exec_p(t_list **dyn, t_phrase *p, char **arg_env[2],
 				t_pipe_rw *io);
 size_t		count_here_docs(t_phrase *p);
