@@ -12,9 +12,9 @@
 
 #include "minishell.h"
 
-int	g_exit_status = 0;
+volatile sig_atomic_t	g_exit_status = 0;
 
-int	main(int argc, char **argv, char **envp)
+int	main(const int argc, char **argv, char **envp)
 {
 	char		*str;
 	t_list		*dyn;

@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int	here_doc(t_list **dyn, t_here_info *i, size_t n)
+int	here_doc(t_list **dyn, const t_here_info *i, const size_t n)
 {
 	int		p[2];
 	char	*temp;
@@ -49,7 +49,7 @@ size_t	count_here_docs(t_phrase *p)
 	return (count_here_docs(p->succ));
 }
 
-void	close_pipes(t_phrase *p, t_pipe_rw *io, _Bool all)
+void	close_pipes(t_phrase *p, t_pipe_rw *io, const _Bool all)
 {
 	if (!p)
 		return ;
@@ -97,7 +97,7 @@ void	close_wait(t_list **dyn, t_phrase *p, t_vec *pids)
 	handle_signals();
 }
 
-char	*getln_until(t_list **dyn, char *limit, size_t n)
+char	*getln_until(t_list **dyn, char *limit, const size_t n)
 {
 	char	*str;
 	char	*temp;

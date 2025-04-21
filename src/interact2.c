@@ -50,7 +50,7 @@ void	builtin_fd_swap(t_list **dyn, t_phrase *p, t_pipe_rw *io)
 	g_exit_status = -fp[0];
 }
 
-void	exec_builtin_message(t_list **dyn, int fd, pid_t pid)
+void	exec_builtin_message(t_list **dyn, const int fd, const pid_t pid)
 {
 	int		stat;
 	char	*str;

@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void	close_pipes_pipes(t_phrase *p, t_pipe_rw *io, _Bool all)
+void	close_pipes_pipes(const t_phrase *p, t_pipe_rw *io, const _Bool all)
 {
 	if (!io || all)
 		(close(p->deb.pipe_ends.read_end),

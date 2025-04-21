@@ -41,7 +41,7 @@ _Bool	lex_preproc(char const *s, t_split_next *idxs, t_quote *p, _Bool *syll)
 	return (1);
 }
 
-void	lex_pre_quote(char c, t_split_next *idxs, t_quote *p)
+void	lex_pre_quote(const char c, t_split_next *idxs, t_quote *p)
 {
 	if (c == '\'' && *p != DOUBLE)
 		*p = SINGLE - *p;

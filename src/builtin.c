@@ -15,7 +15,7 @@
 // STDIN_FILENO read_end
 // STDOUT_FILENO wirte_end
 
-int			exec_builtin(char *name, char **argv)
+int			exec_builtin(const char *name, char **argv)
 {
     (void)name;
     (void)argv;

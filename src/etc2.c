@@ -25,7 +25,7 @@ void	print_args(const char **args)
 	ft_fprintf(STDOUT_FILENO, "\n");
 }
 
-void	print_pipe(t_phrase *p)
+void	print_pipe(const t_phrase *p)
 {
 	ft_fprintf(STDOUT_FILENO, "PIPE: read_end: %d, write_end: %d\n",
 		p->deb.pipe_ends.read_end, p->deb.pipe_ends.write_end);
@@ -38,7 +38,7 @@ t_phrase	*phrase_head(t_phrase *p)
 	return (phrase_head(p->pred));
 }
 
-void	here_doc_prompt(size_t n)
+void	here_doc_prompt(const size_t n)
 {
 	size_t	i;
 

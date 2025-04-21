@@ -19,7 +19,7 @@ void	decree_cd(t_list **dyn, char **argv)
 	if (!argv || !argv[0])
 		return ;
 	if (!argv[1])
-		ecode = chdir(getenv("PATH"));
+		ecode = chdir(getenv("HOME"));
 	else if (argv[2])
 	{
 		ft_fprintf(STDERR_FILENO, "%s: cd: too many arguments\n", MINISHELL);

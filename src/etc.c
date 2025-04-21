@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-_Bool	is_space(char c)
+_Bool	is_space(const char c)
 {
 	return (c == '\t' || c == '\n' || c == '\v'
 		|| c == '\f' || c == '\r' || c == ' ');

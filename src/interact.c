@@ -52,7 +52,7 @@ _Bool	handle_signals(void)
 	return (1);
 }
 
-void	on_idle(int s)
+void	on_idle(const int s)
 {
 	if (s == SIGINT)
 	{

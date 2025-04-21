@@ -63,7 +63,7 @@ size_t	lex_split_pos(const char *s, size_t i, t_split_piece *sp)
 		return (lex_split_pos2(s, i, sp));
 }
 
-size_t	lex_split_pos2(const char *s, size_t i, t_split_piece *sp)
+size_t	lex_split_pos2(const char *s, const size_t i, t_split_piece *sp)
 {
 	if (ft_strncmp(s + i, ">>", 2) == 0 || ft_strncmp(s + i, "<<", 2) == 0)
 	{
