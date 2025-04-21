@@ -6,13 +6,13 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 13:01:59 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/16 02:03:02 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/21 10:24:44 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	g_exit_status = 0;
+volatile sig_atomic_t	g_exit_status = 0;
 
 int	main(int argc, char **argv, char **envp)
 {
