@@ -70,7 +70,7 @@ void	close_pipes(t_phrase *p, t_pipe_rw *io, _Bool all)
 		close_pipes(p->succ, io, all);
 }
 
-void	close_wait(t_list **dyn, t_phrase *p, t_vec *pids)
+void	close_wait(t_list **dyn, t_phrase *p, t_vec *pids, char ***envp)
 {
 	int	stat;
 	int	*id;
@@ -79,7 +79,7 @@ void	close_wait(t_list **dyn, t_phrase *p, t_vec *pids)
 	close_pipes(p, NULL, 1);
 	id = pop_back(dyn, pids);
 	if (id && g_exit_status < -1)
-		return (exec_builtin_message(dyn, -g_exit_status, *id));
+		return (exec_builtin_message(dyn, -g_exit_status, *id, envp));
 	while (id)
 	{
 		waitpid(*id, &stat, 0);

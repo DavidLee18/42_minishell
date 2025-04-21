@@ -14,17 +14,43 @@
 
 volatile sig_atomic_t	g_exit_status = 0;
 
+char *env_join(t_list **dyn, char **envp)
+{
+	char	*str;
+	int		i;
+
+	i = 0;
+	str = "";
+	while (envp[i])
+	{
+		str = gc_strjoin(dyn, str, envp[i]);
+		str = gc_strjoin(dyn, str, "\n");
+		i++;
+	}
+	return (str);
+}
+
+char **env_copy(t_list **dyn, char **envp)
+{
+	char	*str;
+
+	str = env_join(dyn, envp);
+	return (gc_split(dyn, str, '\n'));
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	char		*str;
 	t_list		*dyn;
 	t_phrase	*ps;
 	t_vec		pids;
+	char		**env;
 
 	dyn = NULL;
 	pids = (t_vec){.cap = 0, .len = 0, .ptr = NULL};
 	if (!handle_signals())
 		return (gc_free_all(dyn), EXIT_FAILURE);
+	env = env_copy(&dyn, envp);
 	while (1)
 	{
 		str = prompt(&dyn);
@@ -37,8 +63,8 @@ int	main(int argc, char **argv, char **envp)
 		else if (*str)
 		{
 			free(str);
-			process(&dyn, phrase_head(ps), envp, &pids);
-			close_wait(&dyn, phrase_head(ps), &pids);
+			process(&dyn, phrase_head(ps), env, &pids);
+			close_wait(&dyn, phrase_head(ps), &pids, &env);
 		}
 	}
 }

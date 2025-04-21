@@ -17,9 +17,9 @@
 
 int			exec_builtin(char *name, char **argv)
 {
-    (void)name;
-    (void)argv;
-    return (-1);
+	(void)name;
+	(void)argv;
+	return (-1);
 }
 int			exec_echo(char **argv)
 {
@@ -30,7 +30,7 @@ int			exec_echo(char **argv)
 	flag = 0;
 	while (argv[i])
 	{
-		if (ft_strncmp(argv[0], "-n", 2) == 0)
+		if (ft_strcmp(argv[0], "-n") == 0)
 			flag = 1;
 		if (flag == 0 && !argv[i + 1])
 		{
@@ -50,20 +50,71 @@ int			exec_echo(char **argv)
 
 int			cd(char **argv)
 {
-	return (chdir(argv[0]));
+	int	i;
+
+	i = 1;
+	printf("cd");
+	while (argv[i])
+	{
+		printf(" %s", argv[i]);
+		i++;
+	}
+	printf("\n");
+	return (0);
 }
 
 int			pwd(char **argv)
 {
 	if (getcwd(argv[0], ft_strlen(argv[0])) == NULL)
-		return (-1);
+		return (1);
 	printf("%s\n", argv[0]);
 	return (0);
 }
 
 int			exec_exit(char **argv)
 {
-	(void)argv;
-	printf("exit\n");
-	return (256);
+	int	i;
+
+	i = 1;
+	printf("exit");
+	while (argv[i])
+	{
+		printf(" %s", argv[i]);
+		i++;
+	}
+	printf("\n");
+	return (0);
 }
+
+int		export(char **argv)
+{
+	int	i;
+
+	i = 1;
+	printf("export");
+	while (argv[i])
+	{
+		printf(" %s", argv[i]);
+		i++;
+	}
+	printf("\n");
+	return (0);
+}
+
+int		unset(char **argv)
+{
+	int	i;
+
+	i = 1;
+	printf("unset");
+	while (argv[i])
+	{
+		printf(" %s", argv[i]);
+		i++;
+	}
+	printf("\n");
+	return (0);
+}
+//성공 0
+//실패 1
+//잘못된 인자 2

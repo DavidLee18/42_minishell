@@ -143,12 +143,12 @@ void		process_exec_p(t_list **dyn, t_phrase *p, char **arg_env[2],
 size_t		count_here_docs(t_phrase *p);
 void		close_pipes(t_phrase *p, t_pipe_rw *io, _Bool all);
 t_pipe_rw	get_io(t_phrase **p);
-void		close_wait(t_list **dyn, t_phrase *p, t_vec *pids);
+void		close_wait(t_list **dyn, t_phrase *p, t_vec *pids, char ***envp);
 char		*getln_until(t_list **dyn, char *limit, size_t n);
 void		here_doc_prompt(size_t n);
 void		close_pipes_pipes(t_phrase *p, t_pipe_rw *io, _Bool all);
 void		builtin_fd_swap(t_list **dyn, t_phrase *p, t_pipe_rw *io);
-void		exec_builtin_message(t_list **dyn, int fd, pid_t pid);
+void		exec_builtin_message(t_list **dyn, int fd, pid_t pid, char ***envp);
 _Bool		builtin_needs_swap(const char *str);
 
 int			exec_builtin(char *name, char **argv);
@@ -157,8 +157,10 @@ int			cd(char **argv);
 int			pwd(char **argv);
 int			exec_exit(char **argv);
 void		decree_cd(t_list **dyn, char **argv);
-void		decree_export(t_list **dyn, char **argv);
-void		decree_unset(t_list **dyn, char **argv);
+void		decree_export(t_list **dyn, char **argv, char ***envp);
+void		decree_unset(t_list **dyn, char **argv, char ***envp);
 void		decree_exit(t_list **dyn, char **argv);
+
+char *env_join(t_list **dyn, char **envp);
 
 #endif //MINISHELL_H

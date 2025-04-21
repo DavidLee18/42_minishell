@@ -50,7 +50,7 @@ void	builtin_fd_swap(t_list **dyn, t_phrase *p, t_pipe_rw *io)
 	g_exit_status = -fp[0];
 }
 
-void	exec_builtin_message(t_list **dyn, int fd, pid_t pid)
+void	exec_builtin_message(t_list **dyn, int fd, pid_t pid, char ***envp)
 {
 	int		stat;
 	char	*str;
@@ -62,9 +62,9 @@ void	exec_builtin_message(t_list **dyn, int fd, pid_t pid)
 	if (str && ft_strncmp(str, "cd", 2))
 		decree_cd(dyn, gc_split(dyn, str, ' '));
 	else if (str && ft_strncmp(str, "export", 6))
-		decree_export(dyn, gc_split(dyn, str, ' '));
+		decree_export(dyn, gc_split(dyn, str, ' '), envp);
 	else if (str && ft_strncmp(str, "unset", 5))
-		decree_unset(dyn, gc_split(dyn, str, ' '));
+		decree_unset(dyn, gc_split(dyn, str, ' '), envp);
 	else if (str && ft_strncmp(str, "exit", 4))
 		decree_exit(dyn, gc_split(dyn, str, ' '));
 	if (WIFEXITED(stat))

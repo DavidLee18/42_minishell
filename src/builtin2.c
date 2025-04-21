@@ -50,5 +50,56 @@ void	decree_exit(t_list **dyn, char **argv)
 		(gc_free_all(*dyn), exit(ft_atoi(argv[1])));
 }
 
-void	decree_export(t_list **dyn, char **argv);
-void	decree_unset(t_list **dyn, char **argv);
+void	reset_env(t_list **dyn, char ***envp, char *argv)
+{
+	char	*str;
+
+	str = "";
+	str = env_join(dyn, *envp);
+	argv = gc_strjoin(dyn, "\n", argv);
+	str = gc_strjoin(dyn, str, argv);
+	*envp = gc_split(dyn, str, '\n');
+}
+
+void	decree_export(t_list **dyn, char **argv, char ***envp)
+{
+	int		i;
+	int		check;
+	char	**str;
+	char	**temp_av;
+
+	i = 0;
+	check = 0;
+	temp_av = gc_split(dyn, argv[1], '=');
+	while ((*envp)[i])
+	{
+		str = gc_split(dyn, (*envp)[i], '=');
+		if ((ft_strcmp(temp_av[0], str[0]) == 0) && (ft_strchr(argv[1], '=') != NULL))
+		{
+			(*envp)[i] = argv[1];
+			check = 1;
+			break ;
+		}
+		i++;
+	}
+	if ((check = 0) && (ft_strchr(argv[1], '=') != NULL))
+		reset_env(dyn, envp, argv[1]);
+}
+void	decree_unset(t_list **dyn, char **argv, char ***envp)
+{
+	int		i;
+	char	**str;
+
+	i = 0;
+	while ((*envp)[i])
+	{
+		str = gc_split(dyn, (*envp)[i], '=');
+		if ((ft_strcmp(argv[1], str[0]) == 0) && (ft_strchr(argv[1], '=') == NULL))
+		{
+			(*envp)[i] = "";
+			reset_env(dyn, envp, "");
+			break ;
+		}
+		i++;
+	}
+}
