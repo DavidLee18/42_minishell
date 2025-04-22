@@ -1,9 +1,9 @@
 CC := cc
 CFLAGS := -Wall -Werror -Wextra -O2 -foptimize-sibling-calls
-DEBUG_CFLAGS := -Wall -Werror -Wextra -fsanitize=address -O1 -fno-omit-frame-pointer -g
+DEBUG_CFLAGS := -Wall -Werror -Wextra -g #-fsanitize=address -O1 -fno-omit-frame-pointer
 NAME := minishell
 BFLAGS := -Lft_printf -lftprintf -lreadline
-DEBUG_BFLAGS := -Lft_printf -lftprintf -lreadline -fsanitize=address -O1 -fno-omit-frame-pointer -g
+DEBUG_BFLAGS := -Lft_printf -lftprintf -lreadline -g #-fsanitize=address -O1 -fno-omit-frame-pointer
 
 BUILD_DIR := build
 SRC_DIR := src

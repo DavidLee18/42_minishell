@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 04:48:27 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/16 07:12:36 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/22 17:54:49 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,28 +54,19 @@ _Bool	handle_signals(void)
 
 void	on_idle(int s)
 {
-	if (s == SIGINT)
+	if (g_exit_status >= 0 && g_exit_status <= 255)
 	{
-		if (g_exit_status >= 0 && g_exit_status <= 255)
-		{
-			rl_replace_line("", 0);
+		rl_replace_line("", 0);
+		if (s == SIGINT)
 			ft_fprintf(STDOUT_FILENO, "\n");
-			rl_on_new_line();
-			rl_redisplay();
-		}
-		else
-			ft_fprintf(STDOUT_FILENO, "\n");
+		rl_on_new_line();
+		rl_redisplay();
 	}
-	else if (s == SIGQUIT)
+	else
 	{
-		if (g_exit_status >= 0 && g_exit_status <= 255)
-		{
-			rl_replace_line("", 0);
-			rl_on_new_line();
-			rl_redisplay();
-		}
-		else
-			ft_fprintf(STDOUT_FILENO, "\n");
+		if (s == SIGINT)
+			g_exit_status = 130;
+		ft_fprintf(STDOUT_FILENO, "\n");
 	}
 }
 

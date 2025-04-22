@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 02:22:50 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/22 03:36:40 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/22 17:53:12 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,35 +72,6 @@ void	exec_builtin_message(t_list **dyn, int fd, pid_t pid)
 	else if (WIFSIGNALED(stat))
 	{
 		g_exit_status = 1;
-		ft_fprintf(STDOUT_FILENO, "\n");
-	}
-}
-
-_Bool	heredoc_signals(void)
-{
-	struct sigaction	act;
-	sigset_t			masks;
-
-	g_exit_status = S_HERE_DOC;
-	ft_bzero(&act, sizeof(act));
-	sigemptyset(&masks);
-	sigaddset(&masks, SIGINT);
-	sigaddset(&masks, SIGQUIT);
-	act.sa_mask = masks;
-	act.sa_handler = &on_here_doc;
-	if (sigaction(SIGINT, &act, NULL) == -1)
-		return (0);
-	act.sa_handler = SIG_IGN;
-	if (sigaction(SIGQUIT, &act, NULL) == -1)
-		return (0);
-	return (1);
-}
-
-void	on_here_doc(int s)
-{
-	if (s == SIGINT)
-	{
-		g_exit_status = 130;
 		ft_fprintf(STDOUT_FILENO, "\n");
 	}
 }

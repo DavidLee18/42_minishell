@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/22 03:22:14 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/22 20:51:57 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,7 +134,6 @@ _Bool		handle_signals(void);
 void		on_idle(int s);
 _Bool		handle_signals_ch(void);
 _Bool		ignore_signals(void);
-_Bool		heredoc_signals(void);
 void		on_here_doc(int s);
 
 char		*prompt(t_list **dyn);
