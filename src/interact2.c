@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 02:22:50 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/22 17:53:12 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/24 02:02:14 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,4 +74,25 @@ void	exec_builtin_message(t_list **dyn, int fd, pid_t pid)
 		g_exit_status = 1;
 		ft_fprintf(STDOUT_FILENO, "\n");
 	}
+}
+
+void	on_here_doc(void)
+{
+	struct termios	term;
+
+	g_exit_status = S_HERE_DOC;
+	tcgetattr(STDIN_FILENO, &term);
+	term.c_cc[VMIN] = 1;
+	tcsetattr(STDIN_FILENO, TCSANOW, &term);
+	heredoc_signals();
+}
+
+void	off_here_doc(void)
+{
+	struct termios	term;
+
+	tcgetattr(STDIN_FILENO, &term);
+	term.c_cc[VMIN] = 1;
+	tcsetattr(STDIN_FILENO, TCSANOW, &term);
+	handle_signals();
 }

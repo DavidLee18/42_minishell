@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 00:19:58 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/15 00:30:25 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/24 03:02:05 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,4 +28,47 @@ void	close_pipes_pipes(t_phrase *p, t_pipe_rw *io, _Bool all)
 				!= io->write_end))
 			close(p->deb.pipe_ends.write_end);
 	}
+}
+
+char	*last_line(t_list **dyn, char *str)
+{
+	char	**ss;
+	size_t	i;
+
+	ss = gc_split(dyn, str, '\n');
+	if (!ss || !*ss)
+		return (NULL);
+	i = 0;
+	while (ss[i])
+		i++;
+	return (ss[i - 1]);
+}
+
+void	getln_loop(t_list **dyn, char *limit, size_t m[2], char **str)
+{
+	ssize_t	code;
+
+	if (g_exit_status != S_HERE_DOC)
+		return ;
+	if (ft_strlen(*str) == 0)
+		here_doc_prompt(m[0]);
+	gc_realloc(dyn, (void **)str, m[1], m[1] + 2);
+	code = read(STDIN_FILENO, *str + m[1], 1);
+	if (code < 0)
+	{
+		*str = NULL;
+		return ;
+	}
+	if (code == 0 && (ft_strlen(*str) == 0 || (*str)[m[1] - 1] == '\n'))
+		return ;
+	if (code > 0)
+		(*str)[m[1] + code] = '\0';
+	if (last_line(dyn, *str) && ft_strcmp(last_line(dyn, *str), limit) == 0)
+	{
+		*str = gc_strjoin(dyn, *str, "\n");
+		return ;
+	}
+	if (ft_strchr(*str + m[1], '\n'))
+		here_doc_prompt(m[0]);
+	getln_loop(dyn, limit, (size_t[]){m[0], m[1] + code}, str);
 }

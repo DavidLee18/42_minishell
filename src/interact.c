@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 04:48:27 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/22 17:54:49 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/24 01:56:41 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,10 @@ void	on_idle(int s)
 	else
 	{
 		if (s == SIGINT)
+		{
 			g_exit_status = 130;
-		ft_fprintf(STDOUT_FILENO, "\n");
+			ft_fprintf(STDOUT_FILENO, "\n");
+		}
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 02:50:37 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/23 03:34:54 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/24 03:03:45 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,12 @@ int	here_doc(t_list **dyn, t_here_info *i, size_t n)
 
 	if (pipe(p) == -1)
 		return (perror(gc_strjoin(dyn, MINISHELL, ": pipe")), -1);
-	g_exit_status = S_HERE_DOC;
+	on_here_doc();
 	temp = getln_until(dyn, i->delim, n);
 	if (temp == NULL || n > 1)
 	{
 		g_exit_status = 1;
-		return (close(p[0]), close(p[1]), -1);
+		return (off_here_doc(), close(p[0]), close(p[1]), -1);
 	}
 	if (ft_strchr(temp, '$') != NULL && !i->raw)
 	{
@@ -32,12 +32,12 @@ int	here_doc(t_list **dyn, t_here_info *i, size_t n)
 		if (!temp)
 		{
 			g_exit_status = 1;
-			return (close(p[1]), p[0]);
+			return (off_here_doc(), close(p[1]), p[0]);
 		}
 	}
 	ft_fprintf(p[1], temp);
 	g_exit_status = 0;
-	return (close(p[1]), p[0]);
+	return (off_here_doc(), close(p[1]), p[0]);
 }
 
 size_t	count_here_docs(t_phrase *p)
@@ -100,32 +100,13 @@ void	close_wait(t_list **dyn, t_phrase *p, t_vec *pids)
 char	*getln_until(t_list **dyn, char *limit, size_t n)
 {
 	char	*str;
-	int		bytes;
-	size_t	offset;
-	ssize_t	code;
 
 	str = gc_strdup(dyn, "");
-	offset = 0;
-	here_doc_prompt(n);
-	while (1)
-	{
-		if (ioctl(STDIN_FILENO, FIONREAD, &bytes) == -1)
-			return (perror(gc_strjoin(dyn, MINISHELL, ": FIONREAD")), NULL);
-		if (g_exit_status != S_HERE_DOC)
-			return (str);
-		if (bytes <= 0)
-			continue ;
-		gc_realloc(dyn, (void **)&str, offset, offset + bytes);
-		code = read(STDIN_FILENO, str + offset, bytes);
-		if (code < 0)
-			return (NULL);
-		if (code == 0)
-			break ;
-		str[offset + code] = '\0';
-		offset += code;
-		here_doc_prompt(n);
-	}
-	if (ft_strcmp(gc_strtrim(dyn, str + offset, "\n"), limit) != 0)
+	getln_loop(dyn, limit, (size_t[]){n, 0}, &str);
+	if (g_exit_status != S_HERE_DOC)
+		return (str);
+	if (!str || ft_strlen(str) == 0
+		|| (last_line(dyn, str) && ft_strcmp(last_line(dyn, str), limit) != 0))
 		return (ft_fprintf(STDERR_FILENO, "\n%s: expected \'%s\', got EOF\n",
 				MINISHELL, limit), str);
 	return (str);

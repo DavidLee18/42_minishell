@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/22 20:51:57 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/24 02:40:17 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,7 +134,9 @@ _Bool		handle_signals(void);
 void		on_idle(int s);
 _Bool		handle_signals_ch(void);
 _Bool		ignore_signals(void);
-void		on_here_doc(int s);
+void		on_here_doc(void);
+void		off_here_doc(void);
+_Bool		heredoc_signals(void);
 
 char		*prompt(t_list **dyn);
 void		process(t_list **dyn, t_phrase *p, char **envp, t_vec *pids);
@@ -148,6 +150,8 @@ void		close_pipes(t_phrase *p, t_pipe_rw *io, _Bool all);
 t_pipe_rw	get_io(t_phrase **p);
 void		close_wait(t_list **dyn, t_phrase *p, t_vec *pids);
 char		*getln_until(t_list **dyn, char *limit, size_t n);
+void		getln_loop(t_list **dyn, char *limit, size_t m[2], char **str);
+char		*last_line(t_list **dyn, char *str);
 void		here_doc_prompt(size_t n);
 void		close_pipes_pipes(t_phrase *p, t_pipe_rw *io, _Bool all);
 void		builtin_fd_swap(t_list **dyn, t_phrase *p, t_pipe_rw *io);
