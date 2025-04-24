@@ -16,6 +16,13 @@ SRCS := src/builtin.c src/builtin2.c src/etc.c src/etc2.c \
 
 OBJS := $(patsubst src/%.c, build/%.o, $(SRCS))
 
+BONUS_SRCS := src/bonus/etc_bonus.c src/bonus/etc2_bonus.c \
+	src/bonus/lex_bonus.c src/bonus/lex2_bonus.c \
+	src/bonus/lex3_bonus.c src/bonus/main_bonus.c \
+	src/bonus/parse_bonus.c src/bonus/parse2_bonus.c \
+	src/bonus/parse3_bonus.c
+
+BONUS_OBJS := $(patsubst src/bonus/%.c, build/bonus/%.o, $(BONUS_SRCS))
 
 all: $(NAME)
 
@@ -37,16 +44,17 @@ fclean:	clean
 	rm -f $(NAME)
 	make fclean -C ft_printf
 
-# $(BONUS_NAME): $(BONUS_OBJS)
-#	make -C ft_printf
-#	$(CC) $(BONUS_OBJS) $(BFLAGS) -o $(BONUS_NAME)
+bonus: $(BONUS_OBJS)
+	make -C ft_printf
+	$(CC) $(BONUS_OBJS) $(DEBUG_BFLAGS) -o $(NAME)
 
-
-# $(BONUS_OBJS): $(BONUS_SRCS)
-#	$(CC) $(CFLAGS) -c $(patsubst build/%.o,src/%.c,$@)
-#	mkdir -p build
-#	mv $(patsubst build/%.o,%.o,$@) $@
+build/bonus/%.o: src/bonus/%.c
+	mkdir -p $(BUILD_DIR)
+	mkdir -p $(BUILD_DIR)/bonus
+	$(CC) $(DEBUG_CFLAGS) -c $< -o $@
 
 re:	fclean all
 
-.PNONY: all clean fclean re debug
+rebo: fclean bonus
+
+.PNONY: all clean fclean re bonus rebo
