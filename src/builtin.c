@@ -17,8 +17,18 @@
 
 int			exec_builtin(char *name, char **argv)
 {
-	(void)name;
-	(void)argv;
+	if (ft_strcmp(name, "echo") == 0)
+		return (exec_echo(argv));
+	else if (ft_strcmp(name, "cd") == 0)
+		return (cd(argv));
+	else if (ft_strcmp(name, "pwd") == 0)
+		return (pwd(argv));
+	else if (ft_strcmp(name, "exit") == 0)
+		return (exec_exit(argv));
+	else if (ft_strcmp(name, "export") == 0)
+		return (export(argv));
+	else if (ft_strcmp(name, "unset") == 0)
+		return (unset(argv));
 	return (-1);
 }
 int			exec_echo(char **argv)

@@ -163,6 +163,8 @@ int			exec_echo(char **argv);
 int			cd(char **argv);
 int			pwd(char **argv);
 int			exec_exit(char **argv);
+int			export(char **argv);
+int			unset(char **argv);
 void		decree_cd(t_list **dyn, char **argv);
 void		decree_export(t_list **dyn, char **argv, char ***envp);
 void		decree_unset(t_list **dyn, char **argv, char ***envp);
