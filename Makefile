@@ -8,11 +8,11 @@ DEBUG_BFLAGS := -Lft_printf -lftprintf -lreadline -g #-fsanitize=address -O1 -fn
 BUILD_DIR := build
 SRC_DIR := src
 
-SRCS := src/builtin.c src/builtin2.c src/etc.c src/etc2.c \
-	src/etc3.c src/interact.c src/interact2.c \
-	src/interact3.c src/lex.c src/lex2.c src/main.c \
-	src/parse.c src/parse2.c src/parse3.c src/process.c \
-	src/process2.c src/process3.c
+SRCS := src/builtin.c src/builtin2.c src/builtin3.c src/env.c \
+	src/etc.c src/etc2.c src/etc3.c src/interact.c \
+	src/interact2.c src/interact3.c src/lex.c src/lex2.c \
+	src/main.c src/parse.c src/parse2.c src/parse3.c \
+	src/process.c src/process2.c src/process3.c
 
 OBJS := $(patsubst src/%.c, build/%.o, $(SRCS))
 

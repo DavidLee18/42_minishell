@@ -6,13 +6,13 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 12:07:08 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/14 21:02:53 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/26 22:43:05 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int			exec_builtin(char **argv, char **envp)
+int	exec_builtin(char **argv, char **envp)
 {
 	if (ft_strcmp(argv[0], "echo") == 0)
 		return (exec_echo(argv));
@@ -30,7 +30,8 @@ int			exec_builtin(char **argv, char **envp)
 		return (unset(argv));
 	return (-1);
 }
-int			exec_echo(char **argv)
+
+int	exec_echo(char **argv)
 {
 	int	i;
 	int	flag;
@@ -57,7 +58,7 @@ int			exec_echo(char **argv)
 	return (0);
 }
 
-int			cd(char **argv)
+int	cd(char **argv)
 {
 	int	i;
 
@@ -72,7 +73,7 @@ int			cd(char **argv)
 	return (0);
 }
 
-int			pwd(char **argv)
+int	pwd(char **argv)
 {
 	char	*cwd;
 
@@ -85,7 +86,7 @@ int			pwd(char **argv)
 	return (0);
 }
 
-int			env(char **envp)
+int	env(char **envp)
 {
 	int	i;
 
@@ -95,50 +96,5 @@ int			env(char **envp)
 		printf("%s\n", envp[i]);
 		i++;
 	}
-	return (0);
-}
-
-int			exec_exit(char **argv)
-{
-	int	i;
-
-	i = 1;
-	printf("exit");
-	while (argv[i])
-	{
-		printf(" %s", argv[i]);
-		i++;
-	}
-	printf("\n");
-	return (0);
-}
-
-int		export(char **argv)
-{
-	int	i;
-
-	i = 1;
-	printf("export");
-	while (argv[i])
-	{
-		printf(" %s", argv[i]);
-		i++;
-	}
-	printf("\n");
-	return (0);
-}
-
-int		unset(char **argv)
-{
-	int	i;
-
-	i = 1;
-	printf("unset");
-	while (argv[i])
-	{
-		printf(" %s", argv[i]);
-		i++;
-	}
-	printf("\n");
 	return (0);
 }

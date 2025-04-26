@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/24 02:40:17 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/26 22:48:32 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,6 +171,9 @@ void		decree_export(t_list **dyn, char **argv, char ***envp);
 void		decree_unset(t_list **dyn, char **argv, char ***envp);
 void		decree_exit(t_list **dyn, char **argv);
 
-char 		*env_join(t_list **dyn, char **envp);
+char		*env_join(t_list **dyn, char **envp);
+char		**env_copy(t_list **dyn, char **envp);
+void		reset_env(t_list **dyn, char ***envp, char *argv);
+void		print_env(char **envp);
 
 #endif //MINISHELL_H

@@ -6,37 +6,13 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 13:01:59 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/21 12:12:14 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/26 22:48:07 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 volatile sig_atomic_t	g_exit_status = 0;
-
-char *env_join(t_list **dyn, char **envp)
-{
-	char	*str;
-	int		i;
-
-	i = 0;
-	str = "";
-	while (envp[i])
-	{
-		str = gc_strjoin(dyn, str, envp[i]);
-		str = gc_strjoin(dyn, str, "\n");
-		i++;
-	}
-	return (str);
-}
-
-char **env_copy(t_list **dyn, char **envp)
-{
-	char	*str;
-
-	str = env_join(dyn, envp);
-	return (gc_split(dyn, str, '\n'));
-}
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -61,10 +37,7 @@ int	main(int argc, char **argv, char **envp)
 			(free(str), print_phrase(ps), close_pipes(phrase_head(ps),
 					NULL, 1));
 		else if (*str)
-		{
-			free(str);
-			process(&dyn, phrase_head(ps), env, &pids);
-			close_wait(&dyn, phrase_head(ps), &pids, &env);
-		}
+			(free(str), process(&dyn, phrase_head(ps), env, &pids),
+				close_wait(&dyn, phrase_head(ps), &pids, &env));
 	}
 }

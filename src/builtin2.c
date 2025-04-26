@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 13:08:49 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/21 19:11:33 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/26 22:46:19 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,29 +50,6 @@ void	decree_exit(t_list **dyn, char **argv)
 		(gc_free_all(*dyn), exit(ft_atoi(argv[1])));
 }
 
-void	reset_env(t_list **dyn, char ***envp, char *argv)
-{
-	char	*str;
-
-	str = "";
-	str = env_join(dyn, *envp);
-	argv = gc_strjoin(dyn, "\n", argv);
-	str = gc_strjoin(dyn, str, argv);
-	*envp = gc_split(dyn, str, '\n');
-}
-
-void	print_env(char **envp)
-{
-	int	i;
-
-	i = 0;
-	while (envp[i])
-	{
-		printf("%s\n", envp[i]);
-		i++;
-	}
-}
-
 void	declare_join(t_list **dyn, char ***envp)
 {
 	int	i;
@@ -101,7 +78,8 @@ void	decree_export(t_list **dyn, char **argv, char ***envp)
 	while ((*envp)[i])
 	{
 		str = gc_split(dyn, (*envp)[i], '=');
-		if ((ft_strcmp(temp_av[0], str[0]) == 0) && (ft_strchr(argv[1], '=') != NULL))
+		if ((ft_strcmp(temp_av[0], str[0]) == 0)
+			&& (ft_strchr(argv[1], '=') != NULL))
 		{
 			(*envp)[i] = argv[1];
 			check = 1;
@@ -109,9 +87,10 @@ void	decree_export(t_list **dyn, char **argv, char ***envp)
 		}
 		i++;
 	}
-	if ((check = 0) && (ft_strchr(argv[1], '=') != NULL))
+	if ((check == 0) && (ft_strchr(argv[1], '=') != NULL))
 		reset_env(dyn, envp, argv[1]);
 }
+
 void	decree_unset(t_list **dyn, char **argv, char ***envp)
 {
 	int		i;
@@ -121,7 +100,8 @@ void	decree_unset(t_list **dyn, char **argv, char ***envp)
 	while ((*envp)[i])
 	{
 		str = gc_split(dyn, (*envp)[i], '=');
-		if ((ft_strcmp(argv[1], str[0]) == 0) && (ft_strchr(argv[1], '=') == NULL))
+		if ((ft_strcmp(argv[1], str[0]) == 0)
+			&& (ft_strchr(argv[1], '=') == NULL))
 		{
 			(*envp)[i] = "";
 			reset_env(dyn, envp, "");
