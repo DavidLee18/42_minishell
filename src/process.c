@@ -59,7 +59,7 @@ int	exec_cmd(t_list **dyn, t_phrase *p, char **arg_env[2], t_pipe_rw *io)
 		(handle_signals_ch(), close_pipes(phrase_head(p), io, 1));
 		if (is_builtin(arg_env[0][0]))
 		{
-			g_exit_status = exec_builtin(arg_env[0][0], arg_env[0]);
+			g_exit_status = exec_builtin(arg_env[0], arg_env[1]);
 			(gc_free_all(*dyn), exit(g_exit_status));
 		}
 		execve(arg_env[0][0], arg_env[0], arg_env[1]);

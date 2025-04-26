@@ -61,6 +61,30 @@ void	reset_env(t_list **dyn, char ***envp, char *argv)
 	*envp = gc_split(dyn, str, '\n');
 }
 
+void	print_env(char **envp)
+{
+	int	i;
+
+	i = 0;
+	while (envp[i])
+	{
+		printf("%s\n", envp[i]);
+		i++;
+	}
+}
+
+void	declare_join(t_list **dyn, char ***envp)
+{
+	int	i;
+
+	i = 0;
+	while ((*envp)[i])
+	{
+		(*envp)[i] = gc_strjoin(dyn, "declare -x", (*envp)[i]);
+		i++;
+	}
+}
+
 void	decree_export(t_list **dyn, char **argv, char ***envp)
 {
 	int		i;
@@ -68,6 +92,9 @@ void	decree_export(t_list **dyn, char **argv, char ***envp)
 	char	**str;
 	char	**temp_av;
 
+	declare_join(dyn, envp);
+	if (argv[1] == NULL)
+		print_env(*envp);
 	i = 0;
 	check = 0;
 	temp_av = gc_split(dyn, argv[1], '=');

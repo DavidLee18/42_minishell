@@ -158,10 +158,11 @@ void		builtin_fd_swap(t_list **dyn, t_phrase *p, t_pipe_rw *io);
 void		exec_builtin_message(t_list **dyn, int fd, pid_t pid, char ***envp);
 _Bool		builtin_needs_swap(const char *str);
 
-int			exec_builtin(char *name, char **argv);
+int			exec_builtin(char **argv, char **envp);
 int			exec_echo(char **argv);
 int			cd(char **argv);
 int			pwd(char **argv);
+int			env(char **envp);
 int			exec_exit(char **argv);
 int			export(char **argv);
 int			unset(char **argv);
@@ -170,6 +171,6 @@ void		decree_export(t_list **dyn, char **argv, char ***envp);
 void		decree_unset(t_list **dyn, char **argv, char ***envp);
 void		decree_exit(t_list **dyn, char **argv);
 
-char *env_join(t_list **dyn, char **envp);
+char 		*env_join(t_list **dyn, char **envp);
 
 #endif //MINISHELL_H

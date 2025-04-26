@@ -12,22 +12,21 @@
 
 #include "minishell.h"
 
-// STDIN_FILENO read_end
-// STDOUT_FILENO wirte_end
-
-int			exec_builtin(char *name, char **argv)
+int			exec_builtin(char **argv, char **envp)
 {
-	if (ft_strcmp(name, "echo") == 0)
+	if (ft_strcmp(argv[0], "echo") == 0)
 		return (exec_echo(argv));
-	else if (ft_strcmp(name, "cd") == 0)
+	else if (ft_strcmp(argv[0], "cd") == 0)
 		return (cd(argv));
-	else if (ft_strcmp(name, "pwd") == 0)
+	else if (ft_strcmp(argv[0], "pwd") == 0)
 		return (pwd(argv));
-	else if (ft_strcmp(name, "exit") == 0)
+	else if (ft_strcmp(argv[0], "env") == 0)
+		return (env(envp));
+	else if (ft_strcmp(argv[0], "exit") == 0)
 		return (exec_exit(argv));
-	else if (ft_strcmp(name, "export") == 0)
+	else if (ft_strcmp(argv[0], "export") == 0)
 		return (export(argv));
-	else if (ft_strcmp(name, "unset") == 0)
+	else if (ft_strcmp(argv[0], "unset") == 0)
 		return (unset(argv));
 	return (-1);
 }
@@ -36,12 +35,12 @@ int			exec_echo(char **argv)
 	int	i;
 	int	flag;
 
-	i = 0;
+	i = 1;
 	flag = 0;
 	while (argv[i])
 	{
-		if (ft_strcmp(argv[0], "-n") == 0)
-			flag = 1;
+		if (i == 1 && ft_strcmp(argv[i], "-n") == 0)
+			flag = i++;
 		if (flag == 0 && !argv[i + 1])
 		{
 			printf("%s\n", argv[i]);
@@ -75,9 +74,27 @@ int			cd(char **argv)
 
 int			pwd(char **argv)
 {
-	if (getcwd(argv[0], ft_strlen(argv[0])) == NULL)
+	char	*cwd;
+
+	(void)argv;
+	cwd = getcwd(NULL, 0);
+	if (cwd == NULL)
 		return (1);
-	printf("%s\n", argv[0]);
+	printf("%s\n", cwd);
+	free(cwd);
+	return (0);
+}
+
+int			env(char **envp)
+{
+	int	i;
+
+	i = 0;
+	while (envp[i])
+	{
+		printf("%s\n", envp[i]);
+		i++;
+	}
 	return (0);
 }
 
@@ -125,6 +142,3 @@ int		unset(char **argv)
 	printf("\n");
 	return (0);
 }
-//성공 0
-//실패 1
-//잘못된 인자 2
