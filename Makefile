@@ -20,7 +20,7 @@ BONUS_SRCS := src/bonus/etc_bonus.c src/bonus/etc2_bonus.c \
 	src/bonus/lex_bonus.c src/bonus/lex2_bonus.c \
 	src/bonus/lex3_bonus.c src/bonus/main_bonus.c \
 	src/bonus/parse_bonus.c src/bonus/parse2_bonus.c \
-	src/bonus/parse3_bonus.c
+	src/bonus/parse3_bonus.c src/bonus/parse4_bonus.c
 
 BONUS_OBJS := $(patsubst src/bonus/%.c, build/bonus/%.o, $(BONUS_SRCS))
 

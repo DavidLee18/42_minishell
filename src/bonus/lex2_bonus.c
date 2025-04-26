@@ -6,10 +6,9 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 19:33:49 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/25 00:58:16 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/26 02:19:31 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "minishell_bonus.h"
 
@@ -75,7 +74,8 @@ size_t	lex_split_pos2(const char *s, size_t i, t_split_piece *sp)
 		sp[1].length = 2;
 		return (i + 2);
 	}
-	else if (s[i] == '<' || s[i] == '|' || s[i] == '>' || s[i] == '(' || s[i] == ')')
+	else if (s[i] == '<' || s[i] == '|' || s[i] == '>' || s[i] == '('
+		|| s[i] == ')')
 	{
 		sp->start = sp[2].start;
 		sp->length = i - sp[2].start;

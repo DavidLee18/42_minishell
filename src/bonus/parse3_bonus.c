@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 01:22:51 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/25 01:23:11 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/26 02:31:38 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,26 +74,36 @@ char	*ft_get_env(t_list **dyn, const char *name)
 	return (getenv(name));
 }
 
-ssize_t	parse_each(t_list **dyn, t_phrase **p, const char **tokens)
+ssize_t	parse_each(t_list **dyn, t_sentence **s, const char **tokens,
+	ssize_t *parens)
 {
+	if (ft_strcmp((char *)*tokens, "&&") == 0)
+		return (parse_and(dyn, s, tokens));
+	if (ft_strcmp((char *)*tokens, "||") == 0)
+		return (parse_or(dyn, s, tokens));
+	if (ft_strcmp((char *)*tokens, "(") == 0
+		|| ft_strcmp((char *)*tokens, ")") == 0)
+		return (parse_paren(dyn, s, tokens, parens));
 	if (ft_strcmp((char *)*tokens, "|") == 0)
-		return (parse_pipe(dyn, p));
+		return (parse_pipe(dyn, s));
 	if (ft_strcmp((char *)*tokens, "<") == 0)
-		return (parse_redir_in(dyn, p, tokens));
+		return (parse_redir_in(dyn, s, tokens));
 	if (ft_strcmp((char *)*tokens, ">") == 0)
-		return (parse_redir_out(dyn, p, tokens));
+		return (parse_redir_out(dyn, s, tokens));
 	if (ft_strcmp((char *)*tokens, ">>") == 0)
-		return (parse_redir_apnd(dyn, p, tokens));
+		return (parse_redir_apnd(dyn, s, tokens));
 	if (ft_strcmp((char *)*tokens, "<<") == 0)
-		return (parse_here_doc(dyn, p, tokens));
-	return (parse_cmd_builtin(dyn, p, tokens));
+		return (parse_here_doc(dyn, s, tokens));
+	return (parse_cmd_builtin(dyn, s, tokens));
 }
 
-ssize_t	parse_pipe(t_list **dyn, t_phrase **p)
+ssize_t	parse_pipe(t_list **dyn, t_sentence **s)
 {
-	int	rw[2];
+	int			rw[2];
+	t_phrase	**p;
 
-	if (!phrase_spawn(dyn, p))
+	p = get_curr_phrase(dyn, s);
+	if (!p)
 		return (-1);
 	(*p)->type = PIPE;
 	if (pipe(rw) == -1)
