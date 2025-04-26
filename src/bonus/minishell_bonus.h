@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   minishell_bonus.h                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/24 02:40:17 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/25 03:59:41 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#ifndef MINISHELL_BONUS_H
+# define MINISHELL_BONUS_H
 # include <curses.h>
 # include <dirent.h>
 # include <errno.h>
@@ -28,7 +28,7 @@
 # include <sys/wait.h>
 # include <term.h>
 # include <termios.h>
-# include "../ft_printf/src/ft_printf.h"
+# include "../../ft_printf/src/ft_printf.h"
 # ifndef MINISHELL
 #  define MINISHELL "minishell"
 # endif
@@ -90,10 +90,26 @@ typedef struct s_split_piece
 	ssize_t	length;
 }	t_split_piece;
 
+typedef enum e_comb
+{
+	NOCOMB,
+	AND_COMB,
+	OR_COMB,
+	PAREN_COMB
+}	t_comb;
+
+typedef struct s_sentence
+{
+	t_comb				comb;
+	t_phrase			*phrases;
+	struct s_sentence	*next;
+}	t_sentence;
+
 char		**lex(t_list **dyn, const char *str);
 char		**lex_alloc(t_list **dyn, char const *s);
-_Bool		lex_preproc(char const *s, t_split_next *idxs, t_quote *p,
+_Bool		lex_preproc(const char *s, t_split_next *idxs, t_quote *p,
 				_Bool *syll);
+void		lex_pre_meta_syll(const char *s, t_split_next *idxs, _Bool *syll);
 void		lex_pre_quote(char c, t_split_next *idxs, t_quote *p);
 size_t		lex_split(t_list **dyn, char **split, char const *s);
 _Bool		lex_split_range(t_list **dyn, char **split, char const *s,
@@ -103,7 +119,8 @@ size_t		lex_split_pos2(const char *s, size_t i, t_split_piece *sp);
 size_t		lex_split_final(t_list **dyn, char **split, char const *s,
 				t_split_piece *sp);
 
-t_phrase	*parse(t_list **dyn, const char **tokens);
+t_sentence	*parse_sentence(t_list **dyn, const char **tokens);
+t_phrase	*parse_phrase(t_list **dyn, const char **tokens);
 ssize_t		parse_redir_in(t_list **dyn, t_phrase **p, const char **tokens);
 ssize_t		parse_redir_out(t_list **dyn, t_phrase **p, const char **tokens);
 ssize_t		parse_here_doc(t_list **dyn, t_phrase **p, const char **tokens);
@@ -118,7 +135,7 @@ char		*unquote_raw(t_list **dyn, const char *str);
 _Bool		is_cmd(const char *str);
 _Bool		is_builtin(const char *str);
 char		*replace_env(t_list **dyn, const char *str);
-t_phrase	*parse_lex(t_list **dyn, const char *str);
+t_sentence	*parse_lex(t_list **dyn, const char *str);
 
 _Bool		phrase_spawn(t_list **dyn, t_phrase **p);
 _Bool		is_space(char c);
@@ -148,14 +165,14 @@ int			exec_cmd(t_list **dyn, t_phrase *p, char **arg_env[2],
 size_t		count_here_docs(t_phrase *p);
 void		close_pipes(t_phrase *p, t_pipe_rw *io, _Bool all);
 t_pipe_rw	get_io(t_phrase **p);
-void		close_wait(t_list **dyn, t_phrase *p, t_vec *pids, char ***envp);
+void		close_wait(t_list **dyn, t_phrase *p, t_vec *pids);
 char		*getln_until(t_list **dyn, char *limit, size_t n);
 void		getln_loop(t_list **dyn, char *limit, size_t m[2], char **str);
 char		*last_line(t_list **dyn, char *str);
 void		here_doc_prompt(size_t n);
 void		close_pipes_pipes(t_phrase *p, t_pipe_rw *io, _Bool all);
 void		builtin_fd_swap(t_list **dyn, t_phrase *p, t_pipe_rw *io);
-void		exec_builtin_message(t_list **dyn, int fd, pid_t pid, char ***envp);
+void		exec_builtin_message(t_list **dyn, int fd, pid_t pid);
 _Bool		builtin_needs_swap(const char *str);
 
 int			exec_builtin(char *name, char **argv);
@@ -164,10 +181,8 @@ int			cd(char **argv);
 int			pwd(char **argv);
 int			exec_exit(char **argv);
 void		decree_cd(t_list **dyn, char **argv);
-void		decree_export(t_list **dyn, char **argv, char ***envp);
-void		decree_unset(t_list **dyn, char **argv, char ***envp);
+void		decree_export(t_list **dyn, char **argv);
+void		decree_unset(t_list **dyn, char **argv);
 void		decree_exit(t_list **dyn, char **argv);
 
-char *env_join(t_list **dyn, char **envp);
-
-#endif //MINISHELL_H
+#endif //MINISHELL_BONUS_H

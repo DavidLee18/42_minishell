@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 02:50:37 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/16 07:30:22 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/24 03:03:45 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,12 @@ int	here_doc(t_list **dyn, t_here_info *i, size_t n)
 
 	if (pipe(p) == -1)
 		return (perror(gc_strjoin(dyn, MINISHELL, ": pipe")), -1);
-	g_exit_status = 257;
+	on_here_doc();
 	temp = getln_until(dyn, i->delim, n);
 	if (temp == NULL || n > 1)
 	{
 		g_exit_status = 1;
-		return (close(p[0]), close(p[1]), -1);
+		return (off_here_doc(), close(p[0]), close(p[1]), -1);
 	}
 	if (ft_strchr(temp, '$') != NULL && !i->raw)
 	{
@@ -32,12 +32,12 @@ int	here_doc(t_list **dyn, t_here_info *i, size_t n)
 		if (!temp)
 		{
 			g_exit_status = 1;
-			return (close(p[1]), p[0]);
+			return (off_here_doc(), close(p[1]), p[0]);
 		}
 	}
 	ft_fprintf(p[1], temp);
 	g_exit_status = 0;
-	return (close(p[1]), p[0]);
+	return (off_here_doc(), close(p[1]), p[0]);
 }
 
 size_t	count_here_docs(t_phrase *p)
@@ -100,25 +100,14 @@ void	close_wait(t_list **dyn, t_phrase *p, t_vec *pids, char ***envp)
 char	*getln_until(t_list **dyn, char *limit, size_t n)
 {
 	char	*str;
-	char	*temp;
 
-	str = "";
-	here_doc_prompt(n);
-	temp = gc_getline(dyn, STDIN_FILENO);
-	while (temp != NULL && ft_strcmp(temp, limit) != 0)
-	{
-		str = gc_strjoin(dyn, str, gc_strjoin(dyn, temp, "\n"));
-		here_doc_prompt(n);
-		temp = gc_getline(dyn, STDIN_FILENO);
-	}
-	if (temp == NULL)
-		return (ft_fprintf(STDERR_FILENO, "%s: expected \'%s\', got EOF\n",
+	str = gc_strdup(dyn, "");
+	getln_loop(dyn, limit, (size_t[]){n, 0}, &str);
+	if (g_exit_status != S_HERE_DOC)
+		return (str);
+	if (!str || ft_strlen(str) == 0
+		|| (last_line(dyn, str) && ft_strcmp(last_line(dyn, str), limit) != 0))
+		return (ft_fprintf(STDERR_FILENO, "\n%s: expected \'%s\', got EOF\n",
 				MINISHELL, limit), str);
-	if (ft_strcmp(gc_strtrim(dyn, temp, "\n"), limit) != 0)
-	{
-		ft_fprintf(STDERR_FILENO, "%s: expected \'%s\', got EOF\n", MINISHELL,
-			limit);
-		return (gc_strjoin(dyn, str, temp));
-	}
 	return (str);
 }

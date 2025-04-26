@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse3.c                                           :+:      :+:    :+:   */
+/*   parse3_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/11 14:58:25 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/21 22:04:50 by jaehylee         ###   ########.fr       */
+/*   Created: 2025/04/25 01:22:51 by jaehylee          #+#    #+#             */
+/*   Updated: 2025/04/25 01:23:11 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "minishell_bonus.h"
 
 char	*replace_env(t_list **dyn, const char *str)
 {
