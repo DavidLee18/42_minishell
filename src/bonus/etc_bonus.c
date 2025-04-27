@@ -6,10 +6,9 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 01:12:15 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/26 19:26:26 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/28 01:33:27 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "minishell_bonus.h"
 

@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 13:08:49 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/26 22:46:19 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/28 01:31:20 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	decree_cd(t_list **dyn, char **argv)
 	if (!argv || !argv[0])
 		return ;
 	if (!argv[1])
-		ecode = chdir(getenv("PATH"));
+		ecode = chdir(getenv("HOME"));
 	else if (argv[2])
 	{
 		ft_fprintf(STDERR_FILENO, "%s: cd: too many arguments\n", MINISHELL);
@@ -27,19 +27,19 @@ void	decree_cd(t_list **dyn, char **argv)
 		return ;
 	}
 	else
-		ecode = chdir(getenv(argv[1]));
+		ecode = chdir(argv[1]);
 	g_exit_status = (-1) * ecode;
 	if (ecode == -1)
 		perror(gc_strjoin(dyn, MINISHELL, ": cd"));
 }
 
-void	decree_exit(t_list **dyn, char **argv)
+void	decree_exit(t_list **dyn, char **argv, int exit_code)
 {
 	if (!argv || !argv[0])
 		return ;
 	ft_fprintf(STDOUT_FILENO, "exit\n");
 	if (!argv[1])
-		(gc_free_all(*dyn), exit(g_exit_status));
+		(gc_free_all(*dyn), exit(exit_code));
 	else if (argv[2])
 	{
 		ft_fprintf(STDERR_FILENO, "%s: exit: too many arguments\n", MINISHELL);
@@ -47,18 +47,9 @@ void	decree_exit(t_list **dyn, char **argv)
 		return ;
 	}
 	else
-		(gc_free_all(*dyn), exit(ft_atoi(argv[1])));
-}
-
-void	declare_join(t_list **dyn, char ***envp)
-{
-	int	i;
-
-	i = 0;
-	while ((*envp)[i])
 	{
-		(*envp)[i] = gc_strjoin(dyn, "declare -x", (*envp)[i]);
-		i++;
+		exit_code = ft_atoi(argv[1]);
+		(gc_free_all(*dyn), exit(exit_code));
 	}
 }
 
@@ -69,9 +60,8 @@ void	decree_export(t_list **dyn, char **argv, char ***envp)
 	char	**str;
 	char	**temp_av;
 
-	declare_join(dyn, envp);
 	if (argv[1] == NULL)
-		print_env(*envp);
+		return (export_print(dyn, *envp));
 	i = 0;
 	check = 0;
 	temp_av = gc_split(dyn, argv[1], '=');

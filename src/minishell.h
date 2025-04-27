@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/27 19:10:35 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/28 01:11:06 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,7 +156,7 @@ void		getln_loop(t_list **dyn, char *limit, size_t m[2], char **str);
 char		*last_line(t_list **dyn, char *str);
 void		here_doc_prompt(size_t n);
 void		builtin_fd_swap(t_list **dyn, t_phrase *p, t_pipe_rw *io);
-void		exec_builtin_message(t_list **dyn, int fd, pid_t pid, char ***envp);
+void		exec_builtin_message(t_list **dyn, int fe, pid_t pid, char ***envp);
 _Bool		builtin_needs_swap(const char *str);
 
 int			exec_builtin(char **argv, char **envp);
@@ -170,11 +170,11 @@ int			unset(char **argv);
 void		decree_cd(t_list **dyn, char **argv);
 void		decree_export(t_list **dyn, char **argv, char ***envp);
 void		decree_unset(t_list **dyn, char **argv, char ***envp);
-void		decree_exit(t_list **dyn, char **argv);
+void		decree_exit(t_list **dyn, char **argv, int exit_code);
 
 char		*env_join(t_list **dyn, char **envp);
 char		**env_copy(t_list **dyn, char **envp);
 void		reset_env(t_list **dyn, char ***envp, char *argv);
-void		print_env(char **envp);
+void		export_print(t_list **dyn, char **envp);
 
 #endif //MINISHELL_H

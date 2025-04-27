@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 22:23:13 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/27 19:09:36 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/28 01:05:54 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ int	exec_cmd(t_list **dyn, t_phrase *p, char **arg_env[2], t_pipe_rw *io)
 {
 	int	id;
 
-	g_exit_status = -1;
 	(ignore_signals(), builtin_fd_swap(dyn, p, io));
 	id = fork();
 	if (id == -1)
@@ -61,13 +60,11 @@ int	exec_cmd(t_list **dyn, t_phrase *p, char **arg_env[2], t_pipe_rw *io)
 				&& dup2(io->write_end, STDOUT_FILENO) == -1))
 			(close_pipes(phrase_head(p), NULL), gc_free_all(*dyn),
 				exit(EXIT_FAILURE));
-		close_io(io);
 		if (is_builtin(arg_env[0][0]))
-			g_exit_status = exec_builtin(arg_env[0], arg_env[1]);
+			(close_io(io), exit(exec_builtin(arg_env[0], arg_env[1])));
 		else
-			execve(arg_env[0][0], arg_env[0], arg_env[1]);
-		(gc_free_all(*dyn), exit(is_builtin(arg_env[0][0]) * g_exit_status
-			+ !is_builtin(arg_env[0][0]) * EXIT_FAILURE));
+			(close_io(io), execve(arg_env[0][0], arg_env[0], arg_env[1]));
+		(gc_free_all(*dyn), exit(EXIT_FAILURE));
 	}
 	return (id);
 }

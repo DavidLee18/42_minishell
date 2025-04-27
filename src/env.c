@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/26 21:20:19 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/26 22:45:38 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/27 22:14:41 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,14 +47,17 @@ void	reset_env(t_list **dyn, char ***envp, char *argv)
 	*envp = gc_split(dyn, str, '\n');
 }
 
-void	print_env(char **envp)
+void	export_print(t_list **dyn, char **envp)
 {
-	int	i;
+	int		i;
+	char	**ss;
 
 	i = 0;
+	ss = NULL;
 	while (envp[i])
 	{
-		printf("%s\n", envp[i]);
+		ss = gc_split(dyn, envp[i], '=');
+		ft_fprintf(STDOUT_FILENO, "declare -x %s=\"%s\"\n", ss[0], ss[1]);
 		i++;
 	}
 }
