@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 01:22:51 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/26 02:31:38 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/28 02:31:09 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,9 +78,9 @@ ssize_t	parse_each(t_list **dyn, t_sentence **s, const char **tokens,
 	ssize_t *parens)
 {
 	if (ft_strcmp((char *)*tokens, "&&") == 0)
-		return (parse_and(dyn, s, tokens));
+		return (parse_and(dyn, s, tokens, parens));
 	if (ft_strcmp((char *)*tokens, "||") == 0)
-		return (parse_or(dyn, s, tokens));
+		return (parse_or(dyn, s, tokens, parens));
 	if (ft_strcmp((char *)*tokens, "(") == 0
 		|| ft_strcmp((char *)*tokens, ")") == 0)
 		return (parse_paren(dyn, s, tokens, parens));

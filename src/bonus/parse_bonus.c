@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 01:19:32 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/26 02:38:32 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/28 02:22:29 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ t_sentence	*parse(t_list **dyn, const char **tokens)
 	while (tokens[i] != NULL)
 	{
 		j = parse_each(dyn, &s, tokens + i, &parens);
-		if (j < 0 || parens < 0)
+		if (j < 0 || parens != 0)
 			return (NULL);
 		i += j;
 	}

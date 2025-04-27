@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/26 02:41:11 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/28 06:06:58 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,8 +105,6 @@ typedef struct s_sentence
 		t_phrase			*p;
 		struct s_sentence	*s;
 	}	clause;
-	struct s_sentence	*prev;
-	struct s_sentence	*next;
 }	t_sentence;
 
 char		**lex(t_list **dyn, const char *str);
@@ -128,8 +126,10 @@ ssize_t		parse_redir_in(t_list **dyn, t_sentence **s, const char **tokens);
 ssize_t		parse_redir_out(t_list **dyn, t_sentence **s, const char **tokens);
 ssize_t		parse_here_doc(t_list **dyn, t_sentence **s, const char **tokens);
 ssize_t		parse_redir_apnd(t_list **dyn, t_sentence **s, const char **tokens);
-ssize_t		parse_and(t_list **dyn, t_sentence **s, const char **tokens);
-ssize_t		parse_or(t_list **dyn, t_sentence **s, const char **tokens);
+ssize_t		parse_and(t_list **dyn, t_sentence **s, const char **tokens,
+				ssize_t *parens);
+ssize_t		parse_or(t_list **dyn, t_sentence **s, const char **tokens,
+				ssize_t *parens);
 ssize_t		parse_paren(t_list **dyn, t_sentence **s, const char **tokens,
 				ssize_t *parens);
 ssize_t		parse_cmd_builtin(t_list **dyn, t_sentence **s,
@@ -145,10 +145,11 @@ _Bool		is_cmd(const char *str);
 _Bool		is_builtin(const char *str);
 char		*replace_env(t_list **dyn, const char *str);
 t_sentence	*parse_lex(t_list **dyn, const char *str);
+t_sentence	*cons_and(t_list **dyn, t_sentence *s1, t_sentence *s2); //TODO
+t_sentence	*cons_or(t_list **dyn, t_sentence *s1, t_sentence *s2); //TODO
 
 _Bool		phrase_spawn(t_list **dyn, t_phrase **p);
-_Bool		sentence_spawn(t_list **dyn, t_sentence **s);
-t_phrase	**get_curr_phrase(t_list **dyn, t_sentence **s);
+t_phrase	**get_curr_phrase(t_list **dyn, t_sentence **s); //TODO
 _Bool		is_space(char c);
 char		**get_path(t_list **dyn);
 char		*get_exec_path(t_list **dyn, const char *cmd);
