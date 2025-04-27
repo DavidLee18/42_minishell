@@ -6,38 +6,38 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 02:50:37 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/24 03:03:45 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/27 17:13:54 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	here_doc(t_list **dyn, t_here_info *i, size_t n)
+int	here_doc(t_list **dyn, t_phrase **p, size_t n)
 {
-	int		p[2];
+	int		pfd[2];
 	char	*temp;
 
-	if (pipe(p) == -1)
+	if (pipe(pfd) == -1)
 		return (perror(gc_strjoin(dyn, MINISHELL, ": pipe")), -1);
 	on_here_doc();
-	temp = getln_until(dyn, i->delim, n);
+	temp = getln_until(dyn, (*p)->deb.hinfo.delim, n);
 	if (temp == NULL || n > 1)
 	{
 		g_exit_status = 1;
-		return (off_here_doc(), close(p[0]), close(p[1]), -1);
+		return (off_here_doc(), close(pfd[0]), close(pfd[1]), -1);
 	}
-	if (ft_strchr(temp, '$') != NULL && !i->raw)
+	if (ft_strchr(temp, '$') != NULL && !(*p)->deb.hinfo.raw)
 	{
 		temp = replace_env(dyn, temp);
 		if (!temp)
 		{
 			g_exit_status = 1;
-			return (off_here_doc(), close(p[1]), p[0]);
+			return (off_here_doc(), close(pfd[1]), pfd[0]);
 		}
 	}
-	ft_fprintf(p[1], temp);
+	ft_fprintf(pfd[1], temp);
 	g_exit_status = 0;
-	return (off_here_doc(), close(p[1]), p[0]);
+	return (off_here_doc(), close(pfd[1]), pfd[0]);
 }
 
 size_t	count_here_docs(t_phrase *p)
@@ -49,25 +49,18 @@ size_t	count_here_docs(t_phrase *p)
 	return (count_here_docs(p->succ));
 }
 
-void	close_pipes(t_phrase *p, t_pipe_rw *io, _Bool all)
+void	close_fps_all(t_phrase *p)
 {
 	if (!p)
 		return ;
 	else if (p->type == REDIR_IN || p->type == REDIR_OUT
 		|| p->type == REDIR_APND)
-	{
-		if (!io || all)
-			close(p->deb.fd);
-		else if (p->deb.fd > 2 && p->deb.fd != io->read_end
-			&& p->deb.fd != io->write_end)
-			close(p->deb.fd);
-	}
+		close(p->deb.fd);
 	else if (p->type == PIPE)
-		close_pipes_pipes(p, io, all);
-	if (all && io)
-		(close(io->write_end), close(io->read_end));
+		(close(p->deb.pipe_ends.write_end),
+			close(p->deb.pipe_ends.read_end));
 	if (p->succ)
-		close_pipes(p->succ, io, all);
+		close_fps_all(p->succ);
 }
 
 void	close_wait(t_list **dyn, t_phrase *p, t_vec *pids, char ***envp)
@@ -76,7 +69,7 @@ void	close_wait(t_list **dyn, t_phrase *p, t_vec *pids, char ***envp)
 	int	*id;
 
 	stat = 0;
-	close_pipes(p, NULL, 1);
+	close_fps_all(p);
 	id = pop_back(dyn, pids);
 	if (id && g_exit_status < -1)
 		return (exec_builtin_message(dyn, -g_exit_status, *id, envp));
