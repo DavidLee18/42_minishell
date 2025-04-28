@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 17:56:42 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/13 20:30:33 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/28 22:08:34 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ ssize_t	parse_redir_in(t_list **dyn, t_phrase **p, const char **tokens)
 		return (-1);
 	(*p)->type = REDIR_IN;
 	infile = unquote(dyn, tokens[1]);
-	if (infile == NULL)
+	if (infile == NULL || !is_cmd(infile))
 		return (-1);
 	if (access(infile, F_OK) == -1 || access(infile, R_OK) == -1)
 		return (perror(gc_strjoin(dyn, gc_strjoin(dyn, MINISHELL, ": "),
@@ -59,7 +59,7 @@ ssize_t	parse_redir_out(t_list **dyn, t_phrase **p, const char **tokens)
 		return (-1);
 	(*p)->type = REDIR_OUT;
 	outfile = unquote(dyn, tokens[1]);
-	if (outfile == NULL)
+	if (outfile == NULL || !is_cmd(outfile))
 		return (-1);
 	if (access(outfile, F_OK) == 0 && access(outfile, W_OK) == -1)
 		return (perror(gc_strjoin(dyn, gc_strjoin(dyn, MINISHELL, ": "),
@@ -80,7 +80,7 @@ ssize_t	parse_redir_apnd(t_list **dyn, t_phrase **p, const char **tokens)
 		return (-1);
 	(*p)->type = REDIR_APND;
 	apndfile = unquote(dyn, tokens[1]);
-	if (apndfile == NULL)
+	if (apndfile == NULL || !is_cmd(apndfile))
 		return (-1);
 	if (access(apndfile, F_OK) == 0 && access(apndfile, W_OK) == -1)
 		return (perror(gc_strjoin(dyn, gc_strjoin(dyn, MINISHELL, ": "),
@@ -97,7 +97,7 @@ ssize_t	parse_here_doc(t_list **dyn, t_phrase **p, const char **tokens)
 {
 	char	*eof;
 
-	if (!phrase_spawn(dyn, p) || tokens[1] == NULL)
+	if (!phrase_spawn(dyn, p) || tokens[1] == NULL || !is_cmd(tokens[1]))
 		return (-1);
 	(*p)->type = HERE_DOC;
 	if (tokens[1][0] == '\"' || tokens[1][0] == '\'')
