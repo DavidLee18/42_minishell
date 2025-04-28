@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 02:22:50 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/28 18:37:31 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/29 00:38:05 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ void	exec_builtin_message(t_list **dyn, int fe, pid_t pid, char ***envp)
 		return ;
 	str = gc_getline(dyn, (fe & 0xff00) >> 8);
 	if (str && ft_strncmp(str, "cd", 2) == 0)
-		decree_cd(dyn, gc_split(dyn, str, ' '));
+		decree_cd(dyn, gc_split(dyn, str, ' '), (const char **)*envp);
 	else if (str && ft_strncmp(str, "export", 6) == 0)
 		decree_export(dyn, gc_split(dyn, str, ' '), envp);
 	else if (str && ft_strncmp(str, "unset", 5) == 0)

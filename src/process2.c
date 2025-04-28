@@ -6,13 +6,13 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 02:50:37 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/27 17:13:54 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/29 00:15:25 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	here_doc(t_list **dyn, t_phrase **p, size_t n)
+int	here_doc(t_list **dyn, const char **envp, t_phrase **p, size_t n)
 {
 	int		pfd[2];
 	char	*temp;
@@ -28,7 +28,7 @@ int	here_doc(t_list **dyn, t_phrase **p, size_t n)
 	}
 	if (ft_strchr(temp, '$') != NULL && !(*p)->deb.hinfo.raw)
 	{
-		temp = replace_env(dyn, temp);
+		temp = replace_env(dyn, envp, temp);
 		if (!temp)
 		{
 			g_exit_status = 1;

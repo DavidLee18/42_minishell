@@ -6,20 +6,20 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 13:08:49 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/28 01:31:20 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/29 00:37:08 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	decree_cd(t_list **dyn, char **argv)
+void	decree_cd(t_list **dyn, char **argv, const char **envp)
 {
 	int	ecode;
 
 	if (!argv || !argv[0])
 		return ;
 	if (!argv[1])
-		ecode = chdir(getenv("HOME"));
+		ecode = chdir(ft_get_env(dyn, envp, "HOME"));
 	else if (argv[2])
 	{
 		ft_fprintf(STDERR_FILENO, "%s: cd: too many arguments\n", MINISHELL);
@@ -68,8 +68,8 @@ void	decree_export(t_list **dyn, char **argv, char ***envp)
 	while ((*envp)[i])
 	{
 		str = gc_split(dyn, (*envp)[i], '=');
-		if ((ft_strcmp(temp_av[0], str[0]) == 0)
-			&& (ft_strchr(argv[1], '=') != NULL))
+		if (ft_strcmp(temp_av[0], str[0]) == 0
+			&& ft_strchr(argv[1], '=') != NULL)
 		{
 			(*envp)[i] = argv[1];
 			check = 1;

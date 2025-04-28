@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/28 22:37:38 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/29 02:08:25 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,30 +103,36 @@ size_t		lex_split_pos2(const char *s, size_t i, t_split_piece *sp);
 size_t		lex_split_final(t_list **dyn, char **split, char const *s,
 				t_split_piece *sp);
 
-t_phrase	*parse(t_list **dyn, const char **tokens);
-ssize_t		parse_redir_in(t_list **dyn, t_phrase **p, const char **tokens);
-ssize_t		parse_redir_out(t_list **dyn, t_phrase **p, const char **tokens);
+t_phrase	*parse(t_list **dyn, const char **envp, const char **tokens);
+ssize_t		parse_redir_in(t_list **dyn, const char **envp,
+				t_phrase **p, const char **tokens);
+ssize_t		parse_redir_out(t_list **dyn, const char **envp,
+				t_phrase **p, const char **tokens);
 ssize_t		parse_here_doc(t_list **dyn, t_phrase **p, const char **tokens);
-ssize_t		parse_redir_apnd(t_list **dyn, t_phrase **p, const char **tokens);
-ssize_t		parse_cmd_builtin(t_list **dyn, t_phrase **p, const char **tokens);
-char		**parse_split_args(t_list **dyn, const char **tokens, ssize_t *i,
+ssize_t		parse_redir_apnd(t_list **dyn, const char **envp,
+				t_phrase **p, const char **tokens);
+ssize_t		parse_cmd_builtin(t_list **dyn, const char **envp,
+				t_phrase **p, const char **tokens);
+char		**parse_split_args(t_list **dyn, const char ***env_tok, ssize_t *i,
 				const char *cmd);
-ssize_t		parse_each(t_list **dyn, t_phrase **p, const char **tokens);
+ssize_t		parse_each(t_list **dyn, const char **envp,
+				t_phrase **p, const char **tokens);
 ssize_t		parse_pipe(t_list **dyn, t_phrase **p);
-char		*unquote(t_list **dyn, const char *str);
+char		*unquote(t_list **dyn, const char **envp, const char *str);
 char		*unquote_raw(t_list **dyn, const char *str);
 _Bool		is_cmd(const char *str);
 _Bool		is_builtin(const char *str);
-char		*replace_env(t_list **dyn, const char *str);
-t_phrase	*parse_lex(t_list **dyn, const char *str);
+char		*replace_env(t_list **dyn, const char **envp, const char *str);
+t_phrase	*parse_lex(t_list **dyn, const char **envp, const char *str);
 
 _Bool		phrase_spawn(t_list **dyn, t_phrase **p);
 _Bool		is_space(char c);
-char		**get_path(t_list **dyn);
-char		*get_exec_path(t_list **dyn, const char *cmd);
+char		**get_path(t_list **dyn, const char **envp);
+char		*get_exec_path(t_list **dyn, const char **envp, const char *cmd);
+_Bool		validate_cmd(t_list **dyn, const char **envp, char **cmd);
 void		print_phrase(t_phrase *p);
 void		print_args(const char **args);
-char		*ft_get_env(t_list **dyn, const char *name);
+char		*ft_get_env(t_list **dyn, const char **envp, const char *name);
 void		print_pipe(t_phrase *p);
 size_t		cmd_len(t_phrase *p);
 size_t		pipe_cnt(t_phrase *p);
@@ -142,7 +148,7 @@ _Bool		heredoc_signals(void);
 char		*prompt(t_list **dyn);
 _Bool		is_valid(t_phrase *ps, char *str);
 void		process(t_list **dyn, t_phrase *p, char **envp, t_vec *pids);
-int			here_doc(t_list **dyn, t_phrase **p, size_t n);
+int			here_doc(t_list **dyn, const char **envp, t_phrase **p, size_t n);
 t_phrase	*phrase_head(t_phrase *p);
 char		**get_cmd(t_phrase *p);
 int			exec_cmd(t_list **dyn, t_phrase *p, char **arg_env[2],
@@ -169,7 +175,7 @@ int			env(char **argv, char **envp);
 int			exec_exit(char **argv);
 int			export(char **argv);
 int			unset(char **argv);
-void		decree_cd(t_list **dyn, char **argv);
+void		decree_cd(t_list **dyn, char **argv, const char **envp);
 void		decree_export(t_list **dyn, char **argv, char ***envp);
 void		decree_unset(t_list **dyn, char **argv, char ***envp);
 void		decree_exit(t_list **dyn, char **argv, int exit_code);

@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 22:23:13 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/28 18:55:20 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/29 00:16:38 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ void	process(t_list **dyn, t_phrase *p, char **envp, t_vec *pids)
 		else if (p->type == REDIR_OUT || p->type == REDIR_APND)
 			io.write_end = p->deb.fd;
 		else if (p->type == HERE_DOC)
-			io.read_end = here_doc(dyn, &p, count_here_docs(p));
+			io.read_end = here_doc(dyn, (const char **)envp,
+					&p, count_here_docs(p));
 		if (!p->succ)
 			break ;
 		p = p->succ;

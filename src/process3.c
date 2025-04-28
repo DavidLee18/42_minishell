@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 00:19:58 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/28 22:09:01 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/29 01:55:03 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,8 +82,10 @@ void	close_io(t_pipe_rw *io)
 
 _Bool	is_valid(t_phrase *ps, char *str)
 {
+	if (str && !*str)
+		return (1);
 	if (!ps && *str)
-		return (ft_fprintf(STDERR_FILENO, "syntax error: `%s`\n", str),
+		return (ft_fprintf(STDERR_FILENO, "failed to parse: `%s`\n", str),
 			free(str), close_fps_all(phrase_head(ps)), 0);
 	if (ps->type == PIPE)
 		return (ft_fprintf(STDERR_FILENO, "syntax error: `%s`\n"

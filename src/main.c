@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 13:01:59 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/28 19:23:25 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/29 00:32:10 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		str = prompt(&dyn);
-		ps = parse_lex(&dyn, str);
+		ps = parse_lex(&dyn, (const char **)env, str);
 		if (!is_valid(phrase_head(ps), str))
 			continue ;
 		if (argc == 2 && ft_strcmp(argv[1], "--debug")
