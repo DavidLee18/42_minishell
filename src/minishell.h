@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/28 17:08:27 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/28 22:37:38 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,7 +165,7 @@ int			exec_builtin(char **argv, char **envp);
 int			exec_echo(char **argv);
 int			cd(char **argv);
 int			pwd(char **argv);
-int			env(char **envp);
+int			env(char **argv, char **envp);
 int			exec_exit(char **argv);
 int			export(char **argv);
 int			unset(char **argv);

@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 12:07:08 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/26 22:43:05 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/28 22:38:18 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	exec_builtin(char **argv, char **envp)
 	else if (ft_strcmp(argv[0], "pwd") == 0)
 		return (pwd(argv));
 	else if (ft_strcmp(argv[0], "env") == 0)
-		return (env(envp));
+		return (env(argv, envp));
 	else if (ft_strcmp(argv[0], "exit") == 0)
 		return (exec_exit(argv));
 	else if (ft_strcmp(argv[0], "export") == 0)
@@ -34,27 +34,20 @@ int	exec_builtin(char **argv, char **envp)
 int	exec_echo(char **argv)
 {
 	int	i;
-	int	flag;
 
-	i = 1;
-	flag = 0;
+	i = 1 + (ft_strcmp(argv[1], "-n") == 0);
 	while (argv[i])
 	{
-		if (i == 1 && ft_strcmp(argv[i], "-n") == 0)
-			flag = i++;
-		if (flag == 0 && !argv[i + 1])
-		{
-			printf("%s\n", argv[i]);
-			break ;
-		}
-		else if (flag == 1 && !argv[i + 1])
-		{
-			printf("%s", argv[i]);
-			break ;
-		}
-		printf("%s ", argv[i]);
+		if (argv[1][0] == '-' && ft_strcmp(argv[1], "-n"))
+			return (ft_fprintf(STDERR_FILENO, "%s: echo: unrecognized option "
+					"`%s`\n", MINISHELL, argv[1]), 2);
+		ft_fprintf(STDOUT_FILENO, "%s", argv[i]);
+		if (argv[i + 1])
+			ft_fprintf(STDOUT_FILENO, " ");
 		i++;
 	}
+	if (argv[1] && ft_strcmp(argv[1], "-n"))
+		ft_fprintf(STDOUT_FILENO, "\n");
 	return (0);
 }
 
@@ -77,7 +70,9 @@ int	pwd(char **argv)
 {
 	char	*cwd;
 
-	(void)argv;
+	if (argv[1] != NULL)
+		return (ft_fprintf(STDERR_FILENO, "%s: pwd: too many arguments\n",
+				MINISHELL), 2);
 	cwd = getcwd(NULL, 0);
 	if (cwd == NULL)
 		return (1);
@@ -86,10 +81,13 @@ int	pwd(char **argv)
 	return (0);
 }
 
-int	env(char **envp)
+int	env(char **argv, char **envp)
 {
 	int	i;
 
+	if (argv[1] != NULL)
+		return (ft_fprintf(STDERR_FILENO, "%s: env: too many arguments\n",
+				MINISHELL), 2);
 	i = 0;
 	while (envp[i])
 	{
