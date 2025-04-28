@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 22:23:13 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/28 01:05:54 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/28 18:55:20 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,7 @@ void	process(t_list **dyn, t_phrase *p, char **envp, t_vec *pids)
 	io = get_io(&p);
 	argv = get_cmd(p);
 	if (argv == NULL)
-		return ((void)ft_fprintf(STDERR_FILENO,
-				"%s: syntax error: invalid number of commands\n", MINISHELL));
+		return ;
 	while (p && p->type != PIPE)
 	{
 		if (p->type == REDIR_IN)

@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/28 01:11:06 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/28 17:08:27 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,6 +129,7 @@ void		print_args(const char **args);
 char		*ft_get_env(t_list **dyn, const char *name);
 void		print_pipe(t_phrase *p);
 size_t		cmd_len(t_phrase *p);
+size_t		pipe_cnt(t_phrase *p);
 
 _Bool		handle_signals(void);
 void		on_idle(int s);
@@ -139,6 +140,7 @@ void		off_here_doc(void);
 _Bool		heredoc_signals(void);
 
 char		*prompt(t_list **dyn);
+_Bool		is_valid(t_phrase *ps, char *str);
 void		process(t_list **dyn, t_phrase *p, char **envp, t_vec *pids);
 int			here_doc(t_list **dyn, t_phrase **p, size_t n);
 t_phrase	*phrase_head(t_phrase *p);

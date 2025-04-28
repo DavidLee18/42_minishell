@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 00:19:58 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/27 19:12:25 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/28 19:30:10 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,4 +78,28 @@ void	close_io(t_pipe_rw *io)
 		close(io->read_end);
 	if (io->write_end > 2)
 		close(io->write_end);
+}
+
+_Bool	is_valid(t_phrase *ps, char *str)
+{
+	if (!ps && *str)
+		return (ft_fprintf(STDERR_FILENO, "failed to parse: `%s`\n", str),
+			free(str), close_fps_all(phrase_head(ps)), 0);
+	if (ps->type == PIPE)
+		return (ft_fprintf(STDERR_FILENO, "syntax error: `%s`\n"
+				"starting by open pipe\n", str),
+			free(str), close_fps_all(phrase_head(ps)), 0);
+	while (ps && ps->succ)
+	{
+		if (ps->type == PIPE && ps->succ->type == PIPE)
+			return (ft_fprintf(STDERR_FILENO, "syntax error: `%s`\n"
+					"consecutive pipes\n", str),
+				free(str), close_fps_all(phrase_head(ps)), 0);
+		ps = ps->succ;
+	}
+	if (ps->type == PIPE && !ps->succ)
+		return (ft_fprintf(STDERR_FILENO, "syntax error: `%s`\n"
+				"finished with open pipe\n", str),
+			free(str), close_fps_all(phrase_head(ps)), 0);
+	return (1);
 }

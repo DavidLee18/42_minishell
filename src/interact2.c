@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 02:22:50 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/28 01:12:03 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/28 18:37:31 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,12 +47,11 @@ void	builtin_fd_swap(t_list **dyn, t_phrase *p, t_pipe_rw *io)
 		return ;
 	}
 	if (pipe(fp) == -1)
-	{
-		perror(gc_strjoin(dyn, MINISHELL, ": pipe"));
-		return ;
-	}
+		return (perror(gc_strjoin(dyn, MINISHELL, ": pipe")));
 	io->write_end = fp[1];
-	g_exit_status = -((fp[0] << 8) | temp_exit_status);
+	if (pipe_cnt(p) > 0)
+		close(fp[0]);
+	g_exit_status = -(fp[0] * (pipe_cnt(p) == 0) << 8 | temp_exit_status);
 }
 
 void	exec_builtin_message(t_list **dyn, int fe, pid_t pid, char ***envp)
@@ -63,6 +62,8 @@ void	exec_builtin_message(t_list **dyn, int fe, pid_t pid, char ***envp)
 	stat = 0;
 	waitpid(pid, &stat, 0);
 	str = NULL;
+	if ((fe & 0xff00) >> 8 == 0)
+		return ;
 	str = gc_getline(dyn, (fe & 0xff00) >> 8);
 	if (str && ft_strncmp(str, "cd", 2) == 0)
 		decree_cd(dyn, gc_split(dyn, str, ' '));
