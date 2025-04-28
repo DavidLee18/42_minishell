@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/28 06:06:58 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/29 05:47:46 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ typedef enum e_quote
 	DOUBLE
 }	t_quote;
 
-typedef enum e_cmd_type
+typedef enum e_phrase_type
 {
 	BUILTIN,
 	NORMAL,
@@ -53,8 +53,10 @@ typedef enum e_cmd_type
 	REDIR_OUT,
 	HERE_DOC,
 	REDIR_APND,
-	PIPE
-}	t_cmd_type;
+	PIPE,
+	AND_COMB,
+	OR_COMB
+}	t_phrase_type;
 
 typedef struct s_here_info
 {
@@ -68,18 +70,21 @@ typedef struct s_pipe_rw
 	int	read_end;
 }	t_pipe_rw;
 
-typedef union u_debris
-{
-	int			fd;
-	t_here_info	hinfo;
-	char		**argv;
-	t_pipe_rw	pipe_ends;
-}	t_debris;
-
 typedef struct s_phrase
 {
-	t_cmd_type		type;
-	t_debris		deb;
+	t_phrase_type	type;
+	union u_debris
+	{
+		int			fd;
+		t_here_info	hinfo;
+		char		**argv;
+		t_pipe_rw	pipe_ends;
+		struct s_phrase_tree
+		{
+			struct s_phrase	*p1;
+			struct s_phrase	*p2;
+		}	tree;
+	}	deb;
 	struct s_phrase	*pred;
 	struct s_phrase	*succ;
 }	t_phrase;
@@ -89,23 +94,6 @@ typedef struct s_split_piece
 	ssize_t	start;
 	ssize_t	length;
 }	t_split_piece;
-
-typedef enum e_comb
-{
-	NOCOMB,
-	AND_COMB,
-	OR_COMB
-}	t_comb;
-
-typedef struct s_sentence
-{
-	t_comb				comb;
-	union u_clause
-	{
-		t_phrase			*p;
-		struct s_sentence	*s;
-	}	clause;
-}	t_sentence;
 
 char		**lex(t_list **dyn, const char *str);
 char		**lex_alloc(t_list **dyn, char const *s);
@@ -121,35 +109,31 @@ size_t		lex_split_pos2(const char *s, size_t i, t_split_piece *sp);
 size_t		lex_split_final(t_list **dyn, char **split, char const *s,
 				t_split_piece *sp);
 
-t_sentence	*parse(t_list **dyn, const char **tokens);
-ssize_t		parse_redir_in(t_list **dyn, t_sentence **s, const char **tokens);
-ssize_t		parse_redir_out(t_list **dyn, t_sentence **s, const char **tokens);
-ssize_t		parse_here_doc(t_list **dyn, t_sentence **s, const char **tokens);
-ssize_t		parse_redir_apnd(t_list **dyn, t_sentence **s, const char **tokens);
-ssize_t		parse_and(t_list **dyn, t_sentence **s, const char **tokens,
-				ssize_t *parens);
-ssize_t		parse_or(t_list **dyn, t_sentence **s, const char **tokens,
-				ssize_t *parens);
-ssize_t		parse_paren(t_list **dyn, t_sentence **s, const char **tokens,
-				ssize_t *parens);
-ssize_t		parse_cmd_builtin(t_list **dyn, t_sentence **s,
+t_phrase	*parse(t_list **dyn, const char **tokens);
+ssize_t		parse_redir_in(t_list **dyn, t_phrase **p, const char **tokens);
+ssize_t		parse_redir_out(t_list **dyn, t_phrase **p, const char **tokens);
+ssize_t		parse_here_doc(t_list **dyn, t_phrase **p, const char **tokens);
+ssize_t		parse_redir_apnd(t_list **dyn, t_phrase **p, const char **tokens);
+ssize_t		parse_and(t_list **dyn, t_phrase **p, const char **tokens);
+ssize_t		parse_or(t_list **dyn, t_phrase **p, const char **tokens);
+ssize_t		parse_paren(t_list **dyn, t_phrase **p, const char **tokens);
+ssize_t		parse_cmd_builtin(t_list **dyn, t_phrase **p,
 				const char **tokens);
 char		**parse_split_args(t_list **dyn, const char **tokens, ssize_t *i,
 				const char *cmd);
-ssize_t		parse_each(t_list **dyn, t_sentence **s, const char **tokens,
-				ssize_t *parens);
-ssize_t		parse_pipe(t_list **dyn, t_sentence **s);
+ssize_t		parse_each(t_list **dyn, t_phrase **p, const char **tokens);
+ssize_t		parse_pipe(t_list **dyn, t_phrase **p);
 char		*unquote(t_list **dyn, const char *str);
 char		*unquote_raw(t_list **dyn, const char *str);
 _Bool		is_cmd(const char *str);
 _Bool		is_builtin(const char *str);
 char		*replace_env(t_list **dyn, const char *str);
-t_sentence	*parse_lex(t_list **dyn, const char *str);
-t_sentence	*cons_and(t_list **dyn, t_sentence *s1, t_sentence *s2); //TODO
-t_sentence	*cons_or(t_list **dyn, t_sentence *s1, t_sentence *s2); //TODO
+t_phrase	*parse_lex(t_list **dyn, const char *str);
+t_phrase	*cons_and(t_list **dyn, t_phrase *s1, t_phrase *s2); //TODO
+t_phrase	*cons_or(t_list **dyn, t_phrase *s1, t_phrase *s2); //TODO
 
 _Bool		phrase_spawn(t_list **dyn, t_phrase **p);
-t_phrase	**get_curr_phrase(t_list **dyn, t_sentence **s); //TODO
+// t_phrase	**get_curr_phrase(t_list **dyn, t_phrase **p); //TODO
 _Bool		is_space(char c);
 char		**get_path(t_list **dyn);
 char		*get_exec_path(t_list **dyn, const char *cmd);

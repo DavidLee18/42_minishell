@@ -6,40 +6,36 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 01:19:32 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/28 02:22:29 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/29 04:08:16 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell_bonus.h"
 
-t_sentence	*parse(t_list **dyn, const char **tokens)
+t_phrase	*parse(t_list **dyn, const char **tokens)
 {
 	size_t		i;
 	ssize_t		j;
-	t_sentence	*s;
-	ssize_t		parens;
+	t_phrase	*s;
 
 	i = 0;
 	j = 0;
 	s = NULL;
-	parens = 0;
 	while (tokens[i] != NULL)
 	{
-		j = parse_each(dyn, &s, tokens + i, &parens);
-		if (j < 0 || parens != 0)
+		j = parse_each(dyn, &s, tokens + i);
+		if (j < 0)
 			return (NULL);
 		i += j;
 	}
 	return (s);
 }
 
-ssize_t	parse_redir_in(t_list **dyn, t_sentence **s, const char **tokens)
+ssize_t	parse_redir_in(t_list **dyn, t_phrase **p, const char **tokens)
 {
 	char		*infile;
-	t_phrase	**p;
 
-	p = get_curr_phrase(dyn, s);
-	if (!p || tokens[1] == NULL)
+	if (!phrase_spawn(dyn, p) || tokens[1] == NULL)
 		return (-1);
 	(*p)->type = REDIR_IN;
 	infile = unquote(dyn, tokens[1]);
@@ -55,13 +51,11 @@ ssize_t	parse_redir_in(t_list **dyn, t_sentence **s, const char **tokens)
 	return (2);
 }
 
-ssize_t	parse_redir_out(t_list **dyn, t_sentence **s, const char **tokens)
+ssize_t	parse_redir_out(t_list **dyn, t_phrase **p, const char **tokens)
 {
 	char		*outfile;
-	t_phrase	**p;
 
-	p = get_curr_phrase(dyn, s);
-	if (!p || tokens[1] == NULL)
+	if (!phrase_spawn(dyn, p) || tokens[1] == NULL)
 		return (-1);
 	(*p)->type = REDIR_OUT;
 	outfile = unquote(dyn, tokens[1]);
@@ -78,13 +72,11 @@ ssize_t	parse_redir_out(t_list **dyn, t_sentence **s, const char **tokens)
 	return (2);
 }
 
-ssize_t	parse_redir_apnd(t_list **dyn, t_sentence **s, const char **tokens)
+ssize_t	parse_redir_apnd(t_list **dyn, t_phrase **p, const char **tokens)
 {
 	char		*apndfile;
-	t_phrase	**p;
 
-	p = get_curr_phrase(dyn, s);
-	if (!p || tokens[1] == NULL)
+	if (!phrase_spawn(dyn, p) || tokens[1] == NULL)
 		return (-1);
 	(*p)->type = REDIR_APND;
 	apndfile = unquote(dyn, tokens[1]);
@@ -101,13 +93,11 @@ ssize_t	parse_redir_apnd(t_list **dyn, t_sentence **s, const char **tokens)
 	return (2);
 }
 
-ssize_t	parse_here_doc(t_list **dyn, t_sentence **s, const char **tokens)
+ssize_t	parse_here_doc(t_list **dyn, t_phrase **p, const char **tokens)
 {
 	char		*eof;
-	t_phrase	**p;
 
-	p = get_curr_phrase(dyn, s);
-	if (!p || tokens[1] == NULL)
+	if (!phrase_spawn(dyn, p) || tokens[1] == NULL)
 		return (-1);
 	(*p)->type = HERE_DOC;
 	if (tokens[1][0] == '\"' || tokens[1][0] == '\'')
