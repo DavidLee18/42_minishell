@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 01:22:51 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/29 03:04:51 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/30 01:03:21 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,14 +99,12 @@ ssize_t	parse_each(t_list **dyn, t_phrase **p, const char **tokens)
 ssize_t	parse_pipe(t_list **dyn, t_phrase **ps)
 {
 	int			rw[2];
-	t_phrase	**p;
 
-	p = get_curr_phrase(dyn, ps);
-	if (!p)
+	if (!phrase_spawn(dyn, ps))
 		return (-1);
-	(*p)->type = PIPE;
+	(*ps)->type = PIPE;
 	if (pipe(rw) == -1)
 		return (perror(gc_strjoin(dyn, MINISHELL, ": pipe")), -1);
-	(*p)->deb.pipe_ends = (t_pipe_rw){.read_end = rw[0], .write_end = rw[1]};
+	(*ps)->deb.pipe_ends = (t_pipe_rw){.read_end = rw[0], .write_end = rw[1]};
 	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 01:12:15 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/26 02:20:40 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/30 02:43:11 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,8 @@ _Bool	is_cmd(const char *str)
 {
 	return (ft_strcmp((char *)str, "<") && ft_strcmp((char *)str, ">")
 		&& ft_strcmp((char *)str, "<<") && ft_strcmp((char *)str, ">>")
-		&& ft_strcmp((char *)str, "|"));
+		&& ft_strcmp((char *)str, "|") && ft_strcmp((char *)str, "&&")
+		&& ft_strcmp((char *)str, "||"));
 }
 
 _Bool	is_builtin(const char *str)
@@ -55,12 +56,11 @@ _Bool	is_builtin(const char *str)
 		|| ft_strcmp((char *)str, "exit") == 0);
 }
 
-void	print_phrase(t_phrase *p)
+void	print_phrase(t_phrase *p, size_t nested)
 {
 	if (p == NULL)
 		return ;
-	if (p->pred != NULL)
-		print_phrase(p->pred);
+	print_tabs(nested);
 	if (p->type == REDIR_IN)
 		ft_fprintf(STDOUT_FILENO, "REDIR_IN: %d\n", p->deb.fd);
 	else if (p->type == REDIR_OUT)
@@ -76,10 +76,10 @@ void	print_phrase(t_phrase *p)
 	}
 	else if (p->type == PIPE)
 		print_pipe(p);
-	else if (p->type == BUILTIN)
-		ft_fprintf(STDOUT_FILENO, "BUILTIN: ");
+	else if (p->type == BUILTIN || p->type == NORMAL)
+		print_cmd(p);
 	else
-		ft_fprintf(STDOUT_FILENO, "NORMAL: ");
-	if (p->type == BUILTIN || p->type == NORMAL)
-		print_args((const char **)p->deb.argv);
+		print_comb(p, nested);
+	if (p->succ != NULL)
+		print_phrase(p->succ, nested);
 }

@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/29 18:26:29 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/30 02:06:00 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,20 +129,24 @@ _Bool		is_cmd(const char *str);
 _Bool		is_builtin(const char *str);
 char		*replace_env(t_list **dyn, const char *str);
 t_phrase	*parse_lex(t_list **dyn, const char *str);
-t_phrase	*cons_and(t_list **dyn, t_phrase *s1, t_phrase *s2); //TODO
-t_phrase	*cons_or(t_list **dyn, t_phrase *s1, t_phrase *s2); //TODO
+t_phrase	*cons_and(t_list **dyn, t_phrase *s1, t_phrase *s2);
+t_phrase	*cons_or(t_list **dyn, t_phrase *s1, t_phrase *s2);
 
 _Bool		phrase_spawn(t_list **dyn, t_phrase **p);
-// t_phrase	**get_curr_phrase(t_list **dyn, t_phrase **p); //TODO
 _Bool		is_space(char c);
 char		**get_path(t_list **dyn);
 char		*get_exec_path(t_list **dyn, const char *cmd);
-void		print_phrase(t_phrase *p);
+void		print_phrase(t_phrase *p, size_t nested);
 void		print_args(const char **args);
 char		*ft_get_env(t_list **dyn, const char *name);
 void		print_pipe(t_phrase *p);
 size_t		cmd_len(t_phrase *p);
-char		**subparen(t_list **dyn, const char **tokens); //TODO
+char		**subparen(t_list **dyn, const char **tokens);
+char		**substrstr(t_list **dyn, const char **tokens, size_t start,
+				size_t len);
+void		print_comb(t_phrase *p, size_t nested);
+void		print_cmd(t_phrase *p);
+void		print_tabs(size_t n);
 
 _Bool		handle_signals(void);
 void		on_idle(int s);

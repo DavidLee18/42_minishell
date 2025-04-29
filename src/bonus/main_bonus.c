@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 00:59:22 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/25 04:00:05 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/30 02:25:21 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,19 +16,19 @@ volatile sig_atomic_t	g_exit_status = 0;
 
 int	main(void)
 {
-	char	*str;
-	char	**tokens;
-	t_list	*dyn;
+	char		*str;
+	t_list		*dyn;
+	t_phrase	*ps;
 
 	dyn = NULL;
-	str = readline("minishell>");
-	tokens = lex(&dyn, str);
-	if (!tokens)
-		return (1);
-	while (tokens && *tokens)
+	while (1)
 	{
-		ft_fprintf(STDOUT_FILENO, "%s\n", *tokens);
-		tokens++;
+		str = prompt(&dyn);
+		ps = parse_lex(&dyn, str);
+		if (!ps && *str)
+			ft_fprintf(STDERR_FILENO, "failed to parse: `%s`\n", str);
+		else
+			(free(str), print_phrase(phrase_head(ps), 0),
+				close_pipes(phrase_head(ps), NULL, 1));
 	}
-	return (0);
 }

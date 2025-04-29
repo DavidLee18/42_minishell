@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 13:01:59 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/21 12:12:14 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/30 02:23:21 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,8 @@ int	main(int argc, char **argv, char **envp)
 		if (!ps && *str)
 			ft_fprintf(STDERR_FILENO, "failed to parse: `%s`\n", str);
 		else if (argc == 2 && ft_strcmp(argv[1], "--debug") == 0)
-			(free(str), print_phrase(ps), close_pipes(phrase_head(ps),
-					NULL, 1));
+			(free(str), print_phrase(phrase_head(ps)),
+				close_pipes(phrase_head(ps), NULL, 1));
 		else if (*str)
 		{
 			free(str);

@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 16:45:45 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/30 00:44:52 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/30 02:40:45 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ ssize_t	parse_and(t_list **dyn, t_phrase **p, const char **tokens)
 {
 	t_phrase	*sent;
 	ssize_t		i;
+	t_phrase	*temp;
 
 	if (!(*p))
 		return (-1);
@@ -25,9 +26,11 @@ ssize_t	parse_and(t_list **dyn, t_phrase **p, const char **tokens)
 		i = parse_each(dyn, &sent, tokens + 1);
 		if (i <= 0)
 			return (i);
-		*p = cons_and(dyn, phrase_head(*p), phrase_head(sent));
-		if (*p == NULL)
+		temp = phrase_head(*p);
+		temp = cons_and(dyn, temp, phrase_head(sent));
+		if (temp == NULL)
 			return (-1);
+		*p = temp;
 		return (i + 1);
 	}
 	return (parse_and(dyn, &((*p)->deb.tree.p2), tokens));
@@ -37,6 +40,7 @@ ssize_t	parse_or(t_list **dyn, t_phrase **p, const char **tokens)
 {
 	t_phrase	*sent;
 	ssize_t		i;
+	t_phrase	*temp;
 
 	if (!(*p))
 		return (-1);
@@ -46,9 +50,11 @@ ssize_t	parse_or(t_list **dyn, t_phrase **p, const char **tokens)
 		i = parse_each(dyn, &sent, tokens + 1);
 		if (i <= 0)
 			return (i);
-		*p = cons_or(dyn, phrase_head(*p), phrase_head(sent));
-		if (*p == NULL)
+		temp = phrase_head(*p);
+		temp = cons_or(dyn, temp, phrase_head(sent));
+		if (temp == NULL)
 			return (-1);
+		*p = temp;
 		return (i + 1);
 	}
 	return (parse_or(dyn, &((*p)->deb.tree.p2), tokens));
