@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 16:45:45 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/29 13:11:57 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/29 18:49:31 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,4 +62,21 @@ ssize_t	parse_or(t_list **dyn, t_phrase **p, const char **tokens)
 
 ssize_t	parse_paren(t_list **dyn, t_phrase **p, const char **tokens)
 {
+	t_phrase	*p1;
+	char		**ss;
+	ssize_t		i;
+
+	if (ft_strcmp((char *)*tokens, ")") == 0)
+		return (-1);
+	p1 = NULL;
+	ss = subparen(dyn, tokens);
+	if (!ss)
+		return (-1);
+	i = parse_each(dyn, &p1, (const char **)ss);
+	if (i <= 0)
+		return (i);
+	if ((*p)->type != AND_COMB && (*p)->type != OR_COMB)
+		(*p)->succ = phrase_head(p1);
+	//else
+	return (i + 2);
 }

@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/29 05:47:46 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/29 18:26:29 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,6 +142,7 @@ void		print_args(const char **args);
 char		*ft_get_env(t_list **dyn, const char *name);
 void		print_pipe(t_phrase *p);
 size_t		cmd_len(t_phrase *p);
+char		**subparen(t_list **dyn, const char **tokens); //TODO
 
 _Bool		handle_signals(void);
 void		on_idle(int s);
