@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 16:45:45 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/29 18:49:31 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/30 00:44:52 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,7 @@ ssize_t	parse_and(t_list **dyn, t_phrase **p, const char **tokens)
 			return (-1);
 		return (i + 1);
 	}
-	i = parse_and(dyn, &((*p)->deb.tree.p2), tokens);
-	if (i < 0)
-		return (i);
-	return (i + 1);
+	return (parse_and(dyn, &((*p)->deb.tree.p2), tokens));
 }
 
 ssize_t	parse_or(t_list **dyn, t_phrase **p, const char **tokens)
@@ -54,10 +51,7 @@ ssize_t	parse_or(t_list **dyn, t_phrase **p, const char **tokens)
 			return (-1);
 		return (i + 1);
 	}
-	i = parse_or(dyn, &((*p)->deb.tree.p2), tokens);
-	if (i < 0)
-		return (i);
-	return (i + 1);
+	return (parse_or(dyn, &((*p)->deb.tree.p2), tokens));
 }
 
 ssize_t	parse_paren(t_list **dyn, t_phrase **p, const char **tokens)
@@ -75,8 +69,6 @@ ssize_t	parse_paren(t_list **dyn, t_phrase **p, const char **tokens)
 	i = parse_each(dyn, &p1, (const char **)ss);
 	if (i <= 0)
 		return (i);
-	if ((*p)->type != AND_COMB && (*p)->type != OR_COMB)
-		(*p)->succ = phrase_head(p1);
-	//else
+	(*p)->succ = phrase_head(p1);
 	return (i + 2);
 }
