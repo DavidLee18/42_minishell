@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 12:25:42 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/30 02:41:18 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/30 11:58:14 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ char	**subparen(t_list **dyn, const char **tokens)
 	}
 	if (!tokens[i] && parens > 0)
 		return (NULL);
-	return (substrstr(dyn, tokens, 0, i + 1));
+	return (substrstr(dyn, tokens, 1, i - 1));
 }
 
 t_phrase	*cons_and(t_list **dyn, t_phrase *s1, t_phrase *s2)

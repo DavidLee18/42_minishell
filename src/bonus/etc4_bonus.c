@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 01:35:13 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/30 02:08:08 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/30 11:56:01 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,10 @@ char	**substrstr(t_list **dyn, const char **tokens, size_t start, size_t len)
 	i = start;
 	while (i < start + len)
 	{
-		ss[i] = (char *)tokens[start + i];
+		ss[i - start] = (char *)tokens[i];
 		i++;
 	}
-	ss[i] = NULL;
+	ss[i - start] = NULL;
 	return (ss);
 }
 
@@ -41,6 +41,7 @@ void	print_comb(t_phrase *p, size_t nested)
 	print_tabs(nested);
 	ft_fprintf(STDOUT_FILENO, "p1: \n");
 	print_phrase(p->deb.tree.p1, nested + 1);
+	print_tabs(nested);
 	ft_fprintf(STDOUT_FILENO, "p2: \n");
 	print_phrase(p->deb.tree.p2, nested + 1);
 }
