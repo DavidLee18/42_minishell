@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 13:08:49 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/29 00:37:08 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/01 02:02:22 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,28 +56,27 @@ void	decree_exit(t_list **dyn, char **argv, int exit_code)
 void	decree_export(t_list **dyn, char **argv, char ***envp)
 {
 	int		i;
-	int		check;
 	char	**str;
 	char	**temp_av;
 
 	if (argv[1] == NULL)
 		return (export_print(dyn, *envp));
 	i = 0;
-	check = 0;
 	temp_av = gc_split(dyn, argv[1], '=');
+	if (!temp_av || !temp_av[1])
+		return ((void)ft_fprintf(STDERR_FILENO, "%s: export: why do you wanna"
+				" export a variable without a value?\n", MINISHELL));
 	while ((*envp)[i])
 	{
 		str = gc_split(dyn, (*envp)[i], '=');
-		if (ft_strcmp(temp_av[0], str[0]) == 0
-			&& ft_strchr(argv[1], '=') != NULL)
+		if (!ft_strcmp(temp_av[0], str[0]) && ft_strchr(argv[1], '='))
 		{
-			(*envp)[i] = argv[1];
-			check = 1;
+			(*envp)[i] = ft_strchr(argv[1], '=') + 1;
 			break ;
 		}
 		i++;
 	}
-	if ((check == 0) && (ft_strchr(argv[1], '=') != NULL))
+	if ((*envp)[i] && ft_strchr(argv[1], '=')[1])
 		reset_env(dyn, envp, argv[1]);
 }
 
