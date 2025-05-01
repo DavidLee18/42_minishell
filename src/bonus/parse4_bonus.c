@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 16:45:45 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/05/01 21:51:13 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/02 03:20:51 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,8 +82,13 @@ ssize_t	parse_paren(t_list **dyn, const char **envp,
 	p1 = parse(dyn, envp, (const char **)ss);
 	if (!p1)
 		return (-1);
-	(*p)->succ = phrase_head(p1);
-	(*p)->succ->pred = *p;
+	if (*p)
+	{
+		(*p)->succ = phrase_head(p1);
+		(*p)->succ->pred = *p;
+	}
+	else
+		*p = phrase_head(p1);
 	*p = (*p)->succ;
 	i = 1;
 	while (ss[i])
