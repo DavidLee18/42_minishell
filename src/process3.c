@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 00:19:58 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/29 01:55:03 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/01 16:43:10 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,11 +45,9 @@ void	getln_loop(t_list **dyn, char *limit, size_t m[2], char **str)
 		return ;
 	if (code > 0)
 		(*str)[m[1] + code] = '\0';
-	if (last_line(dyn, *str) && ft_strcmp(last_line(dyn, *str), limit) == 0)
-	{
-		*str = gc_strjoin(dyn, *str, "\n");
+	if ((*str)[m[1] + code - 1] == '\n'
+		&& !ft_strcmp(last_line(dyn, *str), limit))
 		return ;
-	}
 	if (ft_strchr(*str + m[1], '\n'))
 		here_doc_prompt(m[0]);
 	getln_loop(dyn, limit, (size_t[]){m[0], m[1] + code}, str);

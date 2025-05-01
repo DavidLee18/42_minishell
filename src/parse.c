@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 17:56:42 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/29 00:22:59 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/01 17:38:56 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,8 @@ ssize_t	parse_redir_out(t_list **dyn, const char **envp,
 	if (access(outfile, F_OK) == 0 && access(outfile, W_OK) == -1)
 		return (perror(gc_strjoin(dyn, gc_strjoin(dyn, MINISHELL, ": "),
 					outfile)), -1);
-	(*p)->deb.fd = open(outfile, O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR
-			| S_IRGRP | S_IROTH);
+	(*p)->deb.fd = open(outfile, O_WRONLY | O_CREAT | O_TRUNC,
+			S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 	if ((*p)->deb.fd == -1)
 		return (perror(gc_strjoin(dyn, gc_strjoin(dyn, MINISHELL, ": "),
 					outfile)), -1);
