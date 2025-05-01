@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 22:23:13 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/29 00:16:38 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/01 18:04:55 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	process(t_list **dyn, t_phrase *p, char **envp, t_vec *pids)
 			break ;
 		p = p->succ;
 	}
-	if (p && p->type == PIPE)
+	if (p && p->type == PIPE && io.write_end == STDOUT_FILENO)
 		io.write_end = p->deb.pipe_ends.write_end;
 	push_front(dyn, pids, exec_cmd(dyn, p, (char **[]){argv, envp}, &io));
 	if (p && (p->type == PIPE || p->succ))

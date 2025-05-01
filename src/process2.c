@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 02:50:37 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/05/01 15:37:25 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/01 18:02:43 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ int	here_doc(t_list **dyn, const char **envp, t_phrase **p, size_t n)
 		g_exit_status = 1;
 		return (off_here_doc(), close(pfd[0]), close(pfd[1]), -1);
 	}
+	(*p)->type = REDIR_IN;
+	(*p)->deb.fd = pfd[0];
 	if (ft_strchr(temp, '$') != NULL && !(*p)->deb.hinfo.raw)
 	{
 		temp = replace_env(dyn, envp, temp);
@@ -35,9 +37,8 @@ int	here_doc(t_list **dyn, const char **envp, t_phrase **p, size_t n)
 			return (off_here_doc(), close(pfd[1]), pfd[0]);
 		}
 	}
-	ft_fprintf(pfd[1], temp);
 	g_exit_status = 0;
-	return (off_here_doc(), close(pfd[1]), pfd[0]);
+	return (ft_fprintf(pfd[1], temp), off_here_doc(), close(pfd[1]), pfd[0]);
 }
 
 size_t	count_here_docs(t_phrase *p)
@@ -102,8 +103,13 @@ char	*getln_until(t_list **dyn, char *limit, size_t n)
 		|| (last_line(dyn, str) && ft_strcmp(last_line(dyn, str), limit) != 0))
 		return (ft_fprintf(STDERR_FILENO, "\n%s: expected \'%s\', got EOF\n",
 				MINISHELL, limit), str);
-	if (str && *str && ft_strnstr(str, limit, ft_strlen(str)))
-		return (gc_substr(dyn, str, 0,
-				ft_strnstr(str, limit, ft_strlen(str)) - str));
+	if (str && *str && str[ft_strlen(str) - 1] == '\n' && last_line(dyn, str)
+		&& ft_strcmp(last_line(dyn, str), limit) == 0
+		&& ft_strnstr(str, limit, ft_strlen(str)))
+	{
+		str = gc_strtrim(dyn, str, "\n");
+		ft_strrchr(str, '\n')[1] = 0;
+		return (str);
+	}
 	return (str);
 }
