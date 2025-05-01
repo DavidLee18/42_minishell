@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 15:45:12 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/09 21:49:35 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/01 01:47:06 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ char	**lex_alloc(t_list **dyn, char const *s)
 			return (NULL);
 	if (p != NONE)
 		return (NULL);
-	split = (char **)gc_calloc(dyn, idxs.length + 2, sizeof(char *));
+	split = (char **)gc_calloc(dyn, idxs.length + 3, sizeof(char *));
 	if (!split)
 		return (NULL);
 	return (split);

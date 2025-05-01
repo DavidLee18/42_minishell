@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/13 22:23:13 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/16 07:23:03 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/04/29 00:16:38 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,7 @@ void	process(t_list **dyn, t_phrase *p, char **envp, t_vec *pids)
 	io = get_io(&p);
 	argv = get_cmd(p);
 	if (argv == NULL)
-		return ((void)ft_fprintf(STDERR_FILENO,
-				"%s: syntax error: invalid number of commands\n", MINISHELL));
+		return ;
 	while (p && p->type != PIPE)
 	{
 		if (p->type == REDIR_IN)
@@ -29,7 +28,10 @@ void	process(t_list **dyn, t_phrase *p, char **envp, t_vec *pids)
 		else if (p->type == REDIR_OUT || p->type == REDIR_APND)
 			io.write_end = p->deb.fd;
 		else if (p->type == HERE_DOC)
-			io.read_end = here_doc(dyn, &p->deb.hinfo, count_here_docs(p));
+			io.read_end = here_doc(dyn, (const char **)envp,
+					&p, count_here_docs(p));
+		if (!p->succ)
+			break ;
 		p = p->succ;
 	}
 	if (p && p->type == PIPE)
@@ -43,26 +45,25 @@ int	exec_cmd(t_list **dyn, t_phrase *p, char **arg_env[2], t_pipe_rw *io)
 {
 	int	id;
 
-	g_exit_status = -1;
 	(ignore_signals(), builtin_fd_swap(dyn, p, io));
 	id = fork();
 	if (id == -1)
 		perror(gc_strjoin(dyn, MINISHELL, ": fork"));
 	else if (id == 0)
 	{
+		(handle_signals_ch(), close_pipes(phrase_head(p), io));
 		if (io->read_end == -1 || (io->read_end != STDIN_FILENO
-				&& dup2(io->read_end, STDIN_FILENO) == -1)
-			|| io->write_end == -1 || (io->write_end != STDOUT_FILENO
-				&& dup2(io->write_end, STDOUT_FILENO) == -1))
-			(gc_free_all(*dyn), close_pipes(phrase_head(p), io, 1),
+				&& dup2(io->read_end, STDIN_FILENO) == -1))
+			(close_pipes(phrase_head(p), NULL), gc_free_all(*dyn),
 				exit(EXIT_FAILURE));
-		(handle_signals_ch(), close_pipes(phrase_head(p), io, 1));
+		if (io->write_end == -1 || (io->write_end != STDOUT_FILENO
+				&& dup2(io->write_end, STDOUT_FILENO) == -1))
+			(close_pipes(phrase_head(p), NULL), gc_free_all(*dyn),
+				exit(EXIT_FAILURE));
 		if (is_builtin(arg_env[0][0]))
-		{
-			g_exit_status = exec_builtin(arg_env[0][0], arg_env[0]);
-			(gc_free_all(*dyn), exit(g_exit_status));
-		}
-		execve(arg_env[0][0], arg_env[0], arg_env[1]);
+			(close_io(io), exit(exec_builtin(arg_env[0], arg_env[1])));
+		else
+			(close_io(io), execve(arg_env[0][0], arg_env[0], arg_env[1]));
 		(gc_free_all(*dyn), exit(EXIT_FAILURE));
 	}
 	return (id);
