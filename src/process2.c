@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 02:50:37 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/29 00:15:25 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/01 15:37:25 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,5 +102,8 @@ char	*getln_until(t_list **dyn, char *limit, size_t n)
 		|| (last_line(dyn, str) && ft_strcmp(last_line(dyn, str), limit) != 0))
 		return (ft_fprintf(STDERR_FILENO, "\n%s: expected \'%s\', got EOF\n",
 				MINISHELL, limit), str);
+	if (str && *str && ft_strnstr(str, limit, ft_strlen(str)))
+		return (gc_substr(dyn, str, 0,
+				ft_strnstr(str, limit, ft_strlen(str)) - str));
 	return (str);
 }
