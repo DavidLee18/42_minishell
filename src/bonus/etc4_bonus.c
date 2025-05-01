@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 01:35:13 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/30 11:56:01 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/01 22:27:52 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,4 +66,13 @@ void	print_tabs(size_t n)
 		ft_fprintf(STDOUT_FILENO, "\t");
 		i++;
 	}
+}
+
+size_t	pipe_cnt(t_phrase *p)
+{
+	if (!p)
+		return (0);
+	if (p->type == PIPE)
+		return (1 + pipe_cnt(p->succ));
+	return (pipe_cnt(p->succ));
 }

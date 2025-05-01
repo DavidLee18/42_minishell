@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 12:25:42 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/30 11:58:14 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/01 22:40:55 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,29 +18,6 @@ _Bool	builtin_needs_swap(const char *str)
 		|| ft_strcmp((char *)str, "export") == 0
 		|| ft_strcmp((char *)str, "unset") == 0
 		|| ft_strcmp((char *)str, "exit") == 0);
-}
-
-char	**get_cmd(t_phrase *p)
-{
-	char	**argv;
-
-	argv = NULL;
-	while (1)
-	{
-		while (p && p->type != NORMAL && p->type != BUILTIN && p->type != PIPE)
-			p = p->succ;
-		if (!p || p->type == PIPE)
-			return (argv);
-		else if (p->type != NORMAL && p->type != BUILTIN)
-			p = p->succ;
-		else if (argv == NULL)
-		{
-			argv = p->deb.argv;
-			p = p->succ;
-		}
-		else
-			return (NULL);
-	}
 }
 
 char	**subparen(t_list **dyn, const char **tokens)

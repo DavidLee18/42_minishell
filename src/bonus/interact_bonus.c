@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 02:10:23 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/30 02:10:43 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/01 21:40:36 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,14 +72,14 @@ void	on_idle(int s)
 	}
 }
 
-t_phrase	*parse_lex(t_list **dyn, const char *str)
+t_phrase	*parse_lex(t_list **dyn, const char **envp, const char *str)
 {
 	char	**tokens;
 
 	tokens = lex(dyn, str);
 	if (!tokens)
 		return (NULL);
-	return (parse(dyn, (const char **)tokens));
+	return (parse(dyn, envp, (const char **)tokens));
 }
 
 _Bool	handle_signals_ch(void)

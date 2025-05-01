@@ -6,20 +6,21 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 01:22:08 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/28 01:38:47 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/01 21:36:28 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell_bonus.h"
 
-ssize_t	parse_cmd_builtin(t_list **dyn, t_phrase **p, const char **tokens)
+ssize_t	parse_cmd_builtin(t_list **dyn, const char **envp,
+	t_phrase **p, const char **tokens)
 {
 	char	*cmd;
 	ssize_t	i;
 
 	if (!phrase_spawn(dyn, p) || *tokens == NULL)
 		return (-1);
-	cmd = unquote(dyn, *tokens);
+	cmd = unquote(dyn, envp, *tokens);
 	if (!cmd)
 		return (-1);
 	if (is_builtin(cmd))
@@ -27,13 +28,12 @@ ssize_t	parse_cmd_builtin(t_list **dyn, t_phrase **p, const char **tokens)
 	else
 	{
 		(*p)->type = NORMAL;
-		if (ft_strchr(cmd, '/') == NULL)
-			cmd = get_exec_path(dyn, cmd);
-		if (!cmd)
+		if (!validate_cmd(dyn, envp, &cmd))
 			return (-1);
 	}
 	i = 0;
-	(*p)->deb.argv = parse_split_args(dyn, tokens, &i, cmd);
+	(*p)->deb.argv = parse_split_args(dyn, (const char **[]){envp, tokens},
+			&i, cmd);
 	if ((*p)->deb.argv == NULL)
 		return (-1);
 	return (i);
@@ -46,12 +46,12 @@ char	*unquote_raw(t_list **dyn, const char *str)
 	return ((char *)str);
 }
 
-char	**get_path(t_list **dyn)
+char	**get_path(t_list **dyn, const char **envp)
 {
 	char	**path;
 	char	*raw_path;
 
-	raw_path = getenv("PATH");
+	raw_path = ft_get_env(dyn, envp, "PATH");
 	if (raw_path == NULL)
 		return (NULL);
 	path = gc_split(dyn, raw_path, ':');
@@ -60,14 +60,14 @@ char	**get_path(t_list **dyn)
 	return (path);
 }
 
-char	*get_exec_path(t_list **dyn, const char *cmd)
+char	*get_exec_path(t_list **dyn, const char **envp, const char *cmd)
 {
 	size_t	i;
 	char	*temp_path;
 	char	**path;
 
 	i = 0;
-	path = get_path(dyn);
+	path = get_path(dyn, envp);
 	while (path && path[i])
 	{
 		temp_path = gc_strjoin(dyn, path[i], "/");
@@ -82,7 +82,7 @@ char	*get_exec_path(t_list **dyn, const char *cmd)
 				cmd)), NULL);
 }
 
-char	*unquote(t_list **dyn, const char *str)
+char	*unquote(t_list **dyn, const char **envp, const char *str)
 {
 	char	*raw;
 	char	*res;
@@ -95,7 +95,7 @@ char	*unquote(t_list **dyn, const char *str)
 		raw = (char *)str;
 	if (ft_strchr(raw, '$') == NULL)
 		return (raw);
-	res = replace_env(dyn, raw);
+	res = replace_env(dyn, envp, raw);
 	if (!res)
 		return (gc_strdup(dyn, ""));
 	return (res);
