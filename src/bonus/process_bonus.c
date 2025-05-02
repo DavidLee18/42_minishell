@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 22:39:18 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/05/01 22:39:37 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/03 03:12:31 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ void	process(t_list **dyn, t_phrase *p, char **envp, t_vec *pids)
 	argv = get_cmd(p);
 	if (argv == NULL)
 		return ;
+	if (p->type == AND_COMB || p->type == OR_COMB)
+		//TODO
 	while (p && p->type != PIPE)
 	{
 		if (p->type == REDIR_IN)
@@ -30,8 +32,6 @@ void	process(t_list **dyn, t_phrase *p, char **envp, t_vec *pids)
 		else if (p->type == HERE_DOC)
 			io.read_end = here_doc(dyn, (const char **)envp,
 					&p, count_here_docs(p));
-		if (!p->succ)
-			break ;
 		p = p->succ;
 	}
 	if (p && p->type == PIPE && io.write_end == STDOUT_FILENO)
@@ -76,15 +76,19 @@ char	**get_cmd(t_phrase *p)
 	argv = NULL;
 	while (1)
 	{
-		while (p && p->type != NORMAL && p->type != BUILTIN && p->type != PIPE)
+		while (p && p->type != NORMAL && p->type != BUILTIN && p->type != PIPE
+			&& p->type != AND_COMB && p->type != OR_COMB)
 			p = p->succ;
 		if (!p || p->type == PIPE)
 			return (argv);
-		else if (p->type != NORMAL && p->type != BUILTIN)
-			p = p->succ;
-		else if (argv == NULL)
+		else if ((p->type == NORMAL || p->type == BUILTIN) && argv == NULL)
 		{
 			argv = p->deb.argv;
+			p = p->succ;
+		}
+		else if ((p->type == AND_COMB || p->type == OR_COMB) && argv == NULL)
+		{
+			argv = get_cmd(p->deb.tree.p1);
 			p = p->succ;
 		}
 		else
