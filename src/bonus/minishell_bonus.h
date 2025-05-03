@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/05/01 22:39:02 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/04 00:07:49 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,6 +186,8 @@ void		here_doc_prompt(size_t n);
 void		builtin_fd_swap(t_list **dyn, t_phrase *p, t_pipe_rw *io);
 void		exec_builtin_message(t_list **dyn, int fe, pid_t pid, char ***envp);
 _Bool		builtin_needs_swap(const char *str);
+void		comb_rearr_io(t_list **dyn, t_phrase **p, char **envp,
+				t_pipe_rw *io);
 
 int			exec_builtin(char **argv, char **envp);
 int			exec_echo(char **argv);
