@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/05/04 00:07:49 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/04 01:51:07 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,6 +150,7 @@ char		*ft_get_env(t_list **dyn, const char **envp, const char *name);
 void		print_pipe(t_phrase *p);
 size_t		cmd_len(t_phrase *p);
 size_t		pipe_cnt(t_phrase *p);
+size_t		comb_cnt(t_phrase *p); //TODO
 char		**subparen(t_list **dyn, const char **tokens);
 char		**substrstr(t_list **dyn, const char **tokens, size_t start,
 				size_t len);
