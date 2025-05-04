@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 22:39:18 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/05/04 00:10:28 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/05 04:45:45 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ void	process(t_list **dyn, t_phrase *p, char **envp, t_vec *pids)
 	t_pipe_rw	io;
 	char		**argv;
 
+	if (contains_comb(p))
+		process_comb(dyn, p, envp, pids);
 	io = get_io(&p);
 	argv = get_cmd(p);
 	if (argv == NULL)
@@ -30,8 +32,6 @@ void	process(t_list **dyn, t_phrase *p, char **envp, t_vec *pids)
 		else if (p->type == HERE_DOC)
 			io.read_end = here_doc(dyn, (const char **)envp,
 					&p, count_here_docs(p));
-		else if (p->type == AND_COMB || p->type == OR_COMB)
-			comb_rearr_io(dyn, &p, envp, &io);
 		p = p->succ;
 	}
 	if (p && p->type == PIPE && io.write_end == STDOUT_FILENO)
@@ -52,16 +52,13 @@ int	exec_cmd(t_list **dyn, t_phrase *p, char **arg_env[2], t_pipe_rw *io)
 	else if (id == 0)
 	{
 		(handle_signals_ch(), close_pipes(phrase_head(p), io));
-		if (io->read_end == -1 || (io->read_end != STDIN_FILENO
-				&& dup2(io->read_end, STDIN_FILENO) == -1))
-			(close_pipes(phrase_head(p), NULL), gc_free_all(*dyn),
-				exit(EXIT_FAILURE));
-		if (io->write_end == -1 || (io->write_end != STDOUT_FILENO
-				&& dup2(io->write_end, STDOUT_FILENO) == -1))
-			(close_pipes(phrase_head(p), NULL), gc_free_all(*dyn),
-				exit(EXIT_FAILURE));
+		dup_io(dyn, p, io);
 		if (is_builtin(arg_env[0][0]))
-			(close_io(io), exit(exec_builtin(arg_env[0], arg_env[1])));
+		{
+			close_io(io);
+			id = exec_builtin(arg_env[0], arg_env[1]);
+			(gc_free_all(*dyn), exit(id));
+		}
 		else
 			(close_io(io), execve(arg_env[0][0], arg_env[0], arg_env[1]));
 		(gc_free_all(*dyn), exit(EXIT_FAILURE));
@@ -76,19 +73,13 @@ char	**get_cmd(t_phrase *p)
 	argv = NULL;
 	while (1)
 	{
-		while (p && p->type != NORMAL && p->type != BUILTIN && p->type != PIPE
-			&& p->type != AND_COMB && p->type != OR_COMB)
+		while (p && p->type != NORMAL && p->type != BUILTIN && p->type != PIPE)
 			p = p->succ;
 		if (!p || p->type == PIPE)
 			return (argv);
 		else if ((p->type == NORMAL || p->type == BUILTIN) && argv == NULL)
 		{
 			argv = p->deb.argv;
-			p = p->succ;
-		}
-		else if ((p->type == AND_COMB || p->type == OR_COMB) && argv == NULL)
-		{
-			argv = get_cmd(p->deb.tree.p1);
 			p = p->succ;
 		}
 		else

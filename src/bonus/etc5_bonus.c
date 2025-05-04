@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 22:27:18 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/05/01 22:28:01 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/04 23:26:32 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,4 +37,15 @@ _Bool	validate_cmd(t_list **dyn, const char **envp, char **cmd)
 	g_exit_status = 127;
 	return (perror(gc_strjoin(dyn, gc_strjoin(dyn, MINISHELL, ": "),
 				*cmd)), 0);
+}
+
+_Bool	contains_comb(t_phrase *p)
+{
+	while (p && p->type != PIPE)
+	{
+		if (p->type == AND_COMB || p->type == OR_COMB)
+			return (1);
+		p = p->succ;
+	}
+	return (0);
 }

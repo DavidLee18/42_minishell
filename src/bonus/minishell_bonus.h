@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/05/04 01:51:07 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/05 04:29:22 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,7 +150,7 @@ char		*ft_get_env(t_list **dyn, const char **envp, const char *name);
 void		print_pipe(t_phrase *p);
 size_t		cmd_len(t_phrase *p);
 size_t		pipe_cnt(t_phrase *p);
-size_t		comb_cnt(t_phrase *p); //TODO
+_Bool		contains_comb(t_phrase *p);
 char		**subparen(t_list **dyn, const char **tokens);
 char		**substrstr(t_list **dyn, const char **tokens, size_t start,
 				size_t len);
@@ -174,6 +174,7 @@ t_phrase	*phrase_head(t_phrase *p);
 char		**get_cmd(t_phrase *p);
 int			exec_cmd(t_list **dyn, t_phrase *p, char **arg_env[2],
 				t_pipe_rw *io);
+void		dup_io(t_list **dyn, t_phrase *p, t_pipe_rw *io);
 size_t		count_here_docs(t_phrase *p);
 void		close_pipes(t_phrase *p, t_pipe_rw *except);
 void		close_fps_all(t_phrase *p);
@@ -187,8 +188,10 @@ void		here_doc_prompt(size_t n);
 void		builtin_fd_swap(t_list **dyn, t_phrase *p, t_pipe_rw *io);
 void		exec_builtin_message(t_list **dyn, int fe, pid_t pid, char ***envp);
 _Bool		builtin_needs_swap(const char *str);
-void		comb_rearr_io(t_list **dyn, t_phrase **p, char **envp,
-				t_pipe_rw *io);
+void		process_comb(t_list **dyn, t_phrase *p, char **envp, t_vec *pids);
+void		wait_comb(t_list **dyn, t_phrase *p, t_vec *pids, char ***envp);
+void		wait_comb_branch(t_list **dyn, t_phrase *p, t_vec *pids,
+				char ***envp);
 
 int			exec_builtin(char **argv, char **envp);
 int			exec_echo(char **argv);
