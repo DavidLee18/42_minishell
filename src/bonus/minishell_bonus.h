@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/05/05 04:29:22 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/06 03:34:18 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ typedef struct s_phrase
 		t_pipe_rw	pipe_ends;
 		struct s_phrase_tree
 		{
+			// t_pipe_rw		io; // might be needed
 			struct s_phrase	*p1;
 			struct s_phrase	*p2;
 		}	tree;
@@ -171,6 +172,8 @@ _Bool		is_valid(t_phrase *ps, char *str);
 void		process(t_list **dyn, t_phrase *p, char **envp, t_vec *pids);
 int			here_doc(t_list **dyn, const char **envp, t_phrase **p, size_t n);
 t_phrase	*phrase_head(t_phrase *p);
+t_phrase	*phrase_last(t_phrase *p);
+t_phrase	*last_pipe(t_phrase *p);
 char		**get_cmd(t_phrase *p);
 int			exec_cmd(t_list **dyn, t_phrase *p, char **arg_env[2],
 				t_pipe_rw *io);

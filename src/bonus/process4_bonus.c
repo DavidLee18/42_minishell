@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 18:16:04 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/05/06 00:10:55 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/06 02:02:57 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,17 @@ void	process_comb(t_list **dyn, t_phrase *p, char **envp, t_vec *pids)
 	if (p->deb.tree.p1)
 		process(dyn, p->deb.tree.p1, envp, pids);
 	else
-		process(dyn, p->deb.tree.p2, envp, pids);
+	{
+		if (p->pred)
+			p->pred->succ = p->deb.tree.p2;
+		p->deb.tree.p2->pred = p->pred;
+		if (p->succ)
+		{
+			p->succ->pred = phrase_last(p->deb.tree.p2);
+			phrase_last(p->deb.tree.p2)->succ = p->succ;
+		}
+		process(dyn, last_pipe(p->deb.tree.p2), envp, pids);
+	}
 }
 
 void	wait_comb(t_list **dyn, t_phrase *p, t_vec *pids, char ***envp)

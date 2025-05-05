@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 22:27:18 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/05/04 23:26:32 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/06 03:31:41 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,4 +48,22 @@ _Bool	contains_comb(t_phrase *p)
 		p = p->succ;
 	}
 	return (0);
+}
+
+t_phrase	*phrase_last(t_phrase *p)
+{
+	if (!p || !p->succ)
+		return (p);
+	return (phrase_head(p->succ));
+}
+
+t_phrase	*last_pipe(t_phrase *p)
+{
+	if (!p)
+		return (NULL);
+	if (p->type == PIPE)
+		return (p);
+	if (p->pred)
+		return (last_pipe(p->pred));
+	return (NULL);
 }
