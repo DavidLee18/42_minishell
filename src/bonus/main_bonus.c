@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 00:59:22 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/05/01 21:44:13 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/06 00:11:03 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,8 @@ int	main(int argc, char **argv, char **envp)
 			continue ;
 		if (argc == 2 && ft_strcmp(argv[1], "--debug")
 			== 0)
-			(free(str), print_phrase(ps, 0), close_fps_all(phrase_head(ps)));
+			(free(str), print_phrase(phrase_head(ps), 0),
+				close_fps_all(phrase_head(ps)));
 		else if (*str)
 			(free(str), process(&dyn, phrase_head(ps), env, &pids),
 				close_wait(&dyn, phrase_head(ps), &pids, &env));

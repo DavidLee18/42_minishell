@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 18:16:04 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/05/05 04:44:49 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/06 00:10:55 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	wait_comb(t_list **dyn, t_phrase *p, t_vec *pids, char ***envp)
 		if ((p->type == AND_COMB && g_exit_status == 0)
 			|| (p->type == OR_COMB && g_exit_status != 0))
 			(process_comb(dyn, p, *envp, pids),
-				wait_comb_branch(dyn, p, pids, envp));
+				wait_comb_branch(dyn, p->deb.tree.p2, pids, envp));
 	}
 	else
 		wait_comb_branch(dyn, p->deb.tree.p2, pids, envp);
