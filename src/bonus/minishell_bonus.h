@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/05/06 03:34:18 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/07 02:27:44 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,6 @@ typedef struct s_phrase
 		t_pipe_rw	pipe_ends;
 		struct s_phrase_tree
 		{
-			// t_pipe_rw		io; // might be needed
 			struct s_phrase	*p1;
 			struct s_phrase	*p2;
 		}	tree;
@@ -195,6 +194,10 @@ void		process_comb(t_list **dyn, t_phrase *p, char **envp, t_vec *pids);
 void		wait_comb(t_list **dyn, t_phrase *p, t_vec *pids, char ***envp);
 void		wait_comb_branch(t_list **dyn, t_phrase *p, t_vec *pids,
 				char ***envp);
+t_phrase	*phrase_fpscpy(t_list **dyn, t_phrase *p, t_phrase *branch);
+t_phrase	*push_phrase_front(t_list **dyn, t_phrase *p, t_phrase *p2);
+t_phrase	*phrase_fpscpy2(t_list **dyn, t_phrase *p, t_phrase *branch);
+t_phrase	*push_phrase_back(t_list **dyn, t_phrase *p, t_phrase *p2);
 
 int			exec_builtin(char **argv, char **envp);
 int			exec_echo(char **argv);

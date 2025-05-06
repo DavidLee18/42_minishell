@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 22:39:18 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/05/05 04:45:45 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/07 02:27:19 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	process(t_list **dyn, t_phrase *p, char **envp, t_vec *pids)
 	t_pipe_rw	io;
 	char		**argv;
 
-	if (contains_comb(p))
+	if (contains_comb(p) || (p && p->type == PIPE && contains_comb(p->succ)))
 		process_comb(dyn, p, envp, pids);
 	io = get_io(&p);
 	argv = get_cmd(p);
@@ -99,4 +99,21 @@ t_pipe_rw	get_io(t_phrase **p)
 	io.read_end = (*p)->deb.pipe_ends.read_end;
 	*p = (*p)->succ;
 	return (io);
+}
+
+t_phrase	*phrase_fpscpy2(t_list **dyn, t_phrase *p, t_phrase *branch)
+{
+	if (!p->pred)
+		return (branch);
+	p = p->pred;
+	while (branch && p && p->type != PIPE)
+	{
+		if (p->type == REDIR_IN || p->type == REDIR_OUT || p->type == REDIR_APND
+			|| p->type == HERE_DOC)
+			branch = push_phrase_front(dyn, p, branch);
+		p = p->pred;
+	}
+	if (branch && p && p->type == PIPE)
+		branch = push_phrase_front(dyn, p, branch);
+	return (branch);
 }

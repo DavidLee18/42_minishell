@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 18:16:04 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/05/06 02:02:57 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/06 23:51:37 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,19 +29,9 @@ void	process_comb(t_list **dyn, t_phrase *p, char **envp, t_vec *pids)
 	while (p->type != AND_COMB && p->type != OR_COMB)
 		p = p->succ;
 	if (p->deb.tree.p1)
-		process(dyn, p->deb.tree.p1, envp, pids);
+		process(dyn, phrase_fpscpy(dyn, p, p->deb.tree.p1), envp, pids);
 	else
-	{
-		if (p->pred)
-			p->pred->succ = p->deb.tree.p2;
-		p->deb.tree.p2->pred = p->pred;
-		if (p->succ)
-		{
-			p->succ->pred = phrase_last(p->deb.tree.p2);
-			phrase_last(p->deb.tree.p2)->succ = p->succ;
-		}
-		process(dyn, last_pipe(p->deb.tree.p2), envp, pids);
-	}
+		process(dyn, phrase_fpscpy(dyn, p, p->deb.tree.p2), envp, pids);
 }
 
 void	wait_comb(t_list **dyn, t_phrase *p, t_vec *pids, char ***envp)
@@ -87,4 +77,21 @@ void	wait_comb_branch(t_list **dyn, t_phrase *p, t_vec *pids, char ***envp)
 		id = pop_back(dyn, pids);
 		p = p->succ;
 	}
+}
+
+t_phrase	*phrase_fpscpy(t_list **dyn, t_phrase *p, t_phrase *branch)
+{
+	if (!p->pred)
+		return (branch);
+	p = p->pred;
+	while (branch && p && p->type != PIPE)
+	{
+		if (p->type == REDIR_IN || p->type == REDIR_OUT || p->type == REDIR_APND
+			|| p->type == HERE_DOC)
+			branch = push_phrase_front(dyn, p, branch);
+		p = p->pred;
+	}
+	if (branch && p && p->type == PIPE)
+		branch = push_phrase_front(dyn, p, branch);
+	return (branch);
 }
