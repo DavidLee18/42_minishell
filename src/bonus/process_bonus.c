@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 22:39:18 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/05/07 02:27:19 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/07 14:19:14 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,17 +103,17 @@ t_pipe_rw	get_io(t_phrase **p)
 
 t_phrase	*phrase_fpscpy2(t_list **dyn, t_phrase *p, t_phrase *branch)
 {
-	if (!p->pred)
+	if (!p->succ)
 		return (branch);
-	p = p->pred;
+	p = p->succ;
 	while (branch && p && p->type != PIPE)
 	{
 		if (p->type == REDIR_IN || p->type == REDIR_OUT || p->type == REDIR_APND
 			|| p->type == HERE_DOC)
-			branch = push_phrase_front(dyn, p, branch);
-		p = p->pred;
+			branch = push_phrase_back(dyn, p, branch);
+		p = p->succ;
 	}
 	if (branch && p && p->type == PIPE)
-		branch = push_phrase_front(dyn, p, branch);
+		branch = push_phrase_back(dyn, p, branch);
 	return (branch);
 }

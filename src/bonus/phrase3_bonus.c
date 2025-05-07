@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 11:57:33 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/05/07 11:58:03 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/07 14:03:17 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,5 +53,20 @@ t_phrase	*push_phrase_front(t_list **dyn, t_phrase *p, t_phrase *p2)
 	res->pred = NULL;
 	res->succ = p2;
 	p2->pred = res;
+	return (res);
+}
+
+t_phrase	*push_phrase_back(t_list **dyn, t_phrase *p, t_phrase *p2)
+{
+	t_phrase	*res;
+
+	res = (t_phrase *)gc_calloc(dyn, 1, sizeof(t_phrase));
+	if (!res)
+		return (p2);
+	res->type = p->type;
+	res->deb = p->deb;
+	res->succ = NULL;
+	res->pred = p2;
+	p2->succ = res;
 	return (res);
 }
