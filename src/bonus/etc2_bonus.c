@@ -6,70 +6,97 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 01:24:18 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/25 01:24:40 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/07 12:03:32 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell_bonus.h"
 
-void	print_args(const char **args)
+_Bool	builtin_needs_swap(const char *str)
 {
+	return (ft_strcmp((char *)str, "cd") == 0
+		|| ft_strcmp((char *)str, "export") == 0
+		|| ft_strcmp((char *)str, "unset") == 0
+		|| ft_strcmp((char *)str, "exit") == 0);
+}
+
+char	**subparen(t_list **dyn, const char **tokens)
+{
+	size_t	parens;
 	size_t	i;
 
+	parens = 0;
 	i = 0;
-	while (args[i])
+	while (tokens[i])
 	{
-		ft_fprintf(STDOUT_FILENO, "%s ", args[i]);
+		if (ft_strcmp((char *)tokens[i], "(") == 0)
+			parens++;
+		else if (ft_strcmp((char *)tokens[i], ")") == 0)
+			parens--;
+		if (parens == 0)
+			break ;
 		i++;
 	}
-	ft_fprintf(STDOUT_FILENO, "\n");
+	if (!tokens[i] && parens > 0)
+		return (NULL);
+	return (substrstr(dyn, tokens, 1, i - 1));
 }
 
-void	print_pipe(t_phrase *p)
+char	**substrstr(t_list **dyn, const char **tokens, size_t start, size_t len)
 {
-	ft_fprintf(STDOUT_FILENO, "PIPE: read_end: %d, write_end: %d\n",
-		p->deb.pipe_ends.read_end, p->deb.pipe_ends.write_end);
+	char	**ss;
+	size_t	i;
+
+	if (len == 0)
+		return (NULL);
+	ss = (char **)gc_calloc(dyn, len + 1, sizeof(char *));
+	if (!ss)
+		return (NULL);
+	i = start;
+	while (i < start + len)
+	{
+		ss[i - start] = (char *)tokens[i];
+		i++;
+	}
+	ss[i - start] = NULL;
+	return (ss);
 }
 
-t_phrase	*phrase_head(t_phrase *p)
-{
-	if (!p || !p->pred)
-		return (p);
-	return (phrase_head(p->pred));
-}
-
-void	here_doc_prompt(size_t n)
+void	print_tabs(size_t n)
 {
 	size_t	i;
 
 	i = 0;
 	while (i < n)
 	{
-		ft_fprintf(STDOUT_FILENO, ">");
+		ft_fprintf(STDOUT_FILENO, "\t");
 		i++;
 	}
-	ft_fprintf(STDOUT_FILENO, " ");
 }
 
-size_t	cmd_len(t_phrase *p)
+_Bool	validate_cmd(t_list **dyn, const char **envp, char **cmd)
 {
-	char		**argv;
-	size_t		len;
-
-	if (!p)
-		return (0);
-	argv = get_cmd(p);
-	if (!argv)
-		return (0);
-	len = 0;
-	while (p && argv)
+	if (!ft_strchr(*cmd, '/'))
 	{
-		len++;
-		while (p && p->type != PIPE)
-			p = p->succ;
-		if (p && p->type == PIPE)
-			p = p->succ;
-		argv = get_cmd(p);
+		if (!get_exec_path(dyn, envp, *cmd))
+		{
+			g_exit_status = 127;
+			return (0);
+		}
+		*cmd = get_exec_path(dyn, envp, *cmd);
+		return (1);
 	}
-	return (len);
+	else if (access(*cmd, F_OK) == 0)
+	{
+		if (access(*cmd, X_OK) == -1)
+		{
+			g_exit_status = 126;
+			return (perror(gc_strjoin(dyn, gc_strjoin(dyn, MINISHELL, ": "),
+						*cmd)), 0);
+		}
+		return (1);
+	}
+	g_exit_status = 127;
+	return (perror(gc_strjoin(dyn, gc_strjoin(dyn, MINISHELL, ": "),
+				*cmd)), 0);
 }

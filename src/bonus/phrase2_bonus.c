@@ -1,35 +1,44 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   etc4_bonus.c                                       :+:      :+:    :+:   */
+/*   phrase2_bonus.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/30 01:35:13 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/05/01 22:27:52 by jaehylee         ###   ########.fr       */
+/*   Created: 2025/05/07 11:54:10 by jaehylee          #+#    #+#             */
+/*   Updated: 2025/05/07 11:56:27 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell_bonus.h"
 
-char	**substrstr(t_list **dyn, const char **tokens, size_t start, size_t len)
+void	print_pipe(t_phrase *p)
 {
-	char	**ss;
-	size_t	i;
+	ft_fprintf(STDOUT_FILENO, "PIPE: read_end: %d, write_end: %d\n",
+		p->deb.pipe_ends.read_end, p->deb.pipe_ends.write_end);
+}
 
-	if (len == 0)
-		return (NULL);
-	ss = (char **)gc_calloc(dyn, len + 1, sizeof(char *));
-	if (!ss)
-		return (NULL);
-	i = start;
-	while (i < start + len)
+size_t	cmd_len(t_phrase *p)
+{
+	char		**argv;
+	size_t		len;
+
+	if (!p)
+		return (0);
+	argv = get_cmd(p);
+	if (!argv)
+		return (0);
+	len = 0;
+	while (p && argv)
 	{
-		ss[i - start] = (char *)tokens[i];
-		i++;
+		len++;
+		while (p && p->type != PIPE)
+			p = p->succ;
+		if (p && p->type == PIPE)
+			p = p->succ;
+		argv = get_cmd(p);
 	}
-	ss[i - start] = NULL;
-	return (ss);
+	return (len);
 }
 
 void	print_comb(t_phrase *p, size_t nested)
@@ -54,18 +63,6 @@ void	print_cmd(t_phrase *p)
 		ft_fprintf(STDOUT_FILENO, "NORMAL: ");
 	if (p->type == BUILTIN || p->type == NORMAL)
 		print_args((const char **)p->deb.argv);
-}
-
-void	print_tabs(size_t n)
-{
-	size_t	i;
-
-	i = 0;
-	while (i < n)
-	{
-		ft_fprintf(STDOUT_FILENO, "\t");
-		i++;
-	}
 }
 
 size_t	pipe_cnt(t_phrase *p)

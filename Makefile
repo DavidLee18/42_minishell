@@ -19,8 +19,7 @@ OBJS := $(patsubst src/%.c, build/%.o, $(SRCS))
 BONUS_SRCS := src/bonus/builtin_bonus.c \
 	src/bonus/builtin2_bonus.c src/bonus/builtin3_bonus.c \
 	src/bonus/env_bonus.c src/bonus/etc_bonus.c \
-	src/bonus/etc2_bonus.c src/bonus/etc3_bonus.c \
-	src/bonus/etc4_bonus.c src/bonus/etc5_bonus.c \
+	src/bonus/etc2_bonus.c \
 	src/bonus/interact_bonus.c src/bonus/interact2_bonus.c \
 	src/bonus/interact3_bonus.c src/bonus/lex_bonus.c \
 	src/bonus/lex2_bonus.c src/bonus/lex3_bonus.c \
@@ -28,7 +27,8 @@ BONUS_SRCS := src/bonus/builtin_bonus.c \
 	src/bonus/parse2_bonus.c src/bonus/parse3_bonus.c \
 	src/bonus/parse4_bonus.c src/bonus/process_bonus.c \
 	src/bonus/process2_bonus.c src/bonus/process3_bonus.c \
-	src/bonus/process4_bonus.c
+	src/bonus/process4_bonus.c src/bonus/phrase_bonus.c \
+	src/bonus/phrase2_bonus.c src/bonus/phrase3_bonus.c
 
 BONUS_OBJS := $(patsubst src/bonus/%.c, build/bonus/%.o, $(BONUS_SRCS))
 
