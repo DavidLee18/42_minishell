@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 02:14:29 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/05/07 21:57:05 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/08 00:21:57 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ void	close_wait(t_list **dyn, t_phrase *p, t_vec *pids, char ***envp)
 	int	stat;
 	int	*id;
 
-	if (contains_comb(p))
+	if (contains_comb_glob(p))
 		wait_comb(dyn, p, pids, envp);
 	stat = 0;
 	close_fps_all(p);
