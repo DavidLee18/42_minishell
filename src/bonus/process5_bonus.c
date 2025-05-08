@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 21:07:01 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/05/07 21:44:39 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/08 19:55:50 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	process_comb_branch(t_list **dyn, t_phrase *p[2], char **envp,
 
 	if (contains_comb(p[1]) || (p[1] && p[1]->type == PIPE
 			&& contains_comb(p[1]->succ)))
-		process_comb(dyn, p[1], envp, pids);
+		process_comb(dyn, p + 1, envp, pids);
 	io = get_io(p + 1);
 	argv = get_cmd(p[1]);
 	if (argv == NULL)

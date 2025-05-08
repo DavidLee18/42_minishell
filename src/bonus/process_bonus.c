@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 22:39:18 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/05/08 00:38:31 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/08 16:08:23 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@ void	process(t_list **dyn, t_phrase *p, char **envp, t_vec *pids)
 	t_pipe_rw	io;
 	char		**argv;
 
-	if (contains_comb_glob(p))
-		process_comb(dyn, p, envp, pids);
+	if (contains_comb(p) || (p->type == PIPE && contains_comb(p->succ)))
+		process_comb(dyn, &p, envp, pids);
 	io = get_io(&p);
 	argv = get_cmd(p);
 	if (argv == NULL)

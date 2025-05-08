@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 18:16:04 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/05/07 22:41:41 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/09 08:27:51 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,32 +24,37 @@ void	dup_io(t_list **dyn, t_phrase *p, t_pipe_rw *io)
 			exit(EXIT_FAILURE));
 }
 
-void	process_comb(t_list **dyn, t_phrase *p, char **envp, t_vec *pids)
+void	process_comb(t_list **dyn, t_phrase **p, char **envp, t_vec *pids)
 {
-	while (p->type != AND_COMB && p->type != OR_COMB)
-		p = p->succ;
-	if (p->deb.tree.p1)
-		process_comb_branch(dyn, (t_phrase *[]){p, phrase_fpscpy(dyn, p,
-				phrase_head(phrase_fpscpy2(dyn, p, p->deb.tree.p1)))},
+	while (p && *p && (*p)->type != AND_COMB && (*p)->type != OR_COMB)
+		*p = (*p)->succ;
+	if ((*p)->deb.tree.p1)
+		process_comb_branch(dyn, (t_phrase *[]){(*p), phrase_fpscpy(dyn, *p,
+				phrase_head(phrase_fpscpy2(dyn, *p, (*p)->deb.tree.p1)))},
 			envp, pids);
 	else
-		process_comb_branch(dyn, (t_phrase *[]){p, phrase_fpscpy(dyn, p,
-				phrase_head(phrase_fpscpy2(dyn, p, p->deb.tree.p2)))},
+		process_comb_branch(dyn, (t_phrase *[]){(*p), phrase_fpscpy(dyn, *p,
+				phrase_head(phrase_fpscpy2(dyn, *p, (*p)->deb.tree.p2)))},
 			envp, pids);
+	if (p && *p && (*p)->succ)
+		*p = (*p)->succ;
 }
 
 void	wait_comb(t_list **dyn, t_phrase *p, t_vec *pids, char ***envp)
 {
 	while (p->type != AND_COMB && p->type != OR_COMB)
+	{
 		p = p->succ;
+		rotate_up(pids);
+	}
 	if (p->deb.tree.p1)
 	{
 		wait_comb_branch(dyn, p, pids, envp);
 		p->deb.tree.p1 = NULL;
 		if ((p->type == AND_COMB && g_exit_status == 0)
 			|| (p->type == OR_COMB && g_exit_status != 0))
-			(process_comb(dyn, p, *envp, pids),
-				wait_comb_branch(dyn, p, pids, envp));
+			(process_comb(dyn, &p, *envp, pids),
+				wait_comb_branch(dyn, p->pred, pids, envp));
 	}
 	else
 		wait_comb_branch(dyn, p, pids, envp);

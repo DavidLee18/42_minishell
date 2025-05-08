@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/05/07 21:38:05 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/09 08:28:09 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,7 +190,8 @@ void		here_doc_prompt(size_t n);
 void		builtin_fd_swap(t_list **dyn, t_phrase *p, t_pipe_rw *io);
 void		exec_builtin_message(t_list **dyn, int fe, pid_t pid, char ***envp);
 _Bool		builtin_needs_swap(const char *str);
-void		process_comb(t_list **dyn, t_phrase *p, char **envp, t_vec *pids);
+
+void		process_comb(t_list **dyn, t_phrase **p, char **envp, t_vec *pids);
 void		process_comb_branch(t_list **dyn, t_phrase *p[2], char **envp,
 				t_vec *pids);
 void		process_next_branch(t_list **dyn, t_phrase *p[2], char **envp,
@@ -206,6 +207,8 @@ t_phrase	*phrase_fpscpy2(t_list **dyn, t_phrase *p, t_phrase *branch);
 t_phrase	*push_phrase_back(t_list **dyn, t_phrase *p, t_phrase *p2);
 t_phrase	*next_branch(t_phrase *p);
 _Bool		contains_comb_glob(t_phrase *p);
+void		rotate_up(t_vec *v); // TODO
+void		rotate_down(t_vec *v); // TODO
 
 int			exec_builtin(char **argv, char **envp);
 int			exec_echo(char **argv);
