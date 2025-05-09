@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 21:07:01 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/05/08 19:55:50 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/09 21:41:22 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,4 +73,31 @@ int	exec_branch(t_list **dyn, t_phrase *p[2], char **arg_env[2],
 		(gc_free_all(*dyn), exit(EXIT_FAILURE));
 	}
 	return (id);
+}
+
+void	close_branch_fps(t_phrase *p)
+{
+	if (!p)
+		return ;
+	else if (p->type == REDIR_IN || p->type == REDIR_OUT
+		|| p->type == REDIR_APND)
+		close(p->deb.fd);
+	else if (p->type == PIPE)
+	{
+		if (p->succ)
+			close(p->deb.pipe_ends.write_end);
+		if (p->pred)
+			close(p->deb.pipe_ends.read_end);
+	}
+	if (p->succ)
+		close_branch_fps(p->succ);
+}
+
+void	restore_pids(t_phrase *from, t_phrase *to, t_vec *pids)
+{
+	while (from && from->pred && to && pids && from != to)
+	{
+		from = from->pred;
+		rotate_down(pids);
+	}
 }

@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 14:53:22 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/05/07 22:01:05 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/09 21:16:02 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 
 t_phrase	*next_branch(t_phrase *p)
 {
-	close_fps_all(phrase_head(p->deb.tree.p1));
 	if (p->deb.tree.p1)
-		return (p->deb.tree.p1);
+		return (close_branch_fps(phrase_head(p->deb.tree.p1)), p->deb.tree.p1);
 	close_fps_all(phrase_head(p->deb.tree.p2));
+	close_fps_all(phrase_head(p));
 	return (p->deb.tree.p2);
 }
 

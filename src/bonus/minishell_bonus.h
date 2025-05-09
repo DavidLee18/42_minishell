@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/05/09 08:28:09 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/09 21:30:31 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,9 +206,11 @@ t_phrase	*push_phrase_front(t_list **dyn, t_phrase *p, t_phrase *p2);
 t_phrase	*phrase_fpscpy2(t_list **dyn, t_phrase *p, t_phrase *branch);
 t_phrase	*push_phrase_back(t_list **dyn, t_phrase *p, t_phrase *p2);
 t_phrase	*next_branch(t_phrase *p);
+void		close_branch_fps(t_phrase *p);
 _Bool		contains_comb_glob(t_phrase *p);
-void		rotate_up(t_vec *v); // TODO
-void		rotate_down(t_vec *v); // TODO
+void		rotate_up(t_vec *v);
+void		rotate_down(t_vec *v);
+void		restore_pids(t_phrase *from, t_phrase *to, t_vec *pids);
 
 int			exec_builtin(char **argv, char **envp);
 int			exec_echo(char **argv);
