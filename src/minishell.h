@@ -133,7 +133,7 @@ _Bool		validate_cmd(t_list **dyn, const char **envp, char **cmd);
 void		print_phrase(t_phrase *p);
 void		print_args(const char **args);
 char		*ft_get_env(t_list **dyn, const char **envp, const char *name);
-void		print_pipe(t_phrase *p);
+void		print_pipe(const t_phrase *p);
 size_t		cmd_len(t_phrase *p);
 size_t		pipe_cnt(t_phrase *p);
 
