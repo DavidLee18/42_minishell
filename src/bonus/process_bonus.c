@@ -1,22 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   process.c                                          :+:      :+:    :+:   */
+/*   process_bonus.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/13 22:23:13 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/05/01 18:04:55 by jaehylee         ###   ########.fr       */
+/*   Created: 2025/05/01 22:39:18 by jaehylee          #+#    #+#             */
+/*   Updated: 2025/05/08 16:08:23 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "minishell_bonus.h"
 
 void	process(t_list **dyn, t_phrase *p, char **envp, t_vec *pids)
 {
 	t_pipe_rw	io;
 	char		**argv;
 
+	if (contains_comb(p) || (p->type == PIPE && contains_comb(p->succ)))
+		process_comb(dyn, &p, envp, pids);
 	io = get_io(&p);
 	argv = get_cmd(p);
 	if (argv == NULL)
@@ -30,8 +32,6 @@ void	process(t_list **dyn, t_phrase *p, char **envp, t_vec *pids)
 		else if (p->type == HERE_DOC)
 			io.read_end = here_doc(dyn, (const char **)envp,
 					&p, count_here_docs(p));
-		if (!p->succ)
-			break ;
 		p = p->succ;
 	}
 	if (p && p->type == PIPE && io.write_end == STDOUT_FILENO)
@@ -52,16 +52,13 @@ int	exec_cmd(t_list **dyn, t_phrase *p, char **arg_env[2], t_pipe_rw *io)
 	else if (id == 0)
 	{
 		(handle_signals_ch(), close_pipes(phrase_head(p), io));
-		if (io->read_end == -1 || (io->read_end != STDIN_FILENO
-				&& dup2(io->read_end, STDIN_FILENO) == -1))
-			(close_pipes(phrase_head(p), NULL), gc_free_all(*dyn),
-				exit(EXIT_FAILURE));
-		if (io->write_end == -1 || (io->write_end != STDOUT_FILENO
-				&& dup2(io->write_end, STDOUT_FILENO) == -1))
-			(close_pipes(phrase_head(p), NULL), gc_free_all(*dyn),
-				exit(EXIT_FAILURE));
+		dup_io(dyn, p, io);
 		if (is_builtin(arg_env[0][0]))
-			(close_io(io), exit(exec_builtin(arg_env[0], arg_env[1])));
+		{
+			close_io(io);
+			id = exec_builtin(arg_env[0], arg_env[1]);
+			(gc_free_all(*dyn), exit(id));
+		}
 		else
 			(close_io(io), execve(arg_env[0][0], arg_env[0], arg_env[1]));
 		(gc_free_all(*dyn), exit(EXIT_FAILURE));
@@ -80,9 +77,7 @@ char	**get_cmd(t_phrase *p)
 			p = p->succ;
 		if (!p || p->type == PIPE)
 			return (argv);
-		else if (p->type != NORMAL && p->type != BUILTIN)
-			p = p->succ;
-		else if (argv == NULL)
+		else if ((p->type == NORMAL || p->type == BUILTIN) && argv == NULL)
 		{
 			argv = p->deb.argv;
 			p = p->succ;
@@ -104,4 +99,21 @@ t_pipe_rw	get_io(t_phrase **p)
 	io.read_end = (*p)->deb.pipe_ends.read_end;
 	*p = (*p)->succ;
 	return (io);
+}
+
+t_phrase	*phrase_fpscpy2(t_list **dyn, t_phrase *p, t_phrase *branch)
+{
+	if (!p->succ)
+		return (branch);
+	p = p->succ;
+	while (branch && p && p->type != PIPE)
+	{
+		if (p->type == REDIR_IN || p->type == REDIR_OUT || p->type == REDIR_APND
+			|| p->type == HERE_DOC)
+			branch = push_phrase_back(dyn, p, branch);
+		p = p->succ;
+	}
+	if (branch && p && p->type == PIPE)
+		branch = push_phrase_back(dyn, p, branch);
+	return (branch);
 }

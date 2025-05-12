@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   process3.c                                         :+:      :+:    :+:   */
+/*   process3_bonus.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/15 00:19:58 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/05/01 16:43:10 by jaehylee         ###   ########.fr       */
+/*   Created: 2025/04/30 02:16:54 by jaehylee          #+#    #+#             */
+/*   Updated: 2025/05/07 20:42:42 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "minishell_bonus.h"
 
 char	*last_line(t_list **dyn, char *str)
 {
@@ -57,6 +57,9 @@ void	close_pipes(t_phrase *p, t_pipe_rw *except)
 {
 	if (!p)
 		return ;
+	if (p->type == AND_COMB || p->type == OR_COMB)
+		(close_pipes(phrase_head(p->deb.tree.p1), except),
+			close_pipes(phrase_head(p->deb.tree.p2), except));
 	else if (p->type == PIPE)
 	{
 		if (except == NULL || (p->deb.pipe_ends.write_end != except->write_end

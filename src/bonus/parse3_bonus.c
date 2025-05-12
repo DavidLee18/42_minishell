@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse3.c                                           :+:      :+:    :+:   */
+/*   parse3_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/11 14:58:25 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/29 00:26:19 by jaehylee         ###   ########.fr       */
+/*   Created: 2025/04/25 01:22:51 by jaehylee          #+#    #+#             */
+/*   Updated: 2025/05/01 21:52:38 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "minishell_bonus.h"
 
 char	*replace_env(t_list **dyn, const char **envp, const char *str)
 {
@@ -91,6 +91,13 @@ char	*ft_get_env(t_list **dyn, const char **envp, const char *name)
 ssize_t	parse_each(t_list **dyn, const char **envp,
 	t_phrase **p, const char **tokens)
 {
+	if (ft_strcmp((char *)*tokens, "&&") == 0)
+		return (parse_and(dyn, envp, p, tokens));
+	if (ft_strcmp((char *)*tokens, "||") == 0)
+		return (parse_or(dyn, envp, p, tokens));
+	if (ft_strcmp((char *)*tokens, "(") == 0
+		|| ft_strcmp((char *)*tokens, ")") == 0)
+		return (parse_paren(dyn, envp, p, tokens));
 	if (ft_strcmp((char *)*tokens, "|") == 0)
 		return (parse_pipe(dyn, p));
 	if (ft_strcmp((char *)*tokens, "<") == 0)
@@ -104,15 +111,15 @@ ssize_t	parse_each(t_list **dyn, const char **envp,
 	return (parse_cmd_builtin(dyn, envp, p, tokens));
 }
 
-ssize_t	parse_pipe(t_list **dyn, t_phrase **p)
+ssize_t	parse_pipe(t_list **dyn, t_phrase **ps)
 {
-	int	rw[2];
+	int			rw[2];
 
-	if (!phrase_spawn(dyn, p))
+	if (!phrase_spawn(dyn, ps))
 		return (-1);
-	(*p)->type = PIPE;
+	(*ps)->type = PIPE;
 	if (pipe(rw) == -1)
 		return (perror(gc_strjoin(dyn, MINISHELL, ": pipe")), -1);
-	(*p)->deb.pipe_ends = (t_pipe_rw){.read_end = rw[0], .write_end = rw[1]};
+	(*ps)->deb.pipe_ends = (t_pipe_rw){.read_end = rw[0], .write_end = rw[1]};
 	return (1);
 }

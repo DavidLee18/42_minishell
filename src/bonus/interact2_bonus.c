@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   interact2.c                                        :+:      :+:    :+:   */
+/*   interact2_bonus.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/16 02:22:50 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/29 00:38:05 by jaehylee         ###   ########.fr       */
+/*   Created: 2025/05/01 22:35:29 by jaehylee          #+#    #+#             */
+/*   Updated: 2025/05/01 22:35:50 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "minishell_bonus.h"
 
 _Bool	ignore_signals(void)
 {

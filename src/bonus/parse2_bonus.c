@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse2.c                                           :+:      :+:    :+:   */
+/*   parse2_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/10 23:55:38 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/29 02:09:40 by jaehylee         ###   ########.fr       */
+/*   Created: 2025/04/25 01:22:08 by jaehylee          #+#    #+#             */
+/*   Updated: 2025/05/01 21:36:28 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "minishell_bonus.h"
 
 ssize_t	parse_cmd_builtin(t_list **dyn, const char **envp,
 	t_phrase **p, const char **tokens)
@@ -68,8 +68,6 @@ char	*get_exec_path(t_list **dyn, const char **envp, const char *cmd)
 
 	i = 0;
 	path = get_path(dyn, envp);
-	if (path == NULL)
-		return (NULL);
 	while (path && path[i])
 	{
 		temp_path = gc_strjoin(dyn, path[i], "/");

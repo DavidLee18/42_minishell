@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   process2.c                                         :+:      :+:    :+:   */
+/*   process2_bonus.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/14 02:50:37 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/05/01 18:02:43 by jaehylee         ###   ########.fr       */
+/*   Created: 2025/04/30 02:14:29 by jaehylee          #+#    #+#             */
+/*   Updated: 2025/05/08 00:21:57 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "minishell_bonus.h"
 
 int	here_doc(t_list **dyn, const char **envp, t_phrase **p, size_t n)
 {
@@ -47,6 +47,12 @@ size_t	count_here_docs(t_phrase *p)
 		return (1 + count_here_docs(p->succ));
 	if (!p || p->type == PIPE)
 		return (0);
+	if (p->type == AND_COMB || p->type == OR_COMB)
+	{
+		if (p->deb.tree.p1)
+			return (count_here_docs(p->deb.tree.p1));
+		return (count_here_docs(p->deb.tree.p2));
+	}
 	return (count_here_docs(p->succ));
 }
 
@@ -69,6 +75,8 @@ void	close_wait(t_list **dyn, t_phrase *p, t_vec *pids, char ***envp)
 	int	stat;
 	int	*id;
 
+	if (contains_comb_glob(p))
+		wait_comb(dyn, p, pids, envp);
 	stat = 0;
 	close_fps_all(p);
 	id = pop_back(dyn, pids);

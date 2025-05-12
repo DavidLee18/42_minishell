@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   etc3.c                                             :+:      :+:    :+:   */
+/*   etc2_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/16 12:25:42 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/29 02:40:19 by jaehylee         ###   ########.fr       */
+/*   Created: 2025/04/25 01:24:18 by jaehylee          #+#    #+#             */
+/*   Updated: 2025/05/07 12:03:32 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "minishell_bonus.h"
 
 _Bool	builtin_needs_swap(const char *str)
 {
@@ -20,13 +20,58 @@ _Bool	builtin_needs_swap(const char *str)
 		|| ft_strcmp((char *)str, "exit") == 0);
 }
 
-size_t	pipe_cnt(t_phrase *p)
+char	**subparen(t_list **dyn, const char **tokens)
 {
-	if (!p)
-		return (0);
-	if (p->type == PIPE)
-		return (1 + pipe_cnt(p->succ));
-	return (pipe_cnt(p->succ));
+	size_t	parens;
+	size_t	i;
+
+	parens = 0;
+	i = 0;
+	while (tokens[i])
+	{
+		if (ft_strcmp((char *)tokens[i], "(") == 0)
+			parens++;
+		else if (ft_strcmp((char *)tokens[i], ")") == 0)
+			parens--;
+		if (parens == 0)
+			break ;
+		i++;
+	}
+	if (!tokens[i] && parens > 0)
+		return (NULL);
+	return (substrstr(dyn, tokens, 1, i - 1));
+}
+
+char	**substrstr(t_list **dyn, const char **tokens, size_t start, size_t len)
+{
+	char	**ss;
+	size_t	i;
+
+	if (len == 0)
+		return (NULL);
+	ss = (char **)gc_calloc(dyn, len + 1, sizeof(char *));
+	if (!ss)
+		return (NULL);
+	i = start;
+	while (i < start + len)
+	{
+		ss[i - start] = (char *)tokens[i];
+		i++;
+	}
+	ss[i - start] = NULL;
+	return (ss);
+}
+
+void	print_tabs(size_t n)
+{
+	size_t	i;
+
+	i = 0;
+	while (i < n)
+	{
+		ft_fprintf(STDOUT_FILENO, "\t");
+		i++;
+	}
 }
 
 _Bool	validate_cmd(t_list **dyn, const char **envp, char **cmd)

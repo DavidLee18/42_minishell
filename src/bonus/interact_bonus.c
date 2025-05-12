@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   interact.c                                         :+:      :+:    :+:   */
+/*   interact_bonus.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/12 04:48:27 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/29 00:30:58 by jaehylee         ###   ########.fr       */
+/*   Created: 2025/04/30 02:10:23 by jaehylee          #+#    #+#             */
+/*   Updated: 2025/05/01 21:40:36 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "minishell_bonus.h"
 
 char	*prompt(t_list **dyn)
 {
@@ -52,7 +52,7 @@ _Bool	handle_signals(void)
 	return (1);
 }
 
-void	on_idle(const int s)
+void	on_idle(int s)
 {
 	if (g_exit_status >= 0 && g_exit_status <= 255)
 	{

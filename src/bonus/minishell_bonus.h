@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   minishell_bonus.h                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/29 02:08:25 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/09 21:30:31 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#ifndef MINISHELL_BONUS_H
+# define MINISHELL_BONUS_H
 # include <curses.h>
 # include <dirent.h>
 # include <errno.h>
@@ -28,7 +28,7 @@
 # include <sys/wait.h>
 # include <term.h>
 # include <termios.h>
-# include "../ft_printf/src/ft_printf.h"
+# include "../../ft_printf/src/ft_printf.h"
 # ifndef MINISHELL
 #  define MINISHELL "minishell"
 # endif
@@ -45,7 +45,7 @@ typedef enum e_quote
 	DOUBLE
 }	t_quote;
 
-typedef enum e_cmd_type
+typedef enum e_phrase_type
 {
 	BUILTIN,
 	NORMAL,
@@ -53,8 +53,10 @@ typedef enum e_cmd_type
 	REDIR_OUT,
 	HERE_DOC,
 	REDIR_APND,
-	PIPE
-}	t_cmd_type;
+	PIPE,
+	AND_COMB,
+	OR_COMB
+}	t_phrase_type;
 
 typedef struct s_here_info
 {
@@ -68,18 +70,21 @@ typedef struct s_pipe_rw
 	int	read_end;
 }	t_pipe_rw;
 
-typedef union u_debris
-{
-	int			fd;
-	t_here_info	hinfo;
-	char		**argv;
-	t_pipe_rw	pipe_ends;
-}	t_debris;
-
 typedef struct s_phrase
 {
-	t_cmd_type		type;
-	t_debris		deb;
+	t_phrase_type	type;
+	union u_debris
+	{
+		int			fd;
+		t_here_info	hinfo;
+		char		**argv;
+		t_pipe_rw	pipe_ends;
+		struct s_phrase_tree
+		{
+			struct s_phrase	*p1;
+			struct s_phrase	*p2;
+		}	tree;
+	}	deb;
 	struct s_phrase	*pred;
 	struct s_phrase	*succ;
 }	t_phrase;
@@ -92,8 +97,9 @@ typedef struct s_split_piece
 
 char		**lex(t_list **dyn, const char *str);
 char		**lex_alloc(t_list **dyn, char const *s);
-_Bool		lex_preproc(char const *s, t_split_next *idxs, t_quote *p,
+_Bool		lex_preproc(const char *s, t_split_next *idxs, t_quote *p,
 				_Bool *syll);
+void		lex_pre_meta_syll(const char *s, t_split_next *idxs, _Bool *syll);
 void		lex_pre_quote(char c, t_split_next *idxs, t_quote *p);
 size_t		lex_split(t_list **dyn, char **split, char const *s);
 _Bool		lex_split_range(t_list **dyn, char **split, char const *s,
@@ -111,6 +117,12 @@ ssize_t		parse_redir_out(t_list **dyn, const char **envp,
 ssize_t		parse_here_doc(t_list **dyn, t_phrase **p, const char **tokens);
 ssize_t		parse_redir_apnd(t_list **dyn, const char **envp,
 				t_phrase **p, const char **tokens);
+ssize_t		parse_and(t_list **dyn, const char **envp,
+				t_phrase **p, const char **tokens);
+ssize_t		parse_or(t_list **dyn, const char **envp,
+				t_phrase **p, const char **tokens);
+ssize_t		parse_paren(t_list **dyn, const char **envp,
+				t_phrase **p, const char **tokens);
 ssize_t		parse_cmd_builtin(t_list **dyn, const char **envp,
 				t_phrase **p, const char **tokens);
 char		**parse_split_args(t_list **dyn, const char ***env_tok, ssize_t *i,
@@ -124,18 +136,27 @@ _Bool		is_cmd(const char *str);
 _Bool		is_builtin(const char *str);
 char		*replace_env(t_list **dyn, const char **envp, const char *str);
 t_phrase	*parse_lex(t_list **dyn, const char **envp, const char *str);
+t_phrase	*cons_and(t_list **dyn, t_phrase *s1, t_phrase *s2);
+t_phrase	*cons_or(t_list **dyn, t_phrase *s1, t_phrase *s2);
 
 _Bool		phrase_spawn(t_list **dyn, t_phrase **p);
 _Bool		is_space(char c);
 char		**get_path(t_list **dyn, const char **envp);
 char		*get_exec_path(t_list **dyn, const char **envp, const char *cmd);
 _Bool		validate_cmd(t_list **dyn, const char **envp, char **cmd);
-void		print_phrase(t_phrase *p);
+void		print_phrase(t_phrase *p, size_t nested);
 void		print_args(const char **args);
 char		*ft_get_env(t_list **dyn, const char **envp, const char *name);
 void		print_pipe(t_phrase *p);
 size_t		cmd_len(t_phrase *p);
 size_t		pipe_cnt(t_phrase *p);
+_Bool		contains_comb(t_phrase *p);
+char		**subparen(t_list **dyn, const char **tokens);
+char		**substrstr(t_list **dyn, const char **tokens, size_t start,
+				size_t len);
+void		print_comb(t_phrase *p, size_t nested);
+void		print_cmd(t_phrase *p);
+void		print_tabs(size_t n);
 
 _Bool		handle_signals(void);
 void		on_idle(int s);
@@ -150,9 +171,12 @@ _Bool		is_valid(t_phrase *ps, char *str);
 void		process(t_list **dyn, t_phrase *p, char **envp, t_vec *pids);
 int			here_doc(t_list **dyn, const char **envp, t_phrase **p, size_t n);
 t_phrase	*phrase_head(t_phrase *p);
+t_phrase	*phrase_last(t_phrase *p);
+t_phrase	*last_pipe(t_phrase *p);
 char		**get_cmd(t_phrase *p);
 int			exec_cmd(t_list **dyn, t_phrase *p, char **arg_env[2],
 				t_pipe_rw *io);
+void		dup_io(t_list **dyn, t_phrase *p, t_pipe_rw *io);
 size_t		count_here_docs(t_phrase *p);
 void		close_pipes(t_phrase *p, t_pipe_rw *except);
 void		close_fps_all(t_phrase *p);
@@ -166,6 +190,27 @@ void		here_doc_prompt(size_t n);
 void		builtin_fd_swap(t_list **dyn, t_phrase *p, t_pipe_rw *io);
 void		exec_builtin_message(t_list **dyn, int fe, pid_t pid, char ***envp);
 _Bool		builtin_needs_swap(const char *str);
+
+void		process_comb(t_list **dyn, t_phrase **p, char **envp, t_vec *pids);
+void		process_comb_branch(t_list **dyn, t_phrase *p[2], char **envp,
+				t_vec *pids);
+void		process_next_branch(t_list **dyn, t_phrase *p[2], char **envp,
+				t_vec *pids);
+int			exec_branch(t_list **dyn, t_phrase *p[2], char **arg_env[2],
+				t_pipe_rw *io);
+void		wait_comb(t_list **dyn, t_phrase *p, t_vec *pids, char ***envp);
+void		wait_comb_branch(t_list **dyn, t_phrase *p, t_vec *pids,
+				char ***envp);
+t_phrase	*phrase_fpscpy(t_list **dyn, t_phrase *p, t_phrase *branch);
+t_phrase	*push_phrase_front(t_list **dyn, t_phrase *p, t_phrase *p2);
+t_phrase	*phrase_fpscpy2(t_list **dyn, t_phrase *p, t_phrase *branch);
+t_phrase	*push_phrase_back(t_list **dyn, t_phrase *p, t_phrase *p2);
+t_phrase	*next_branch(t_phrase *p);
+void		close_branch_fps(t_phrase *p);
+_Bool		contains_comb_glob(t_phrase *p);
+void		rotate_up(t_vec *v);
+void		rotate_down(t_vec *v);
+void		restore_pids(t_phrase *from, t_phrase *to, t_vec *pids);
 
 int			exec_builtin(char **argv, char **envp);
 int			exec_echo(char **argv);
@@ -185,4 +230,4 @@ char		**env_copy(t_list **dyn, char **envp);
 void		reset_env(t_list **dyn, char ***envp, char *argv);
 void		export_print(t_list **dyn, char **envp);
 
-#endif //MINISHELL_H
+#endif //MINISHELL_BONUS_H

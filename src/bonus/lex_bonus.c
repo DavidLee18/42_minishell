@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lex.c                                              :+:      :+:    :+:   */
+/*   lex_bonus.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/07 15:45:12 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/05/01 01:47:06 by jaehylee         ###   ########.fr       */
+/*   Created: 2025/04/24 15:05:20 by jaehylee          #+#    #+#             */
+/*   Updated: 2025/05/01 15:44:50 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "minishell_bonus.h"
 
-_Bool	lex_preproc(char const *s, t_split_next *idxs, t_quote *p, _Bool *syll)
+_Bool	lex_preproc(const char *s, t_split_next *idxs, t_quote *p, _Bool *syll)
 {
 	if (s[idxs->start] == '\0')
 		return (0);
@@ -21,27 +21,21 @@ _Bool	lex_preproc(char const *s, t_split_next *idxs, t_quote *p, _Bool *syll)
 		lex_pre_quote(s[idxs->start], idxs, p);
 	else if (*p != NONE)
 		return (idxs->start++, 1);
-	else if ((s[idxs->start] == '<' && s[idxs->start + 1] == '<')
-		|| (s[idxs->start] == '>' && s[idxs->start + 1] == '>'))
+	else if (ft_strncmp(s + idxs->start, "<<", 2) == 0
+		|| ft_strncmp(s + idxs->start, ">>", 2) == 0
+		|| ft_strncmp(s + idxs->start, "&&", 2) == 0
+		|| ft_strncmp(s + idxs->start, "||", 2) == 0)
 	{
 		idxs->start++;
 		idxs->length++;
 	}
-	else if (s[idxs->start] == '<' || s[idxs->start] == '|'
-		|| s[idxs->start] == '>')
-		idxs->length++;
-	else if (*syll)
-	{
-		idxs->length++;
-		*syll = 0;
-	}
-	else if (is_space(s[idxs->start]) && !is_space(s[idxs->start + 1]))
-		*syll = 1;
+	else
+		lex_pre_meta_syll(s, idxs, syll);
 	idxs->start++;
 	return (1);
 }
 
-void	lex_pre_quote(const char c, t_split_next *idxs, t_quote *p)
+void	lex_pre_quote(char c, t_split_next *idxs, t_quote *p)
 {
 	if (c == '\'' && *p != DOUBLE)
 		*p = SINGLE - *p;
@@ -66,7 +60,7 @@ char	**lex_alloc(t_list **dyn, char const *s)
 			return (NULL);
 	if (p != NONE)
 		return (NULL);
-	split = (char **)gc_calloc(dyn, idxs.length + 3, sizeof(char *));
+	split = (char **)gc_calloc(dyn, idxs.length + 2, sizeof(char *));
 	if (!split)
 		return (NULL);
 	return (split);

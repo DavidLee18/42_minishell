@@ -1,40 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse.c                                            :+:      :+:    :+:   */
+/*   parse_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/09 17:56:42 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/05/01 17:38:56 by jaehylee         ###   ########.fr       */
+/*   Created: 2025/04/25 01:19:32 by jaehylee          #+#    #+#             */
+/*   Updated: 2025/05/01 21:27:36 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "minishell_bonus.h"
 
 t_phrase	*parse(t_list **dyn, const char **envp, const char **tokens)
 {
 	size_t		i;
 	ssize_t		j;
-	t_phrase	*p;
+	t_phrase	*s;
 
 	i = 0;
 	j = 0;
-	p = NULL;
+	s = NULL;
 	while (tokens[i] != NULL)
 	{
-		j = parse_each(dyn, envp, &p, tokens + i);
+		j = parse_each(dyn, envp, &s, tokens + i);
 		if (j < 0)
 			return (NULL);
 		i += j;
 	}
-	return (p);
+	return (s);
 }
 
 ssize_t	parse_redir_in(t_list **dyn, const char **envp,
 	t_phrase **p, const char **tokens)
 {
-	char	*infile;
+	char		*infile;
 
 	if (!phrase_spawn(dyn, p) || tokens[1] == NULL)
 		return (-1);
@@ -55,7 +55,7 @@ ssize_t	parse_redir_in(t_list **dyn, const char **envp,
 ssize_t	parse_redir_out(t_list **dyn, const char **envp,
 	t_phrase **p, const char **tokens)
 {
-	char	*outfile;
+	char		*outfile;
 
 	if (!phrase_spawn(dyn, p) || tokens[1] == NULL)
 		return (-1);
@@ -77,7 +77,7 @@ ssize_t	parse_redir_out(t_list **dyn, const char **envp,
 ssize_t	parse_redir_apnd(t_list **dyn, const char **envp,
 	t_phrase **p, const char **tokens)
 {
-	char	*apndfile;
+	char		*apndfile;
 
 	if (!phrase_spawn(dyn, p) || tokens[1] == NULL)
 		return (-1);
@@ -98,7 +98,7 @@ ssize_t	parse_redir_apnd(t_list **dyn, const char **envp,
 
 ssize_t	parse_here_doc(t_list **dyn, t_phrase **p, const char **tokens)
 {
-	char	*eof;
+	char		*eof;
 
 	if (!phrase_spawn(dyn, p) || tokens[1] == NULL || !is_cmd(tokens[1]))
 		return (-1);
