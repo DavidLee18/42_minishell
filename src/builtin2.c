@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 13:08:49 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/05/01 19:35:59 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/22 22:21:23 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ void	decree_export(t_list **dyn, char **argv, char ***envp)
 		str = gc_split(dyn, (*envp)[i], '=');
 		if (!ft_strcmp(temp_av[0], str[0]) && ft_strchr(argv[1], '='))
 		{
-			(*envp)[i] = ft_strchr(argv[1], '=') + 1;
+			(*envp)[i] = argv[1];
 			break ;
 		}
 		i++;

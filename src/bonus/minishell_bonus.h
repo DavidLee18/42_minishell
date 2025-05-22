@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/05/22 21:15:59 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/23 06:59:46 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,6 +169,7 @@ _Bool		heredoc_signals(void);
 char		*prompt(t_list **dyn);
 _Bool		is_valid(t_phrase *ps, char *str);
 void		process(t_list **dyn, t_phrase *p, char **envp, t_vec *pids);
+void		switch_fds(t_list **dyn, t_phrase *p, char **envp, t_pipe_rw *io);
 int			here_doc(t_list **dyn, const char **envp, t_phrase **p, size_t n);
 t_phrase	*phrase_head(t_phrase *p);
 t_phrase	*phrase_last(t_phrase *p);
@@ -180,6 +181,7 @@ void		dup_io(t_list **dyn, t_phrase *p, t_pipe_rw *io);
 size_t		count_here_docs(t_phrase *p);
 void		close_pipes(t_phrase *p, t_pipe_rw *except);
 void		close_fps_all(t_phrase *p);
+void		close_fps_sub(t_phrase *parent, t_phrase *child); //TODO
 void		close_io(t_pipe_rw *io);
 t_pipe_rw	get_io(t_phrase **p);
 void		close_wait(t_list **dyn, t_phrase *p, t_vec *pids, char ***envp);
@@ -192,7 +194,7 @@ void		exec_builtin_message(t_list **dyn, int fe, pid_t pid, char ***envp);
 _Bool		builtin_needs_swap(const char *str);
 
 void		process_comb(t_list **dyn, t_phrase **p, char **envp, t_vec *pids);
-pid_t		subshell(t_list **dyn, t_phrase *p, char **envp, t_pipe_rw *io);
+pid_t		subshell(t_list **dyn, t_phrase *ps[2], char **envp, t_pipe_rw *io);
 void		process_comb2(t_list **dyn, t_phrase **p, char **envp, t_vec *pids);
 t_phrase	*push_phrase_front(t_list **dyn, t_phrase *p, t_phrase *p2);
 t_phrase	*push_phrase_back(t_list **dyn, t_phrase *p, t_phrase *p2);

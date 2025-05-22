@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 02:14:29 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/05/22 19:09:57 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/23 04:04:13 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,8 @@ void	close_fps_all(t_phrase *p)
 	else if (p->type == PIPE)
 		(close(p->deb.pipe_ends.write_end),
 			close(p->deb.pipe_ends.read_end));
+	else if (p->type == AND_COMB || p->type == OR_COMB)
+		(close_fps_all(p->deb.tree.p1), close_fps_all(p->deb.tree.p2));
 	if (p->succ)
 		close_fps_all(p->succ);
 }

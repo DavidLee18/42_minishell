@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 23:55:38 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/04/29 02:09:40 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/22 23:49:33 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,8 @@ char	*get_exec_path(t_list **dyn, const char **envp, const char *cmd)
 
 	i = 0;
 	path = get_path(dyn, envp);
-	if (path == NULL)
-		return (NULL);
+	if (!path)
+		return (ft_fprintf(STDERR_FILENO, "%s: empty PATH\n", MINISHELL), NULL);
 	while (path && path[i])
 	{
 		temp_path = gc_strjoin(dyn, path[i], "/");

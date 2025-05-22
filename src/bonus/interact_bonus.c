@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 02:10:23 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/05/01 21:40:36 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/22 23:34:39 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ char	*prompt(t_list **dyn)
 	prom = readline(prom);
 	if (!prom)
 		return (ft_fprintf(STDOUT_FILENO, "exit\n"), gc_free_all(*dyn),
-			exit(EXIT_SUCCESS), NULL);
+			exit(g_exit_status), NULL);
 	add_history(prom);
 	return (prom);
 }
