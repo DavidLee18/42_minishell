@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 11:57:33 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/05/07 14:03:17 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/22 15:20:14 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ t_phrase	*phrase_last(t_phrase *p)
 {
 	if (!p || !p->succ)
 		return (p);
-	return (phrase_head(p->succ));
+	return (phrase_last(p->succ));
 }
 
 t_phrase	*last_pipe(t_phrase *p)

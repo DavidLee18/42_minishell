@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/05/09 21:30:31 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/22 21:15:59 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,7 +174,7 @@ t_phrase	*phrase_head(t_phrase *p);
 t_phrase	*phrase_last(t_phrase *p);
 t_phrase	*last_pipe(t_phrase *p);
 char		**get_cmd(t_phrase *p);
-int			exec_cmd(t_list **dyn, t_phrase *p, char **arg_env[2],
+pid_t		exec_cmd(t_list **dyn, t_phrase *p, char **arg_env[2],
 				t_pipe_rw *io);
 void		dup_io(t_list **dyn, t_phrase *p, t_pipe_rw *io);
 size_t		count_here_docs(t_phrase *p);
@@ -192,25 +192,13 @@ void		exec_builtin_message(t_list **dyn, int fe, pid_t pid, char ***envp);
 _Bool		builtin_needs_swap(const char *str);
 
 void		process_comb(t_list **dyn, t_phrase **p, char **envp, t_vec *pids);
-void		process_comb_branch(t_list **dyn, t_phrase *p[2], char **envp,
-				t_vec *pids);
-void		process_next_branch(t_list **dyn, t_phrase *p[2], char **envp,
-				t_vec *pids);
-int			exec_branch(t_list **dyn, t_phrase *p[2], char **arg_env[2],
-				t_pipe_rw *io);
-void		wait_comb(t_list **dyn, t_phrase *p, t_vec *pids, char ***envp);
-void		wait_comb_branch(t_list **dyn, t_phrase *p, t_vec *pids,
-				char ***envp);
-t_phrase	*phrase_fpscpy(t_list **dyn, t_phrase *p, t_phrase *branch);
+pid_t		subshell(t_list **dyn, t_phrase *p, char **envp, t_pipe_rw *io);
+void		process_comb2(t_list **dyn, t_phrase **p, char **envp, t_vec *pids);
 t_phrase	*push_phrase_front(t_list **dyn, t_phrase *p, t_phrase *p2);
-t_phrase	*phrase_fpscpy2(t_list **dyn, t_phrase *p, t_phrase *branch);
 t_phrase	*push_phrase_back(t_list **dyn, t_phrase *p, t_phrase *p2);
 t_phrase	*next_branch(t_phrase *p);
-void		close_branch_fps(t_phrase *p);
-_Bool		contains_comb_glob(t_phrase *p);
 void		rotate_up(t_vec *v);
 void		rotate_down(t_vec *v);
-void		restore_pids(t_phrase *from, t_phrase *to, t_vec *pids);
 
 int			exec_builtin(char **argv, char **envp);
 int			exec_echo(char **argv);

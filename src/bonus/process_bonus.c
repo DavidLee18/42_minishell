@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 22:39:18 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/05/08 16:08:23 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/22 21:28:12 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,9 @@ void	process(t_list **dyn, t_phrase *p, char **envp, t_vec *pids)
 		process(dyn, p, envp, pids);
 }
 
-int	exec_cmd(t_list **dyn, t_phrase *p, char **arg_env[2], t_pipe_rw *io)
+pid_t	exec_cmd(t_list **dyn, t_phrase *p, char **arg_env[2], t_pipe_rw *io)
 {
-	int	id;
+	pid_t	id;
 
 	(ignore_signals(), builtin_fd_swap(dyn, p, io));
 	id = fork();
@@ -101,19 +101,29 @@ t_pipe_rw	get_io(t_phrase **p)
 	return (io);
 }
 
-t_phrase	*phrase_fpscpy2(t_list **dyn, t_phrase *p, t_phrase *branch)
+pid_t	subshell(t_list **dyn, t_phrase *p, char **envp, t_pipe_rw *io)
 {
-	if (!p->succ)
-		return (branch);
-	p = p->succ;
-	while (branch && p && p->type != PIPE)
+	pid_t	id;
+	t_vec	pids;
+
+	ignore_signals();
+	id = fork();
+	if (id == -1)
+		perror(gc_strjoin(dyn, MINISHELL, ": fork"));
+	else if (id == 0)
 	{
-		if (p->type == REDIR_IN || p->type == REDIR_OUT || p->type == REDIR_APND
-			|| p->type == HERE_DOC)
-			branch = push_phrase_back(dyn, p, branch);
-		p = p->succ;
+		close_pipes(phrase_head(p), io);
+		(dup_io(dyn, p, io), close_io(io));
+		while (p && p->type != AND_COMB && p->type != OR_COMB)
+			p = p->pred;
+		pids = (t_vec){.cap = 0, .len = 0, .ptr = NULL};
+		process(dyn, p->deb.tree.p1, envp, &pids);
+		close_wait(dyn, p->deb.tree.p1, &pids, &envp);
+		if ((p->type == AND_COMB && g_exit_status == 0)
+			|| (p->type == OR_COMB && g_exit_status != 0))
+			(process(dyn, p->deb.tree.p2, envp, &pids),
+				close_wait(dyn, p->deb.tree.p2, &pids, &envp));
+		(gc_free_all(*dyn), exit(g_exit_status));
 	}
-	if (branch && p && p->type == PIPE)
-		branch = push_phrase_back(dyn, p, branch);
-	return (branch);
+	return (id);
 }
