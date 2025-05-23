@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 23:03:52 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/05/23 06:59:46 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/23 23:23:07 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,6 +174,8 @@ int			here_doc(t_list **dyn, const char **envp, t_phrase **p, size_t n);
 t_phrase	*phrase_head(t_phrase *p);
 t_phrase	*phrase_last(t_phrase *p);
 t_phrase	*last_pipe(t_phrase *p);
+t_phrase	*first_pipe_after(t_phrase *p);
+t_phrase	*or_default(t_phrase *p, t_phrase *def);
 char		**get_cmd(t_phrase *p);
 pid_t		exec_cmd(t_list **dyn, t_phrase *p, char **arg_env[2],
 				t_pipe_rw *io);
@@ -181,7 +183,8 @@ void		dup_io(t_list **dyn, t_phrase *p, t_pipe_rw *io);
 size_t		count_here_docs(t_phrase *p);
 void		close_pipes(t_phrase *p, t_pipe_rw *except);
 void		close_fps_all(t_phrase *p);
-void		close_fps_sub(t_phrase *parent, t_phrase *child); //TODO
+void		close_fps_sub(t_phrase *parent, t_phrase *child_head,
+				t_phrase *child_last);
 void		close_io(t_pipe_rw *io);
 t_pipe_rw	get_io(t_phrase **p);
 void		close_wait(t_list **dyn, t_phrase *p, t_vec *pids, char ***envp);

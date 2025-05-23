@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 18:16:04 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/05/23 06:56:03 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/23 23:13:29 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,14 +55,30 @@ void	switch_fds(t_list **dyn, t_phrase *p, char **envp, t_pipe_rw *io)
 				&p, count_here_docs(p));
 }
 
-void	close_fps_sub(t_phrase *parent, t_phrase *child)
+void	close_fps_sub(t_phrase *parent, t_phrase *child_head,
+	t_phrase *child_last)
 {
-	if (!parent || !child)
+	if (!parent || !child_head || !child_last)
 		return ;
-	if (parent == child)
+	if (child_head && parent == child_head)
 	{
-		if (parent->succ)
-			close_fps_sub(parent->succ, child);
-		return ;
+		if (child_head != child_last)
+			close(child_head->deb.pipe_ends.write_end);
+		while (parent && parent != child_last)
+			parent = parent->succ;
+		if (child_head != child_last)
+			close(child_last->deb.pipe_ends.read_end);
+		close_fps_all(parent->succ);
 	}
+	else if (parent->type == REDIR_IN || parent->type == REDIR_OUT
+		|| parent->type == REDIR_APND)
+		close(parent->deb.fd);
+	else if (parent->type == PIPE)
+		(close(parent->deb.pipe_ends.write_end),
+			close(parent->deb.pipe_ends.read_end));
+	else if (parent->type == AND_COMB || parent->type == OR_COMB)
+		(close_fps_sub(parent->deb.tree.p1, child_head, child_last),
+			close_fps_sub(parent->deb.tree.p2, child_head, child_last));
+	if (parent->succ)
+		close_fps_sub(parent->succ, child_head, child_last);
 }

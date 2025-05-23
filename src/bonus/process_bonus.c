@@ -6,7 +6,7 @@
 /*   By: jaehylee <jaehylee@student.42gyeongsan.kr> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/01 22:39:18 by jaehylee          #+#    #+#             */
-/*   Updated: 2025/05/23 06:45:42 by jaehylee         ###   ########.fr       */
+/*   Updated: 2025/05/23 23:45:35 by jaehylee         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	process(t_list **dyn, t_phrase *p, char **envp, t_vec *pids)
 	char		**argv;
 
 	if (contains_comb(p) || (p->type == PIPE && contains_comb(p->succ)))
-		process_comb(dyn, &p, envp, pids);
+		return (process_comb(dyn, &p, envp, pids));
 	io = get_io(&p);
 	argv = get_cmd(p);
 	if (argv == NULL)
@@ -108,7 +108,8 @@ pid_t	subshell(t_list **dyn, t_phrase *ps[2], char **envp, t_pipe_rw *io)
 		perror(gc_strjoin(dyn, MINISHELL, ": fork"));
 	else if (id == 0)
 	{
-		close_fps_sub(ps[0], ps[1]);
+		close_fps_sub(ps[0], or_default(last_pipe(ps[1]), ps[1]),
+			or_default(first_pipe_after(ps[1]), ps[1]));
 		(dup_io(dyn, ps[1], io), close_io(io));
 		while (ps[1] && ps[1]->type != AND_COMB && ps[1]->type != OR_COMB)
 			ps[1] = ps[1]->pred;
