@@ -37,11 +37,11 @@ all: $(NAME)
 
 $(NAME): $(OBJS)
 	make -C ft_printf
-	$(CC) $(OBJS) $(DEBUG_BFLAGS) -o $(NAME)
+	$(CC) $(OBJS) $(BFLAGS) -o $(NAME)
 
 build/%.o: src/%.c
 	mkdir -p $(BUILD_DIR)
-	$(CC) $(DEBUG_CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
 $(SRCS): $(SRC_DIR)/minishell.h
 
@@ -55,12 +55,12 @@ fclean:	clean
 
 bonus: $(BONUS_OBJS)
 	make -C ft_printf
-	$(CC) $(BONUS_OBJS) $(DEBUG_BFLAGS) -o $(NAME)
+	$(CC) $(BONUS_OBJS) $(BFLAGS) -o $(NAME)
 
 build/bonus/%.o: src/bonus/%.c
 	mkdir -p $(BUILD_DIR)
 	mkdir -p $(BUILD_DIR)/bonus
-	$(CC) $(DEBUG_CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
 re:	fclean all
 
